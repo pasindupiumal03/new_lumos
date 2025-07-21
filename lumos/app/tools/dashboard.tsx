@@ -38,77 +38,50 @@ const mockCoins = [
 ];
 
 export default function Dashboard() {
-  // Brand accent and stat mock data
-  const stats = [
-    { label: "Total Coins", value: "12,345" },
-    { label: "Market Cap", value: "$2.1T" },
-    { label: "24h Volume", value: "$65B" },
-    { label: "BTC Dominance", value: "48.2%" },
-    { label: "Sentiment", value: "Neutral" },
-  ];
   return (
     <div className="flex min-h-screen bg-paper">
       <Sidebar selected="Dashboard" />
-      <main className="flex-1 p-8 bg-paper">
-  {/* Hero Header */}
-  <div className="mb-10">
-    <h1 className="font-druk text-5xl md:text-7xl leading-tight mb-3 text-black tracking-tight uppercase">Lumos Dashboard</h1>
-    <p className="hero-subtitle mb-6 max-w-2xl">Advanced trading intelligence and market protection. All your tools, stats, and insights in one place.</p>
-    <div className="h-1 w-24 bg-pink-500 rounded mb-4 animate-glow" />
-  </div>
-
-  {/* Stats Row */}
-  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-10">
-    {stats.map((stat, i) => (
-      <div key={i} className="bg-white border border-gray-200 rounded-lg p-4 flex flex-col items-center shadow-sm">
-        <div className="font-druk text-lg md:text-2xl text-pink-500 mb-1">{stat.value}</div>
-        <div className="text-xs uppercase tracking-wide text-gray-600 font-bold">{stat.label}</div>
-      </div>
-    ))}
-  </div>
-
-  {/* Market Summary */}
-  <div className="bg-white rounded-lg shadow-md p-6 mb-8 border border-gray-100">
-    <div className="flex items-center justify-between mb-4">
-      <div className="font-druk text-xl text-black">Market Summary</div>
-      <button className="cta-button primary text-xs px-4 py-2">Refresh</button>
-    </div>
-    <div className="divide-y divide-gray-200">
-      {mockNews.map((news, i) => (
-        <div key={i} className="py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-          <div>
-            <div className="font-bold text-base text-black mb-1">{news.title}</div>
-            <div className="text-sm text-gray-600 mb-1">{news.summary}</div>
-            <span className="text-xs px-2 py-1 rounded bg-gray-100 text-gray-800 font-bold uppercase tracking-wide">{news.sentiment}</span>
+      <main className="flex-1 p-8">
+        <h1 className="font-druk text-4xl mb-8">Crypto Dashboard</h1>
+        <div className="bg-white/5 rounded-lg shadow-md p-6 mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <div className="font-semibold text-lg">Market Summary</div>
+            <button className="px-3 py-1 rounded bg-primary text-white text-xs">Refresh</button>
           </div>
-          <span className="text-xs text-gray-400 md:text-right">{news.time}</span>
-        </div>
-      ))}
-    </div>
-  </div>
-
-  {/* Recent Coins */}
-  <div className="bg-white rounded-lg shadow-md p-6 border border-gray-100">
-    <div className="flex items-center justify-between mb-4">
-      <div className="font-druk text-xl text-black">Recent Coins</div>
-      <button className="cta-button primary text-xs px-4 py-2">Refresh</button>
-    </div>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {mockCoins.map((coin, i) => (
-        <div key={i} className="bg-paper-light border border-gray-200 rounded-lg p-4 flex flex-col shadow-sm">
-          <div className="font-druk text-lg text-black mb-1 uppercase">{coin.name}</div>
-          <div className="flex items-center justify-between mb-2">
-            <div className="text-xs text-gray-500">Price</div>
-            <div className="text-xs text-pink-500 font-bold">{coin.price}</div>
+          <div className="space-y-4">
+            {mockNews.map((news, i) => (
+              <div key={i} className="border-b border-gray-200/10 pb-4 mb-4 last:border-b-0 last:pb-0 last:mb-0">
+                <div className="flex items-center justify-between">
+                  <div className="font-bold text-base text-foreground">{news.title}</div>
+                  <span className="text-xs text-gray-400">{news.time}</span>
+                </div>
+                <div className="text-sm text-gray-300 mb-1">{news.summary}</div>
+                <span className="text-xs px-2 py-1 rounded bg-gray-700 text-gray-200">{news.sentiment}</span>
+              </div>
+            ))}
           </div>
-          <div className="text-xs text-gray-400 mb-2">Token Address: {coin.address}</div>
-          <div className="text-xs text-gray-500 mb-2">{coin.since}</div>
-          <a href="#" className="cta-button secondary text-xs mt-2">View on Pump.fun</a>
         </div>
-      ))}
-    </div>
-  </div>
-</main>
+        <div className="bg-white/5 rounded-lg shadow-md p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="font-semibold text-lg">Recent Coins</div>
+            <button className="px-3 py-1 rounded bg-primary text-white text-xs">Refresh</button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {mockCoins.map((coin, i) => (
+              <div key={i} className="bg-black/30 border border-gray-700 rounded-lg p-4 flex flex-col">
+                <div className="font-bold text-lg text-foreground mb-1">{coin.name}</div>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-xs text-gray-400">Price</div>
+                  <div className="text-xs text-gray-200">{coin.price}</div>
+                </div>
+                <div className="text-xs text-gray-400 mb-2">Token Address: {coin.address}</div>
+                <div className="text-xs text-gray-500">{coin.since}</div>
+                <a href="#" className="mt-2 text-xs text-primary underline">View on Pump.fun</a>
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
     </div>
   );
 }
