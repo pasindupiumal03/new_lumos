@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { FiSend, FiRefreshCw, FiCopy, FiThumbsUp, FiThumbsDown } from 'react-icons/fi';
 import { FaEthereum } from 'react-icons/fa';
 import { SiBitcoin } from 'react-icons/si';
+import Sidebar from '../Sidebar';
 
 type Message = {
   id: string;
@@ -88,7 +89,9 @@ export default function AIChatPage() {
   }, [messages]);
 
   return (
-    <div className="flex flex-col h-[calc(100vh-64px)] bg-gray-50">
+    <div className="flex min-h-screen bg-gray-50">
+      <Sidebar selected="AI Chat" />
+      <div className="flex-1 flex flex-col h-screen overflow-hidden">
       {/* Header */}
       <div className="border-b border-gray-200 bg-white p-4">
         <div className="flex items-center justify-between">
@@ -219,6 +222,7 @@ export default function AIChatPage() {
             Lumos AI may produce inaccurate information. Always verify important information.
           </p>
         </form>
+        </div>
       </div>
     </div>
   );
