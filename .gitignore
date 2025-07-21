@@ -1,16 +1,4 @@
-# Ignore Python cache and environment files
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
+.next
 .env
-.venv
-# Ignore OS generated files
-.DS_Store
-Thumbs.db
-# Ignore node_modules if any
 node_modules/
-# Ignore logs
-*.log
-# Ignore VS Code settings
-.vscode/
+
