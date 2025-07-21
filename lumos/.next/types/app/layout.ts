@@ -1,4 +1,4 @@
-// File: C:\Users\Asus Pc\Desktop\lumos\lumos\app\layout.tsx
+// File: C:\Users\Asus Pc\Desktop\New_Lumos\lumos\app\layout.tsx
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
