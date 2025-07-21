@@ -1,4 +1,5 @@
 {
+  "/_not-found/page": "app/_not-found/page.js",
   "/tools/dashboard/page": "app/tools/dashboard/page.js",
   "/tools/ai-chat/page": "app/tools/ai-chat/page.js"
 }
