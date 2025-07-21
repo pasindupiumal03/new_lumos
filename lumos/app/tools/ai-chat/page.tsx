@@ -5,6 +5,7 @@ import { FiSend, FiRefreshCw, FiCopy, FiThumbsUp, FiThumbsDown } from 'react-ico
 import { FaEthereum } from 'react-icons/fa';
 import { SiBitcoin } from 'react-icons/si';
 import Sidebar from '../Sidebar';
+import { OpenAI } from 'openai';
 
 type Message = {
   id: string;
