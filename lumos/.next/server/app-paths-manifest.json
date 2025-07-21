@@ -1,9 +1,0 @@
-{
-  "/tools/mcp-server": "app/tools/mcp-server.js",
-  "/tools/eth-tracker": "app/tools/eth-tracker.js",
-  "/_not-found/page": "app/_not-found/page.js",
-  "/tools/twitter-tracker": "app/tools/twitter-tracker.js",
-  "/tools/solana-eco": "app/tools/solana-eco.js",
-  "/tools/dashboard/page": "app/tools/dashboard/page.js",
-  "/tools/ai-chat/page": "app/tools/ai-chat/page.js"
-}
