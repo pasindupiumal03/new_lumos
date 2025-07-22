@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { FiSearch, FiExternalLink, FiClock } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import Sidebar from '../Sidebar';
@@ -277,6 +278,27 @@ export default function EthTrackerPage() {
               </p>
             </div>
           )}
+          
+          {/* Etherscan Banner */}
+          <div className="mt-8 max-w-4xl mx-auto w-full group relative">
+            <div className="rounded-lg overflow-hidden shadow-md border border-border relative">
+              <div className="relative">
+                <Image 
+                  src="/etherscan-social.jpg" 
+                  alt="Ethereum Blockchain Explorer"
+                  width={1200}
+                  height={300}
+                  className="w-full h-auto object-cover transition-all duration-300 group-hover:blur-sm group-hover:brightness-75"
+                  priority
+                />
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <span className="text-white text-lg font-medium bg-black/60 px-4 py-2 rounded-lg backdrop-blur-sm">
+                    Powered by Etherscan.io
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
         </main>
       </div>
     </div>
