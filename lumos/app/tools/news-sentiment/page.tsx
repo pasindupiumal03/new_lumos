@@ -46,10 +46,17 @@ import { cn } from "@/lib/utils";
 
 type Sentiment = "all" | "positive" | "negative" | "neutral";
 
+import { getNewsSourceInfo, getSentimentInfo } from "@/lib/newsUtils";
+
 interface NewsItem {
   id: string;
   title: string;
-  source: string;
+  source: {
+    name: string;
+    logo: string;
+    domain: string;
+  };
+  publishedAt: string;
   time: string;
   sentiment: "positive" | "negative" | "neutral";
   sentimentScore: number;
@@ -58,6 +65,17 @@ interface NewsItem {
   engagement: number;
   fullContent: string;
   url: string;
+  votes?: {
+    positive: number;
+    negative: number;
+    important: number;
+    liked: number;
+    disliked: number;
+    lol: number;
+    toxic: number;
+    saved: number;
+    comments: number;
+  };
 }
 
 export default function NewsSentiment() {
@@ -96,10 +114,18 @@ export default function NewsSentiment() {
     setError(null);
 
     try {
+      const apiKey = process.env.NEXT_PUBLIC_CRYPTOPANIC_API_KEY || "4a4d75b8438580a64d96c8bdf5b6d4448027f351";
+      const apiPlan = process.env.NEXT_PUBLIC_CRYPTOPANIC_API_PLAN || "developer";
+      
+      if (!apiKey) {
+        throw new Error("CryptoPanic API key is not configured. Please check your environment variables.");
+      }
+
       const params = new URLSearchParams({
-        auth_token: "4a4d75b8438580a64d96c8bdf5b6d4448027f351",
+        auth_token: apiKey,
         public: "true",
         page: currentPage.toString(),
+        metadata: "1", // Request additional metadata
       });
 
       // Add sentiment filter if not 'all'
@@ -112,6 +138,9 @@ export default function NewsSentiment() {
             ? "bearish"
             : "important"
         );
+      } else {
+        // For 'all' sentiment, include both bullish and bearish news
+        params.append("filter", "rising");
       }
 
       // Add search query as currencies filter if applicable
@@ -126,41 +155,85 @@ export default function NewsSentiment() {
         }
       }
 
+      // Use the API route
       const response = await fetch(
-        `https://cryptopanic.com/api/developer/v2/posts/?${params.toString()}`,
+        `/api/news-sentiment?${params.toString()}`,
         {
           method: "GET",
           headers: {
             Accept: "application/json",
           },
+          next: { revalidate: 300 }, // Revalidate every 5 minutes
         }
       );
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.error || `HTTP error! Status: ${response.status}`
-        );
+        let errorMessage = `HTTP error! Status: ${response.status}`;
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorData.message || errorMessage;
+        } catch (e) {
+          // If we can't parse the error as JSON, use the status text
+          errorMessage = response.statusText || errorMessage;
+        }
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
+      
+      if (!data.results || !Array.isArray(data.results)) {
+        console.error("Invalid API response format:", data);
+        throw new Error("Received invalid data format from the API");
+      }
 
       // Map API response to NewsItem interface
       const mappedNews: NewsItem[] = data.results.map((item: any) => {
-        // Determine the coin: use the first instrument's code or "UNKNOWN" if none
-        const coin = item.instruments?.length > 0 ? item.instruments[0].code : "UNKNOWN";
+        // Determine the coin: use the first instrument's code or empty string if none
+        const coin = item.instruments?.length > 0 ? item.instruments[0].code : "";
+        
+        // Enhanced sentiment analysis using panic_score and votes
+        let sentiment: 'positive' | 'negative' | 'neutral' = 'neutral';
+        
+        // First check if there are enough votes to determine sentiment
+        const totalVotes = (item.votes?.positive || 0) + (item.votes?.negative || 0);
+        
+        if (totalVotes >= 5) {
+          // If we have enough votes, use them to determine sentiment
+          const voteRatio = (item.votes.positive - item.votes.negative) / totalVotes;
+          sentiment = voteRatio > 0.2 ? 'positive' : voteRatio < -0.2 ? 'negative' : 'neutral';
+        } else if (item.panic_score !== undefined) {
+          // Otherwise, use panic_score if available
+          if (item.panic_score > 60) {
+            sentiment = 'positive';
+          } else if (item.panic_score < 40) {
+            sentiment = 'negative';
+          }
+        }
+        
+        // Override with filter if present (bullish/bearish)
+        if (item.filter_terms?.includes('bullish')) {
+          sentiment = 'positive';
+        } else if (item.filter_terms?.includes('bearish')) {
+          sentiment = 'negative';
+        }
+
+        // Get source information from the processed API response
+        const sourceInfo = {
+          name: item.source?.title || 'Unknown Source',
+          domain: item.source?.domain || 'unknown',
+          logo: item.source?.logo || `https://www.google.com/s2/favicons?domain=${item.source?.domain || 'cryptopanic.com'}&sz=64`
+        };
+        
+        // Get sentiment info
+        const sentimentData = getSentimentInfo(sentiment);
         
         return {
           id: item.id.toString(),
           title: item.title || "Untitled",
-          source: item.source?.title || "Unknown Source",
+          source: sourceInfo,
+          publishedAt: item.published_at,
           time: getTimeAgo(item.published_at),
-          sentiment:
-            item.votes?.positive > item.votes?.negative
-              ? "positive"
-              : item.votes?.negative > item.votes?.positive
-              ? "negative"
-              : "neutral",
+          sentiment,
           sentimentScore: item.panic_score
             ? item.panic_score / 100
             : (item.votes?.positive - item.votes?.negative) /
@@ -177,6 +250,7 @@ export default function NewsSentiment() {
             item.title ||
             "No content available",
           url: item.url || "#",
+          votes: item.votes
         };
       });
 
@@ -433,24 +507,60 @@ export default function NewsSentiment() {
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-2">
-                          {getCoinIcon(item.coin)}
-                          <span className="text-xs font-medium text-muted-foreground">
-                            {item.source}
-                          </span>
-                          <span className="text-muted-foreground">•</span>
-                          <span className="text-xs text-muted-foreground">
-                            {item.time}
-                          </span>
-                          <Badge
-                            variant={
-                              item.sentiment === "positive"
-                                ? "default"
-                                : "destructive"
-                            }
-                            className="ml-2 text-xs"
-                          >
-                            {item.sentiment}
-                          </Badge>
+                          {/* Source Avatar with better fallback */}
+                          <div className="flex-shrink-0 w-5 h-5 rounded-full bg-muted flex items-center justify-center overflow-hidden">
+                            <img
+                              src={item.source?.logo}
+                              alt={item.source?.name ? `${item.source.name} logo` : 'Source logo'}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                // Fallback to a generic icon if favicon fails to load
+                                target.src = `data:image/svg+xml,${encodeURIComponent(
+                                  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>'
+                                )}`;
+                                target.onerror = null; // Prevent infinite loop
+                              }}
+                            />
+                          </div>
+                          
+                          {/* Source Name and Time */}
+                          <div className="flex items-center gap-1.5 text-xs">
+                            <span className="font-medium text-foreground truncate max-w-[120px]" title={item.source?.name || ''}>
+                              {item.source?.name || 'Source'}
+                            </span>
+                            <span className="text-muted-foreground">•</span>
+                            <span className="text-muted-foreground">
+                              {item.time}
+                            </span>
+                          </div>
+                          
+                          {/* Coin Icon */}
+                          <div className="ml-1">
+                            {getCoinIcon(item.coin)}
+                          </div>
+                          
+                          {/* Sentiment Badge */}
+                          <div className="ml-auto">
+                            <Badge
+                              className={`text-xs ${
+                                item.sentiment === 'positive' 
+                                  ? 'bg-green-500/20 text-green-500 hover:bg-green-500/30' 
+                                  : item.sentiment === 'negative' 
+                                    ? 'bg-red-500/20 text-red-500 hover:bg-red-500/30'
+                                    : 'bg-amber-500/20 text-amber-500 hover:bg-amber-500/30'
+                              }`}
+                            >
+                              {item.sentiment === 'positive' ? '😊 ' : 
+                               item.sentiment === 'negative' ? '😟 ' : '😐 '}
+                              {item.sentiment.charAt(0).toUpperCase() + item.sentiment.slice(1)}
+                              {item.votes && (
+                                <span className="ml-1 text-xs opacity-80">
+                                  ({item.votes.positive + item.votes.negative})
+                                </span>
+                              )}
+                            </Badge>
+                          </div>
                         </div>
                         <h3 className="font-medium text-foreground mb-1.5 group-hover:text-primary transition-colors">
                           {item.title}
@@ -461,7 +571,7 @@ export default function NewsSentiment() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center text-xs text-muted-foreground">
                             <span>
-                              {item.engagement.toLocaleString()} engagements
+
                             </span>
                           </div>
                           <Button
@@ -536,41 +646,100 @@ export default function NewsSentiment() {
               <>
                 <DialogHeader>
                   <div className="flex justify-between items-start">
-                    <DialogTitle className="text-2xl">
-                      {selectedNews.title}
-                    </DialogTitle>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={closeNewsModal}
-                      className="h-8 w-8 -mt-2 -mr-2"
-                    >
-                      <FiX className="h-5 w-5" />
-                    </Button>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground pt-2">
-                    <span className="font-medium">{selectedNews.source}</span>
-                    <span>•</span>
-                    <span>{selectedNews.time}</span>
-                    <Badge
-                      variant={
-                        selectedNews.sentiment === "positive"
-                          ? "default"
-                          : "destructive"
-                      }
-                      className="ml-2 text-xs"
-                    >
-                      {selectedNews.sentiment}
-                    </Badge>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        {/* Source Avatar */}
+                        <div className="flex-shrink-0">
+                          <img
+                            src={selectedNews.source?.logo}
+                            alt={selectedNews.source?.name || 'Source logo'}
+                            className="w-6 h-6 rounded-full object-cover"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              const domain = selectedNews.source?.domain || 'example.com';
+                              target.src = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+                            }}
+                          />
+                        </div>
+                        
+                        {/* Source Name and Time */}
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-medium text-foreground">
+                            {selectedNews.source?.name || 'Unknown Source'}
+                          </span>
+                          <span className="text-muted-foreground">•</span>
+                          <span className="text-muted-foreground text-sm">
+                            {selectedNews.time}
+                          </span>
+                        </div>
+                        
+                        {/* Coin Icon */}
+                        <div className="ml-1">
+                          {getCoinIcon(selectedNews.coin)}
+                        </div>
+                        
+                        {/* Engagement */}
+                        <div className="ml-2 text-xs text-muted-foreground">
+
+                        </div>
+                      </div>
+                      
+                      <DialogTitle className="text-2xl mt-2">
+                        {selectedNews.title}
+                      </DialogTitle>
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      {/* Sentiment Badge */}
+                      <Badge
+                        className={`text-sm ${
+                          selectedNews.sentiment === 'positive' 
+                            ? 'bg-green-500/20 text-green-500 hover:bg-green-500/30' 
+                            : selectedNews.sentiment === 'negative' 
+                              ? 'bg-red-500/20 text-red-500 hover:bg-red-500/30'
+                              : 'bg-amber-500/20 text-amber-500 hover:bg-amber-500/30'
+                        }`}
+                      >
+                        {selectedNews.sentiment === 'positive' ? '😊 ' : 
+                         selectedNews.sentiment === 'negative' ? '😟 ' : '😐 '}
+                        {selectedNews.sentiment.charAt(0).toUpperCase() + selectedNews.sentiment.slice(1)}
+                        {selectedNews.votes && (
+                          <span className="ml-1 text-xs opacity-80">
+                            ({selectedNews.votes.positive + selectedNews.votes.negative} votes)
+                          </span>
+                        )}
+                      </Badge>
+                      
+                      {/* Bookmark Button */}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          setIsBookmarked((prev) => ({
+                            ...prev,
+                            [selectedNews.id]: !prev[selectedNews.id],
+                          }));
+                        }}
+                        className="text-muted-foreground hover:text-amber-500"
+                      >
+                        {isBookmarked[selectedNews.id] ? (
+                          <FaBookmark className="h-5 w-5 text-amber-500" />
+                        ) : (
+                          <FaRegBookmark className="h-5 w-5" />
+                        )}
+                      </Button>
+                    </div>
                   </div>
                 </DialogHeader>
                 <div className="space-y-4 py-4">
-                  <div className="flex items-center gap-2">
-                    {getCoinIcon(selectedNews.coin)}
-                    <span className="text-sm font-medium">
-                      {selectedNews.coin}
-                    </span>
-                  </div>
+                  {selectedNews.coin && (
+                    <div className="flex items-center gap-2">
+                      {getCoinIcon(selectedNews.coin)}
+                      <span className="text-sm font-medium">
+                        {selectedNews.coin}
+                      </span>
+                    </div>
+                  )}
                   <div className="prose dark:prose-invert max-w-none">
                     <p className="text-foreground">
                       {selectedNews.fullContent || selectedNews.excerpt}
@@ -579,7 +748,7 @@ export default function NewsSentiment() {
                   <div className="flex items-center justify-between pt-4 border-t border-border/50">
                     <div className="flex items-center text-sm text-muted-foreground">
                       <span>
-                        {selectedNews.engagement.toLocaleString()} engagements
+
                       </span>
                     </div>
                     <div className="flex gap-2">
@@ -590,7 +759,7 @@ export default function NewsSentiment() {
                         size="sm"
                         onClick={() => window.open(selectedNews.url, "_blank")}
                       >
-                        View on {selectedNews.source}
+                        View on {selectedNews.source?.name || 'Source'}
                       </Button>
                     </div>
                   </div>

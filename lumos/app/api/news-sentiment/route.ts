@@ -17,14 +17,14 @@ export async function GET(request: Request) {
     );
   }
 
-  // Create base URL with the correct API plan and version
-  const baseUrl = `https://cryptopanic.com/api/developer/v2/posts/`;
+  // Create base URL with the correct API plan
+  const baseUrl = `https://cryptopanic.com/api/${apiPlan}/v2/posts/`;
 
   // Create new params to avoid mutating the original
   const params = new URLSearchParams();
   
   // Forward valid query parameters
-  const validParams = ["filter", "currencies", "regions", "kind", "page", "public", "following"];
+  const validParams = ["filter", "currencies", "regions", "kind", "page", "public"];
   for (const [key, value] of searchParams.entries()) {
     if (validParams.includes(key)) {
       params.set(key, value);
@@ -33,7 +33,8 @@ export async function GET(request: Request) {
   
   // Add required parameters
   params.set("auth_token", auth_token);
-  params.set("public", "true"); // Use public API mode
+  params.set("metadata", "1"); // Request additional metadata
+  params.set("public", "true"); // Only show public posts
 
   try {
     const apiUrl = `${baseUrl}?${params.toString()}`;
@@ -80,32 +81,18 @@ export async function GET(request: Request) {
     }
 
     const data = await response.json();
-    console.log("CryptoPanic Raw Response:", JSON.stringify(data, null, 2)); // Log full response
+    console.log("CryptoPanic API Response:", { 
+      count: data.count || 0,
+      next: data.next ? true : false,
+      results: data.results ? data.results.length : 0
+    });
 
-    // Process the results to ensure source information is properly formatted
+    // Check if source field is present in any result
     if (data.results && Array.isArray(data.results)) {
-      data.results = data.results.map((item: any) => {
-        // Process source information with better URL handling
-        const urlObj = (() => {
-          try {
-            return new URL(item.url || '');
-          } catch {
-            return null;
-          }
-        })();
-
-        const domain = item.source?.domain || urlObj?.hostname?.replace('www.', '') || '';
-        const safeDomain = domain && domain !== 'example.com' ? domain : 'cryptopanic.com';
-
-        item.source = {
-          title: item.source?.title || safeDomain,
-          domain: safeDomain,
-          logo: `https://www.google.com/s2/favicons?domain=${safeDomain}&sz=64`,
-          region: item.source?.region || 'en',
-          type: item.source?.type || 'feed'
-        };
-        return item;
-      });
+      const hasSource = data.results.some((item: any) => item.source && typeof item.source === "object");
+      if (!hasSource) {
+        console.warn("No source field found in CryptoPanic response. Check API plan or metadata parameter.");
+      }
     }
 
     return NextResponse.json(data);
