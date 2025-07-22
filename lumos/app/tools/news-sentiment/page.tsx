@@ -217,11 +217,22 @@ export default function NewsSentiment() {
           sentiment = 'negative';
         }
 
-        // Get source information from the processed API response
+        // Get source information with cryptopanic.com as fallback
+        const urlObj = (() => {
+          try {
+            return new URL(item.url || '');
+          } catch {
+            return null;
+          }
+        })();
+
+        const domain = item.source?.domain || urlObj?.hostname?.replace('www.', '') || '';
+        const safeDomain = domain && domain !== 'example.com' ? domain : 'cryptopanic.com';
+
         const sourceInfo = {
-          name: item.source?.title || 'Unknown Source',
-          domain: item.source?.domain || 'unknown',
-          logo: item.source?.logo || `https://www.google.com/s2/favicons?domain=${item.source?.domain || 'cryptopanic.com'}&sz=64`
+          name: item.source?.title || safeDomain,
+          domain: safeDomain,
+          logo: `https://www.google.com/s2/favicons?domain=${safeDomain}&sz=64`
         };
         
         // Get sentiment info
@@ -710,24 +721,7 @@ export default function NewsSentiment() {
                         )}
                       </Badge>
                       
-                      {/* Bookmark Button */}
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                          setIsBookmarked((prev) => ({
-                            ...prev,
-                            [selectedNews.id]: !prev[selectedNews.id],
-                          }));
-                        }}
-                        className="text-muted-foreground hover:text-amber-500"
-                      >
-                        {isBookmarked[selectedNews.id] ? (
-                          <FaBookmark className="h-5 w-5 text-amber-500" />
-                        ) : (
-                          <FaRegBookmark className="h-5 w-5" />
-                        )}
-                      </Button>
+
                     </div>
                   </div>
                 </DialogHeader>
