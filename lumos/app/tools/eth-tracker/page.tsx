@@ -45,7 +45,7 @@ export default function EthTrackerPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-[#FFEBF5] to-[#F3EFFF] text-[#232323] font-[Montserrat,sans-serif] flex">
-      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <Sidebar selected="ETH Tracker" />
       
       <div className="flex-1 flex flex-col">
         {/* Header */}
