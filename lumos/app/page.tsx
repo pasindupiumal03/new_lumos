@@ -88,7 +88,7 @@ const tools = [
   },
 ]
 
-export default function ToolsDashboard() {
+export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-[#FFEBF5] to-[#F3EFFF]">
       {/* Navigation */}
