@@ -522,7 +522,7 @@ export default function TwitterTracker() {
                           onClick={handleRefresh}
                           disabled={loading || rateLimited}
                           className={cn(
-                            className="inline-flex items-center justify-center rounded-xl text-base font-bold border-2 border-[#A259FF] bg-gradient-to-r from-[#FFEBF5] to-[#F3EFFF] text-[#A259FF] hover:text-[#FF1C8B] hover:border-[#FF1C8B] h-12 px-5 shadow-md transition-all duration-150"
+                            "inline-flex items-center justify-center rounded-xl text-base font-bold border-2 border-[#A259FF] bg-gradient-to-r from-[#FFEBF5] to-[#F3EFFF] text-[#A259FF] hover:text-[#FF1C8B] hover:border-[#FF1C8B] h-12 px-5 shadow-md transition-all duration-150"
                           )}
                           style={{fontFamily:'Montserrat,sans-serif'}}
                           title="Refresh current search"
