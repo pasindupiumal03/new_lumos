@@ -73,7 +73,7 @@ export default function SolanaEcoPage() {
       {
         label: 'Block Slots',
         data: Array.isArray(data.blocks)
-          ? data.blocks.map((_, i: number) => i + 1)
+          ? data.blocks.map((slot: number, i: number) => i + 1)
           : [],
         backgroundColor: 'rgba(100, 149, 237, 0.6)',
         borderColor: 'rgba(100, 149, 237, 1)',
