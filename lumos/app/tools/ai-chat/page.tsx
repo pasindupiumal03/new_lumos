@@ -26,6 +26,10 @@ type SuggestedQuestion = {
   text: string;
 };
 
+// Lumos font imports (add to _app.tsx or global.css if not present)
+// import "@fontsource/montserrat/700.css";
+// import "@fontsource/montserrat/400.css";
+
 export default function AIChatPage() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -121,25 +125,25 @@ export default function AIChatPage() {
   }, [messages]);
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gradient-to-br from-white via-[#FFEBF5] to-[#F3EFFF] font-[Montserrat,sans-serif]">
       <Sidebar selected="AI Chat" />
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Header */}
-        <div className="border-b border-gray-200 bg-white p-4">
+        <div className="border-b border-[#F1E3F6] bg-white/80 p-6 shadow-sm backdrop-blur-md">
           <div className="flex items-center justify-between">
-            <h1 className="text-xl font-druk font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
+            <h1 className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-[#FF1C8B] via-[#A259FF] to-[#6C38CC] bg-clip-text text-transparent uppercase drop-shadow-lg" style={{ letterSpacing: "0.04em" }}>
               AI Trading Assistant
             </h1>
             <div className="flex items-center space-x-2">
-              <button className="p-2 text-gray-500 hover:text-gray-700">
-                <FiRefreshCw className="h-5 w-5" />
+              <button className="p-3 rounded-full bg-white/70 border border-[#F1E3F6] shadow hover:bg-[#FFEBF5] transition">
+                <FiRefreshCw className="h-5 w-5 text-[#FF1C8B]" />
               </button>
             </div>
           </div>
         </div>
 
         {/* Chat Container */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-6">
+        <div className="flex-1 overflow-y-auto px-6 py-8 space-y-8 bg-gradient-to-b from-white/90 to-[#F3EFFF]/60">
           {messages.map((message) => (
             <div
               key={message.id}
@@ -148,25 +152,25 @@ export default function AIChatPage() {
               }`}
             >
               <div
-                className={`max-w-3xl rounded-2xl px-4 py-3 ${
+                className={`max-w-2xl rounded-3xl px-6 py-4 shadow-lg transition-all duration-200 ${
                   message.isUser
-                    ? "bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-br-none"
-                    : "bg-white border border-gray-200 rounded-bl-none shadow-sm"
+                    ? "bg-gradient-to-r from-[#FF1C8B] via-[#A259FF] to-[#6C38CC] text-white rounded-br-3xl border-2 border-[#FF1C8B]/60"
+                    : "bg-white/90 border-2 border-[#F1E3F6] rounded-bl-3xl text-[#232323]"
                 }`}
               >
-                <div className="flex items-start gap-3">
+                <div className="flex items-start gap-4">
                   {!message.isUser && (
                     <div className="mt-1 flex-shrink-0">
-                      <div className="h-8 w-8 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center text-white">
-                        <SiBitcoin className="h-4 w-4" />
+                      <div className="h-10 w-10 rounded-full bg-gradient-to-r from-[#FF1C8B] via-[#A259FF] to-[#6C38CC] flex items-center justify-center text-white shadow-md">
+                        <SiBitcoin className="h-5 w-5" />
                       </div>
                     </div>
                   )}
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <span
-                        className={`text-xs font-medium ${
-                          message.isUser ? "text-pink-100" : "text-gray-500"
+                        className={`text-xs font-bold tracking-wide ${
+                          message.isUser ? "text-[#FFD6F2]" : "text-[#A259FF]"
                         }`}
                       >
                         {message.isUser ? "You" : "Trading Assistant"}
@@ -178,11 +182,11 @@ export default function AIChatPage() {
                         })}
                       </span>
                     </div>
-                    <div className="mt-1 text-sm">
+                    <div className="mt-2 text-base leading-relaxed">
                       {message.isUser ? (
                         <p>{message.content}</p>
                       ) : (
-                        <div className="prose prose-sm max-w-none prose-strong:text-pink-600 prose-ul:list-disc prose-ul:pl-6">
+                        <div className="prose prose-p:font-medium prose-strong:text-[#FF1C8B] prose-ul:list-disc prose-ul:pl-6">
                           <ReactMarkdown rehypePlugins={[rehypeRaw]}>
                             {message.content}
                           </ReactMarkdown>
@@ -191,18 +195,18 @@ export default function AIChatPage() {
                     </div>
 
                     {!message.isUser && (
-                      <div className="mt-2 flex items-center justify-end space-x-2">
+                      <div className="mt-3 flex items-center justify-end space-x-3">
                         <button
                           onClick={() => copyToClipboard(message.content)}
-                          className="text-gray-400 hover:text-gray-600 p-1"
+                          className="text-[#A259FF] hover:text-[#FF1C8B] p-2 rounded-full border border-transparent hover:border-[#FF1C8B] bg-white/70 shadow-sm transition"
                           title="Copy to clipboard"
                         >
                           <FiCopy className="h-4 w-4" />
                         </button>
-                        <button className="text-gray-400 hover:text-green-500 p-1">
+                        <button className="text-[#A259FF] hover:text-green-500 p-2 rounded-full bg-white/70 border border-transparent hover:border-green-200 shadow-sm transition">
                           <FiThumbsUp className="h-4 w-4" />
                         </button>
-                        <button className="text-gray-400 hover:text-red-500 p-1">
+                        <button className="text-[#A259FF] hover:text-red-500 p-2 rounded-full bg-white/70 border border-transparent hover:border-red-200 shadow-sm transition">
                           <FiThumbsDown className="h-4 w-4" />
                         </button>
                       </div>
@@ -215,18 +219,18 @@ export default function AIChatPage() {
 
           {isLoading && (
             <div className="flex justify-start">
-              <div className="max-w-3xl rounded-2xl bg-white border border-gray-200 px-4 py-3 rounded-bl-none shadow-sm">
-                <div className="flex space-x-2">
+              <div className="max-w-2xl rounded-3xl bg-white/90 border-2 border-[#F1E3F6] px-6 py-4 rounded-bl-3xl shadow-lg">
+                <div className="flex space-x-3">
                   <div
-                    className="w-2 h-2 rounded-full bg-pink-400 animate-bounce"
+                    className="w-3 h-3 rounded-full bg-[#FF1C8B] animate-bounce"
                     style={{ animationDelay: "0ms" }}
                   ></div>
                   <div
-                    className="w-2 h-2 rounded-full bg-pink-400 animate-bounce"
+                    className="w-3 h-3 rounded-full bg-[#A259FF] animate-bounce"
                     style={{ animationDelay: "150ms" }}
                   ></div>
                   <div
-                    className="w-2 h-2 rounded-full bg-pink-400 animate-bounce"
+                    className="w-3 h-3 rounded-full bg-[#6C38CC] animate-bounce"
                     style={{ animationDelay: "300ms" }}
                   ></div>
                 </div>
@@ -239,13 +243,13 @@ export default function AIChatPage() {
 
         {/* Suggested Questions */}
         {messages.length <= 1 && (
-          <div className="px-4 pb-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-3xl mx-auto">
+          <div className="px-6 pb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
               {suggestedQuestions.map((question) => (
                 <button
                   key={question.id}
                   onClick={() => handleSuggestedQuestion(question.text)}
-                  className="text-left p-3 bg-white border border-gray-200 rounded-xl hover:border-pink-300 hover:shadow-sm transition-all text-sm text-gray-700"
+                  className="text-left p-4 bg-gradient-to-r from-[#FFEBF5] to-[#F3EFFF] border-2 border-[#F1E3F6] rounded-2xl hover:border-[#FF1C8B] hover:shadow-lg transition-all text-base text-[#232323] font-semibold tracking-tight"
                 >
                   {question.text}
                 </button>
@@ -255,32 +259,33 @@ export default function AIChatPage() {
         )}
 
         {/* Input Area */}
-        <div className="border-t border-gray-200 bg-white p-4">
-          <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto">
+        <div className="border-t border-[#F1E3F6] bg-white/80 p-6 shadow-inner backdrop-blur-md">
+          <form onSubmit={handleSendMessage} className="max-w-2xl mx-auto">
             <div className="relative">
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask me anything about crypto trading..."
-                className="w-full pr-12 pl-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none"
+                className="w-full pr-16 pl-5 py-4 border-2 border-[#F1E3F6] rounded-full bg-gradient-to-r from-[#FFEBF5] to-[#F3EFFF] focus:ring-2 focus:ring-[#FF1C8B] focus:border-[#FF1C8B] outline-none text-lg font-medium text-[#232323] placeholder-[#A259FF]/70 shadow-md transition"
                 disabled={isLoading}
+                style={{ fontFamily: "Montserrat,sans-serif" }}
               />
               <button
                 type="submit"
                 disabled={!input.trim() || isLoading}
-                className={`absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full ${
+                className={`absolute right-3 top-1/2 -translate-y-1/2 p-3 rounded-full shadow-lg transition-all duration-200 ${
                   input.trim() && !isLoading
-                    ? "bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:opacity-90"
-                    : "text-gray-400"
+                    ? "bg-gradient-to-r from-[#FF1C8B] via-[#A259FF] to-[#6C38CC] text-white hover:opacity-90"
+                    : "bg-[#F1E3F6] text-[#A259FF]/60 cursor-not-allowed"
                 }`}
+                style={{ fontFamily: "Montserrat,sans-serif" }}
               >
                 <FiSend className="h-5 w-5" />
               </button>
             </div>
-            <p className="text-xs text-center text-gray-500 mt-2">
-              Lumos AI may produce inaccurate information. Always verify
-              important information.
+            <p className="text-xs text-center text-[#A259FF] mt-3 font-medium">
+              Lumos AI may produce inaccurate information. Always verify important information.
             </p>
           </form>
         </div>
