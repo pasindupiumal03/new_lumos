@@ -359,16 +359,16 @@ export default function NewsSentiment() {
   };
 
   return (
-    <div className="flex min-h-screen bg-background text-foreground bg-paper">
+    <div className="flex min-h-screen bg-gradient-to-br from-white via-[#FFEBF5] to-[#F3EFFF] font-[Montserrat,sans-serif] text-[#232323]">
       <Sidebar selected="News Sentiment" />
 
-      <main className="flex-1 p-6 overflow-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+      <main className="flex-1 p-8 overflow-auto">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
           <div>
-            <h1 className="text-3xl font-druk tracking-tight mb-1 text-primary">
-              NEWS SENTIMENT ANALYSIS
+            <h1 className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-[#FF1C8B] via-[#A259FF] to-[#6C38CC] bg-clip-text text-transparent uppercase drop-shadow-lg mb-2" style={{letterSpacing:'0.04em'}}>
+              News Sentiment Analysis
             </h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-base text-[#A259FF] font-medium">
               Track market sentiment across crypto news sources
             </p>
           </div>
@@ -415,57 +415,41 @@ export default function NewsSentiment() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <Card className="bg-background/80 backdrop-blur-sm border-border/50">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Positive Sentiment
-              </CardTitle>
-              <div className="h-4 w-4 text-green-500">
-                <FiArrowUp className="h-4 w-4" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          <Card className="bg-gradient-to-br from-[#F3EFFF]/80 to-[#FFEBF5]/90 border-2 border-[#F1E3F6] shadow-lg rounded-3xl">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-base font-bold text-[#FF1C8B]">Positive Sentiment</CardTitle>
+              <div className="h-5 w-5 text-green-500">
+                <FiArrowUp className="h-5 w-5" />
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
-                {newsData.filter((n) => n.sentiment === "positive").length}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Updated in real-time
-              </p>
+              <div className="text-3xl font-extrabold">{newsData.filter((n) => n.sentiment === "positive").length}</div>
+              <p className="text-xs text-[#A259FF] font-medium">Updated in real-time</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-background/80 backdrop-blur-sm border-border/50">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Negative Sentiment
-              </CardTitle>
-              <div className="h-4 w-4 text-red-500">
-                <FiArrowDown className="h-4 w-4" />
+          <Card className="bg-gradient-to-br from-[#F3EFFF]/80 to-[#FFEBF5]/90 border-2 border-[#F1E3F6] shadow-lg rounded-3xl">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-base font-bold text-[#FF1C8B]">Negative Sentiment</CardTitle>
+              <div className="h-5 w-5 text-red-500">
+                <FiArrowDown className="h-5 w-5" />
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
-                {newsData.filter((n) => n.sentiment === "negative").length}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Updated in real-time
-              </p>
+              <div className="text-3xl font-extrabold">{newsData.filter((n) => n.sentiment === "negative").length}</div>
+              <p className="text-xs text-[#A259FF] font-medium">Updated in real-time</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-background/80 backdrop-blur-sm border-border/50">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total Articles
-              </CardTitle>
-              <FiClock className="h-4 w-4 text-muted-foreground" />
+          <Card className="bg-gradient-to-br from-[#F3EFFF]/80 to-[#FFEBF5]/90 border-2 border-[#F1E3F6] shadow-lg rounded-3xl">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-base font-bold text-[#FF1C8B]">Total Articles</CardTitle>
+              <FiClock className="h-5 w-5 text-[#A259FF]" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{newsData.length}</div>
-              <p className="text-xs text-muted-foreground">
-                Fetched in last request
-              </p>
+              <div className="text-3xl font-extrabold">{newsData.length}</div>
+              <p className="text-xs text-[#A259FF] font-medium">Fetched in last request</p>
             </CardContent>
           </Card>
         </div>
@@ -519,7 +503,7 @@ export default function NewsSentiment() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-2">
                           {/* Source Avatar with better fallback */}
-                          <div className="flex-shrink-0 w-5 h-5 rounded-full bg-muted flex items-center justify-center overflow-hidden">
+                           <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-[#FFEBF5] to-[#F3EFFF] flex items-center justify-center overflow-hidden border border-[#F1E3F6] shadow-sm">
                             <img
                               src={item.source?.logo}
                               alt={item.source?.name ? `${item.source.name} logo` : 'Source logo'}
@@ -528,7 +512,7 @@ export default function NewsSentiment() {
                                 const target = e.target as HTMLImageElement;
                                 // Fallback to a generic icon if favicon fails to load
                                 target.src = `data:image/svg+xml,${encodeURIComponent(
-                                  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>'
+                                  '<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"#A259FF\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><text x=\"12\" y=\"16\" text-anchor=\"middle\" fill=\"#fff\" font-size=\"10\">N</text></svg>'
                                 )}`;
                                 target.onerror = null; // Prevent infinite loop
                               }}
@@ -554,12 +538,12 @@ export default function NewsSentiment() {
                           {/* Sentiment Badge */}
                           <div className="ml-auto">
                             <Badge
-                              className={`text-xs ${
+                              className={`text-xs font-bold px-3 py-1 rounded-full shadow-sm tracking-wide transition-all duration-200 ${
                                 item.sentiment === 'positive' 
-                                  ? 'bg-green-500/20 text-green-500 hover:bg-green-500/30' 
+                                  ? 'bg-gradient-to-r from-green-200 to-green-400 text-green-800 border border-green-300' 
                                   : item.sentiment === 'negative' 
-                                    ? 'bg-red-500/20 text-red-500 hover:bg-red-500/30'
-                                    : 'bg-amber-500/20 text-amber-500 hover:bg-amber-500/30'
+                                    ? 'bg-gradient-to-r from-red-200 to-red-400 text-red-800 border border-red-300'
+                                    : 'bg-gradient-to-r from-yellow-100 to-yellow-300 text-yellow-800 border border-yellow-300'
                               }`}
                             >
                               {item.sentiment === 'positive' ? '😊 ' : 
@@ -652,7 +636,7 @@ export default function NewsSentiment() {
           open={!!selectedNews}
           onOpenChange={(open) => !open && closeNewsModal()}
         >
-          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-white via-[#FFEBF5]/80 to-[#F3EFFF]/90 border-2 border-[#F1E3F6] rounded-3xl shadow-2xl">
             {selectedNews && (
               <>
                 <DialogHeader>
@@ -695,7 +679,7 @@ export default function NewsSentiment() {
                         </div>
                       </div>
                       
-                      <DialogTitle className="text-2xl mt-2">
+                      <DialogTitle className="text-3xl font-extrabold bg-gradient-to-r from-[#FF1C8B] via-[#A259FF] to-[#6C38CC] bg-clip-text text-transparent uppercase drop-shadow-lg mb-2 mt-2" style={{letterSpacing:'0.04em',fontFamily:'Montserrat,sans-serif'}}>
                         {selectedNews.title}
                       </DialogTitle>
                     </div>
@@ -703,12 +687,12 @@ export default function NewsSentiment() {
                     <div className="flex items-center gap-2">
                       {/* Sentiment Badge */}
                       <Badge
-                        className={`text-sm ${
+                        className={`text-sm font-bold px-4 py-2 rounded-full shadow-sm tracking-wide transition-all duration-200 ${
                           selectedNews.sentiment === 'positive' 
-                            ? 'bg-green-500/20 text-green-500 hover:bg-green-500/30' 
+                            ? 'bg-gradient-to-r from-green-200 to-green-400 text-green-800 border border-green-300' 
                             : selectedNews.sentiment === 'negative' 
-                              ? 'bg-red-500/20 text-red-500 hover:bg-red-500/30'
-                              : 'bg-amber-500/20 text-amber-500 hover:bg-amber-500/30'
+                              ? 'bg-gradient-to-r from-red-200 to-red-400 text-red-800 border border-red-300'
+                              : 'bg-gradient-to-r from-yellow-100 to-yellow-300 text-yellow-800 border border-yellow-300'
                         }`}
                       >
                         {selectedNews.sentiment === 'positive' ? '😊 ' : 
