@@ -10,4 +10,4 @@
       { "src": "/tools", "dest": "/lumos/app/tools" },
       { "src": "/lumos/(.*)", "dest": "/lumos/$1" }
     ]
-  }
+}
