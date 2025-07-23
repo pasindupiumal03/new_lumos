@@ -63,7 +63,7 @@ export default function SolanaEcoPage() {
     }
   };
 
-  if (!data) return <div className="p-8">Loading...</div>;
+  if (!data) return <div className="p-8"></div>;
 
   const chartData = {
     labels: Array.isArray(data.blocks)

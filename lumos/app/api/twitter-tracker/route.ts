@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// Rate limiting configuration
-const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
-const MAX_REQUESTS_PER_WINDOW = 30; // Twitter's standard rate limit for recent search
+// Rate limiting configuration - More lenient to avoid conflicts with Twitter's limits
+const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000; // 15 minutes (Twitter's window)
+const MAX_REQUESTS_PER_WINDOW = 100; // More reasonable limit
 
 // In-memory rate limiting (consider using Redis in production)
 const requestCounts = new Map<string, { count: number, resetTime: number }>();
-
-// No more mock data - we'll only return real search results
 
 // Helper function to handle API errors
 const handleApiError = (error: any, message: string, statusCode: number = 500) => {
@@ -46,43 +44,67 @@ const checkRateLimit = (ip: string | null): { allowed: boolean; remaining: numbe
   const now = Date.now();
   
   // Clean up old entries
-  const windowStart = now - RATE_LIMIT_WINDOW_MS;
   for (const [ip, data] of requestCounts.entries()) {
     if (data.resetTime < now) {
       requestCounts.delete(ip);
     }
   }
   
-  // Get or initialize request count for this IP
-  const resetTime = now + RATE_LIMIT_WINDOW_MS;
-  const requestData = requestCounts.get(clientIP) || { count: 0, resetTime };
+  // Get current request data for this IP
+  const currentData = requestCounts.get(clientIP);
   
-  const updatedCount = requestData.count + 1;
-  requestCounts.set(clientIP, { count: updatedCount, resetTime });
+  // If no data or window has expired, start fresh
+  if (!currentData || currentData.resetTime < now) {
+    const resetTime = now + RATE_LIMIT_WINDOW_MS;
+    requestCounts.set(clientIP, { count: 1, resetTime });
+    return {
+      allowed: true,
+      remaining: MAX_REQUESTS_PER_WINDOW - 1,
+      resetTime
+    };
+  }
+  
+  // Increment count
+  const updatedCount = currentData.count + 1;
+  requestCounts.set(clientIP, { count: updatedCount, resetTime: currentData.resetTime });
 
   return {
     allowed: updatedCount <= MAX_REQUESTS_PER_WINDOW,
     remaining: Math.max(0, MAX_REQUESTS_PER_WINDOW - updatedCount),
-    resetTime
+    resetTime: currentData.resetTime
   };
 };
 
 export async function GET(req: NextRequest) {
   try {
     // Get client IP for rate limiting from headers
-    const clientIP = req.headers.get('x-forwarded-for') || 
-                    req.headers.get('x-real-ip') || 
+    const clientIP = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+                    req.headers.get('x-real-ip') ||
                     'unknown';
     
     // Check rate limit
     const rateLimit = checkRateLimit(clientIP);
     
-    // Check rate limit
     if (!rateLimit.allowed) {
-      return handleApiError(
-        null,
-        'Rate limit exceeded. Please try again later.',
-        429
+      const retryAfter = Math.ceil((rateLimit.resetTime - Date.now()) / 1000);
+      return new NextResponse(
+        JSON.stringify({
+          success: false,
+          error: 'Rate limit exceeded. Please try again later.',
+          retryAfter,
+          rateLimitReset: rateLimit.resetTime,
+          timestamp: new Date().toISOString()
+        }),
+        {
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json',
+            'Retry-After': retryAfter.toString(),
+            'X-RateLimit-Limit': MAX_REQUESTS_PER_WINDOW.toString(),
+            'X-RateLimit-Remaining': rateLimit.remaining.toString(),
+            'X-RateLimit-Reset': Math.floor(rateLimit.resetTime / 1000).toString(),
+          },
+        }
       );
     }
 
@@ -108,7 +130,7 @@ export async function GET(req: NextRequest) {
     // Build Twitter API URL with query parameters
     const twitterUrl = new URL('https://api.twitter.com/2/tweets/search/recent');
     const params = new URLSearchParams({
-      query: `(${query}) -is:retweet -is:reply -is:quote -has:links`,
+      query: `(${query}) -is:retweet -is:reply -is:quote`,
       max_results: maxResults.toString(),
       'tweet.fields': [
         'public_metrics',
@@ -116,47 +138,23 @@ export async function GET(req: NextRequest) {
         'text',
         'author_id',
         'conversation_id',
-        'in_reply_to_user_id',
-        'referenced_tweets',
-        'attachments',
-        'entities',
-        'context_annotations',
       ].join(','),
       expansions: [
         'author_id',
-        'referenced_tweets.id',
-        'referenced_tweets.id.author_id',
-        'attachments.media_keys',
-        'in_reply_to_user_id',
       ].join(','),
       'user.fields': [
-        'created_at',
-        'description',
-        'location',
         'name',
         'profile_image_url',
-        'protected',
         'public_metrics',
-        'url',
         'username',
         'verified',
-      ].join(','),
-      'media.fields': [
-        'duration_ms',
-        'height',
-        'media_key',
-        'preview_image_url',
-        'type',
-        'url',
-        'width',
-        'public_metrics',
       ].join(','),
     });
 
     twitterUrl.search = params.toString();
 
     // Log the request (without sensitive data)
-    console.log(`Twitter API request: ${twitterUrl.pathname}${twitterUrl.search ? '?[FILTERED]' : ''}`);
+    console.log(`[${new Date().toISOString()}] Twitter API request for query: "${query}" from IP: ${clientIP}`);
     
     // Make request to Twitter API
     try {
@@ -173,15 +171,29 @@ export async function GET(req: NextRequest) {
           status: response.status,
           statusText: response.statusText,
           error: errorData,
-          requestUrl: twitterUrl.toString()
         });
         
-        // If rate limited, return appropriate error
+        // If Twitter API rate limited, return appropriate error
         if (response.status === 429) {
-          return handleApiError(
-            errorData,
-            'Twitter API rate limit exceeded. Please try again later.',
-            429
+          const twitterResetTime = response.headers.get('x-rate-limit-reset');
+          const retryAfter = twitterResetTime ? 
+            Math.ceil((parseInt(twitterResetTime) * 1000 - Date.now()) / 1000) : 900; // Default 15 min
+            
+          return new NextResponse(
+            JSON.stringify({
+              success: false,
+              error: 'Twitter API rate limit exceeded. Please try again later.',
+              retryAfter,
+              rateLimitReset: twitterResetTime ? parseInt(twitterResetTime) * 1000 : Date.now() + (15 * 60 * 1000),
+              timestamp: new Date().toISOString()
+            }),
+            {
+              status: 429,
+              headers: {
+                'Content-Type': 'application/json',
+                'Retry-After': retryAfter.toString(),
+              },
+            }
           );
         }
         
@@ -194,15 +206,14 @@ export async function GET(req: NextRequest) {
       
       // Return successful response with rate limit headers
       const data = await response.json();
-      const rateLimitReset = response.headers.get('x-rate-limit-reset');
       
       return NextResponse.json(data, {
         headers: {
           'Content-Type': 'application/json',
-          'X-RateLimit-Limit': response.headers.get('x-rate-limit-limit') || '',
-          'X-RateLimit-Remaining': response.headers.get('x-rate-limit-remaining') || '',
-          'X-RateLimit-Reset': rateLimitReset || '',
-          'Retry-After': rateLimitReset ? Math.ceil((parseInt(rateLimitReset) * 1000 - Date.now()) / 1000).toString() : ''
+          'X-RateLimit-Limit': MAX_REQUESTS_PER_WINDOW.toString(),
+          'X-RateLimit-Remaining': rateLimit.remaining.toString(),
+          'X-RateLimit-Reset': Math.floor(rateLimit.resetTime / 1000).toString(),
+          'Cache-Control': 'private, max-age=60', // Cache for 1 minute
         }
       });
     } catch (error) {
@@ -213,13 +224,6 @@ export async function GET(req: NextRequest) {
         503
       );
     }
-    
-    // This should never be reached due to the earlier returns
-    return handleApiError(
-      null,
-      'Unexpected error occurred while processing your request',
-      500
-    );
 
   } catch (error) {
     // Handle unexpected errors

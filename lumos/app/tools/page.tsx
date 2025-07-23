@@ -90,39 +90,32 @@ const tools = [
 
 export default function ToolsDashboard() {
   return (
-    <div className="min-h-screen bg-paper">
+    <div className="min-h-screen bg-gradient-to-br from-white via-[#FFEBF5] to-[#F3EFFF]">
       {/* Navigation */}
-      <nav className="border-b border-gray-200/50 bg-paper-light">
+      <nav className="border-b-2 border-[#F1E3F6] bg-gradient-to-r from-[#FFEBF5]/80 to-[#F3EFFF]/80 shadow-md">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
             <div className="flex-shrink-0">
-              <h1 className="text-3xl font-druk tracking-wider text-black">LUMOS</h1>
+              <h1 className="text-4xl font-extrabold bg-gradient-to-r from-[#FF1C8B] via-[#A259FF] to-[#6C38CC] bg-clip-text text-transparent tracking-tighter drop-shadow-lg" style={{fontFamily:'Montserrat,Druk,sans-serif',letterSpacing:'0.04em'}}>LUMOS</h1>
             </div>
 
             {/* Navigation Links */}
             <div className="hidden md:block">
               <div className="ml-16 flex items-center space-x-12">
-                <a href="#" className="nav-link">
-                  Features
-                </a>
-                <a href="#" className="nav-link">
-                  About
-                </a>
-                <a href="#" className="nav-link">
-                  Terms
-                </a>
-                <a href="#" className="nav-link">
-                  Privacy
-                </a>
+                {['Features','About','Terms','Privacy'].map((nav) => (
+                  <a key={nav} href="#" className="relative font-bold text-lg uppercase tracking-wide text-[#A259FF] hover:text-[#FF1C8B] transition-colors duration-200" style={{fontFamily:'Montserrat,sans-serif'}}>
+                    <span className="nav-underline group-hover:w-full"></span>{nav}
+                  </a>
+                ))}
               </div>
             </div>
 
-            {/* Language Toggle - Lumos Style */}
+            {/* Language Toggle */}
             <div className="flex items-center">
-              <div className="language-selector">
-                <div className="language-option active">EN</div>
-                <div className="language-option">RU</div>
+              <div className="flex rounded-2xl bg-white/70 border-2 border-[#F1E3F6] shadow px-2 py-1">
+                <div className="px-3 py-1 font-bold text-[#FF1C8B] bg-gradient-to-r from-[#FFEBF5] to-[#F3EFFF] rounded-xl mr-1 cursor-pointer" style={{fontFamily:'Montserrat,sans-serif'}}>EN</div>
+                <div className="px-3 py-1 font-bold text-[#A259FF] hover:text-[#FF1C8B] rounded-xl cursor-pointer transition-colors" style={{fontFamily:'Montserrat,sans-serif'}}>RU</div>
               </div>
             </div>
           </div>
@@ -132,41 +125,41 @@ export default function ToolsDashboard() {
       {/* Hero Section */}
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-20 md:py-32">
         <div className="text-center max-w-5xl mx-auto">
-          <h1 className="hero-title font-druk text-[4rem] md:text-[6rem] leading-none">
+          <h1 className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#FF1C8B] via-[#A259FF] to-[#6C38CC] text-[2.8rem] md:text-[5rem] leading-none uppercase tracking-tight drop-shadow-xl" style={{fontFamily:'Montserrat,Druk,sans-serif',letterSpacing:'0.05em'}}>
             COMPREHENSIVE<br />TRADING PROTECTION
           </h1>
-          <p className="hero-subtitle">Everything you need to trade safely and profitably in the Web3 ecosystem</p>
+          <p className="mt-6 text-xl md:text-2xl font-semibold text-[#232323] opacity-80" style={{fontFamily:'Montserrat,sans-serif'}}>Everything you need to trade safely and profitably in the Web3 ecosystem</p>
         </div>
       </div>
 
       {/* Tools Grid */}
       <div className="max-w-7xl mx-auto px-6 lg:px-8 pb-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           {tools.map((tool) => {
             const IconComponent = tool.icon;
             const isLive = tool.status === "Live";
             const toolHref = "/tools/dashboard";
             return (
               <Link href={toolHref} key={tool.id} className="block">
-                <Card className="tool-card group hover:shadow-2xl transition-all duration-200 cursor-pointer">
+                <Card className={`group rounded-3xl bg-gradient-to-br from-[#F3EFFF]/80 to-[#FFEBF5]/90 border-2 border-[#F1E3F6] shadow-lg hover:shadow-2xl transition-all duration-200 cursor-pointer relative overflow-hidden`}>
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between mb-3">
-                      <div className="tool-icon">
-                        <IconComponent className="w-5 h-5" strokeWidth={1.5} />
+                      <div className="rounded-xl bg-white/80 p-3 shadow-md mb-2">
+                        <IconComponent className="w-7 h-7 text-[#A259FF] group-hover:text-[#FF1C8B] transition-colors" strokeWidth={2} />
                       </div>
-                      <Badge className={`status-badge ${isLive ? "live" : "coming-soon"}`}>{tool.status}</Badge>
+                      <Badge className={`uppercase font-bold px-4 py-1 rounded-full text-xs tracking-wider ${isLive ? 'bg-[#FFEBF5] text-[#FF1C8B]' : 'bg-[#F3EFFF] text-[#A259FF]'}`}>{tool.status}</Badge>
                     </div>
-                    <CardTitle className="tool-title">{tool.title}</CardTitle>
+                    <CardTitle className="text-lg md:text-xl font-extrabold uppercase mb-2 bg-gradient-to-r from-[#FF1C8B] via-[#A259FF] to-[#6C38CC] bg-clip-text text-transparent tracking-tight" style={{fontFamily:'Montserrat,Druk,sans-serif'}}>{tool.title}</CardTitle>
                   </CardHeader>
                   <CardContent className="pb-5">
-                    <CardDescription className="tool-description">{tool.description}</CardDescription>
+                    <CardDescription className="text-base text-[#232323] opacity-90" style={{fontFamily:'Montserrat,sans-serif'}}>{tool.description}</CardDescription>
                   </CardContent>
                   <CardFooter>
-                    <Button className={`tool-button ${isLive ? "live" : "disabled"}`} disabled={!isLive}>
-                      <span className="click-hover-label">CLICK</span>
+                    <Button className={`rounded-xl font-bold px-8 py-3 text-base tracking-wide transition-all duration-150 ${isLive ? 'bg-gradient-to-r from-[#FF1C8B] via-[#A259FF] to-[#6C38CC] text-white hover:opacity-90' : 'bg-[#F3EFFF] text-[#A259FF] opacity-60 cursor-not-allowed'}`} disabled={!isLive} style={{fontFamily:'Montserrat,sans-serif'}}>
                       {tool.cta}
                     </Button>
                   </CardFooter>
+                  <div className="absolute inset-0 pointer-events-none group-hover:scale-105 transition-transform duration-200 rounded-3xl border-2 border-transparent group-hover:border-[#FF1C8B]/30"></div>
                 </Card>
               </Link>
             );
