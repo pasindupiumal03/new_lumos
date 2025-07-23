@@ -44,7 +44,7 @@ export default function EthTrackerPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex">
+    <div className="min-h-screen bg-gradient-to-br from-white via-[#FFEBF5] to-[#F3EFFF] text-[#232323] font-[Montserrat,sans-serif] flex">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       
       <div className="flex-1 flex flex-col">
@@ -60,7 +60,7 @@ export default function EthTrackerPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               </button>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+              <h1 className="text-4xl font-extrabold bg-gradient-to-r from-[#FF1C8B] via-[#A259FF] to-[#6C38CC] bg-clip-text text-transparent uppercase drop-shadow-lg tracking-tight" style={{letterSpacing:'0.04em'}}>
                 Ethereum Tracker
               </h1>
               <div className="w-6"></div> {/* Spacer for flex alignment */}
@@ -71,24 +71,26 @@ export default function EthTrackerPage() {
         {/* Main Content */}
         <main className="flex-1 px-4 sm:px-6 py-4 overflow-auto">
           {/* Search Bar */}
-          <div className="max-w-3xl mx-auto mb-6">
-            <div className="relative rounded-lg shadow-sm">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FiSearch className="h-5 w-5 text-muted-foreground" />
+          <div className="max-w-3xl mx-auto mb-8">
+            <div className="relative rounded-2xl shadow-lg">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <FiSearch className="h-6 w-6 text-[#A259FF]" />
               </div>
               <input
                 type="text"
-                className="block w-full pl-10 pr-12 py-3 border border-border bg-card rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                className="block w-full pl-12 pr-32 py-4 border-2 border-[#F1E3F6] bg-white/90 rounded-2xl text-lg font-medium focus:ring-2 focus:ring-[#FF1C8B]/40 focus:border-[#A259FF] transition-colors placeholder-[#A259FF]/70"
                 placeholder="Enter Ethereum wallet address..."
                 value={wallet}
                 onChange={(e) => setWallet(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && wallet.trim() && fetchData(wallet)}
                 disabled={loading}
+                style={{fontFamily:'Montserrat,sans-serif'}}
               />
               <button
                 onClick={() => wallet.trim() && fetchData(wallet)}
                 disabled={!wallet.trim() || loading}
-                className="absolute inset-y-0 right-0 px-4 flex items-center bg-primary text-white rounded-r-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="absolute inset-y-0 right-0 px-8 flex items-center bg-gradient-to-r from-[#FF1C8B] via-[#A259FF] to-[#6C38CC] text-white font-bold rounded-r-2xl text-lg shadow hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                style={{fontFamily:'Montserrat,sans-serif'}}
               >
                 {loading ? 'Searching...' : 'Search'}
               </button>
@@ -102,9 +104,9 @@ export default function EthTrackerPage() {
           ) : ethData ? (
             <div className="max-w-7xl mx-auto space-y-6">
               {/* Market Data Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {/* Price Card */}
-                <div className="bg-card border border-border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                <div className="bg-gradient-to-br from-[#F3EFFF]/80 to-[#FFEBF5]/90 border-2 border-[#F1E3F6] rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-shadow">
                   <div className="flex items-center justify-between">
                     <h3 className="text-sm font-medium text-muted-foreground">Ethereum Price</h3>
                     <div className="bg-primary/10 p-2 rounded-lg">
@@ -119,7 +121,7 @@ export default function EthTrackerPage() {
                 </div>
 
                 {/* Market Cap Card */}
-                <div className="bg-card border border-border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                <div className="bg-gradient-to-br from-[#F3EFFF]/80 to-[#FFEBF5]/90 border-2 border-[#F1E3F6] rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-shadow">
                   <div className="flex items-center justify-between">
                     <h3 className="text-sm font-medium text-muted-foreground">Market Cap</h3>
                     <div className="bg-purple-500/10 p-2 rounded-lg">
@@ -134,7 +136,7 @@ export default function EthTrackerPage() {
                 </div>
 
                 {/* 24h Volume Card */}
-                <div className="bg-card border border-border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                <div className="bg-gradient-to-br from-[#F3EFFF]/80 to-[#FFEBF5]/90 border-2 border-[#F1E3F6] rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-shadow">
                   <div className="flex items-center justify-between">
                     <h3 className="text-sm font-medium text-muted-foreground">24h Volume</h3>
                     <div className="bg-green-500/10 p-2 rounded-lg">
@@ -153,7 +155,7 @@ export default function EthTrackerPage() {
               <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
                 <h2 className="text-lg font-semibold mb-4">Gas Prices</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="bg-muted/30 p-4 rounded-lg">
+                  <div className="bg-gradient-to-r from-[#FFEBF5]/60 to-[#F3EFFF]/60 p-6 rounded-2xl shadow">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium text-muted-foreground">Slow</span>
                       <span className="text-sm text-yellow-500">
@@ -163,7 +165,7 @@ export default function EthTrackerPage() {
                     </div>
                     <p className="mt-1 text-2xl font-bold">{ethData.gas?.SafeGasPrice || '--'} Gwei</p>
                   </div>
-                  <div className="bg-muted/30 p-4 rounded-lg">
+                  <div className="bg-gradient-to-r from-[#FFEBF5]/60 to-[#F3EFFF]/60 p-6 rounded-2xl shadow">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium text-muted-foreground">Average</span>
                       <span className="text-sm text-blue-500">
@@ -173,7 +175,7 @@ export default function EthTrackerPage() {
                     </div>
                     <p className="mt-1 text-2xl font-bold">{ethData.gas?.ProposeGasPrice || '--'} Gwei</p>
                   </div>
-                  <div className="bg-muted/30 p-4 rounded-lg">
+                  <div className="bg-gradient-to-r from-[#FFEBF5]/60 to-[#F3EFFF]/60 p-6 rounded-2xl shadow">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium text-muted-foreground">Fast</span>
                       <span className="text-sm text-green-500">
@@ -201,7 +203,7 @@ export default function EthTrackerPage() {
                     </a>
                   </div>
                   
-                  <div className="bg-muted/30 p-4 rounded-lg mb-6">
+                  <div className="bg-gradient-to-r from-[#FFEBF5]/60 to-[#F3EFFF]/60 p-6 rounded-2xl shadow mb-6">
                     <p className="text-sm text-muted-foreground">Balance</p>
                     <p className="text-2xl font-bold">
                       {(parseFloat(ethData.walletData.balance) / 1e18).toFixed(4)} ETH
@@ -212,7 +214,7 @@ export default function EthTrackerPage() {
                   </div>
 
                   <h3 className="font-semibold mb-3">Recent Transactions</h3>
-                  <div className="overflow-hidden border border-border rounded-lg">
+                  <div className="overflow-hidden border-2 border-[#F1E3F6] rounded-2xl shadow">
                     <div className="overflow-x-auto">
                       <table className="min-w-full divide-y divide-border">
                         <thead className="bg-muted/30">
@@ -267,12 +269,12 @@ export default function EthTrackerPage() {
             </div>
           ) : (
             <div className="text-center py-16">
-              <div className="mx-auto h-16 w-16 flex items-center justify-center rounded-full bg-primary/10 text-primary mb-4">
+              <div className="mx-auto h-20 w-20 flex items-center justify-center rounded-full bg-gradient-to-br from-[#FFEBF5] to-[#A259FF]/20 text-[#FF1C8B] mb-4 shadow-lg">
                 <svg className="h-8 w-8" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z" />
                 </svg>
               </div>
-              <h3 className="text-lg font-medium">No wallet data</h3>
+              <h3 className="text-2xl font-extrabold bg-gradient-to-r from-[#FF1C8B] via-[#A259FF] to-[#6C38CC] bg-clip-text text-transparent uppercase drop-shadow-lg tracking-tight" style={{letterSpacing:'0.04em',fontFamily:'Montserrat,sans-serif'}}>No wallet data</h3>
               <p className="text-muted-foreground mt-1 max-w-md mx-auto">
                 Enter an Ethereum wallet address to view transaction history and balance
               </p>
