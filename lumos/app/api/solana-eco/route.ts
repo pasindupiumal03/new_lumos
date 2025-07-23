@@ -1,64 +1,104 @@
-// route.ts - Solana Eco unified backend
 import { NextResponse } from 'next/server';
-import axios from 'axios';
-
-const COINGECKO_URL = 'https://api.coingecko.com/api/v3/coins/solana';
-const SOLANA_TRACKER_API_KEY = 'YOUR_SOLANA_TRACKER_API_KEY';
-const HELIUS_API_KEY = 'YOUR_HELIUS_API_KEY';
-
-const RPC = 'https://api.mainnet-beta.solana.com';
-
-async function fetchFromRPC(method: string, params: any[] = []) {
-  const res = await axios.post(RPC, {
-    jsonrpc: '2.0',
-    id: 1,
-    method,
-    params
-  });
-  return res.data.result;
-}
 
 export async function GET() {
+  const HELIUS_API = process.env.HELIUS_API_KEY;
+  const SOLANA_TRACKER_API = process.env.SOLANA_TRACKER_API_KEY;
+
   try {
-    const [coingeckoRes, epochInfo, slot, perfSamples, blocksRes, tokensRes, nftRes] = await Promise.all([
-      axios.get(COINGECKO_URL),
-      fetchFromRPC('getEpochInfo'),
-      fetchFromRPC('getSlot'),
-      fetchFromRPC('getRecentPerformanceSamples'),
-      axios.get(`https://api.solanatracker.io/blocks?limit=5`, {
-        headers: { 'X-API-Key': SOLANA_TRACKER_API_KEY }
+    const [priceRes, epochRes, tpsRes, blocksRes, trendingRes] = await Promise.all([
+      fetch(`https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true`),
+      fetch(`https://mainnet.helius-rpc.com/?api-key=${HELIUS_API}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'getEpochInfo',
+          params: []
+        }),
       }),
-      axios.get(`https://api.solanatracker.io/tokens/top?limit=5`, {
-        headers: { 'X-API-Key': SOLANA_TRACKER_API_KEY }
+      fetch(`https://mainnet.helius-rpc.com/?api-key=${HELIUS_API}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'getRecentPerformanceSamples',
+          params: [10],
+        }),
       }),
-      axios.get(`https://api.helius.xyz/v0/nfts/popular?limit=5`, {
-        headers: { 'Authorization': `Bearer ${HELIUS_API_KEY}` }
+      fetch(`https://mainnet.helius-rpc.com/?api-key=${HELIUS_API}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'getBlocks',
+          params: [null, 20],
+        }),
+      }),
+      fetch(`https://data.solanatracker.io/tokens/volume/24h?limit=20`, {
+        headers: new Headers({ 'x-api-key': SOLANA_TRACKER_API || '' })
       })
     ]);
 
-    const price = coingeckoRes.data.market_data.current_price.usd;
-    const marketCap = coingeckoRes.data.market_data.market_cap.usd;
-    const chart = await axios.get(`https://api.coingecko.com/api/v3/coins/solana/market_chart?vs_currency=usd&days=1`);
-    const prices = chart.data.prices;
+    const [priceData, epochData, tpsData, blocks, trendingTokensRes] = await Promise.all([
+      priceRes.json(),
+      epochRes.json(),
+      tpsRes.json(),
+      blocksRes.json(),
+      trendingRes.json(),
+    ]);
 
-    const tps = perfSamples.map((s: any) => Math.floor(s.numTransactions / s.samplePeriodSecs));
-    const latestBlocks = blocksRes.data.data;
-    const topTokens = tokensRes.data.data;
-    const nftSpotlight = nftRes.data;
+    // Debug log trending tokens API response
+    console.log('[DEBUG] Trending tokens response:', JSON.stringify(trendingTokensRes));
+
+    let trendingTokens: any[] = [];
+    // The Solana Tracker API returns an array of pool/token objects, not a normalized token list
+    let rawTokens = [];
+    if (trendingTokensRes && Array.isArray(trendingTokensRes.data)) {
+      rawTokens = trendingTokensRes.data;
+    } else if (Array.isArray(trendingTokensRes)) {
+      rawTokens = trendingTokensRes;
+    }
+    // Normalize for frontend: name, symbol, price, logoURI, change24h, address
+    trendingTokens = rawTokens.map((item: any) => {
+      let token = item.token || {};
+      // If 'token' is missing, try to use item directly
+      if (!token.name && item.name) token = item;
+      // Pick the best available pool for price (first pool)
+      let pool = (item.pools && item.pools[0]) || item;
+      // Compute 24h change from events if available
+      let change24h = 0;
+      if (item.events && item.events['24h'] && typeof item.events['24h'].priceChangePercentage === 'number') {
+        change24h = item.events['24h'].priceChangePercentage;
+      } else if (item.priceChangePercentage24h) {
+        change24h = item.priceChangePercentage24h;
+      }
+      return {
+        name: token.name || '',
+        symbol: token.symbol || '',
+        price: pool.price && pool.price.usd ? pool.price.usd : 0,
+        logoURI: token.image || token.logoURI || '',
+        change24h,
+        address: token.mint || token.address || token.tokenAddress || '',
+      };
+    }).slice(0, 20);
 
     return NextResponse.json({
-      price,
-      marketCap,
-      chart: prices,
-      epochInfo,
-      slot,
-      tps,
-      latestBlocks,
-      topTokens,
-      nftSpotlight
+      price: {
+        usd: priceData.solana.usd,
+        market_cap: priceData.solana.usd_market_cap,
+        volume_24h: priceData.solana.usd_24h_vol,
+      },
+      epoch: epochData.result,
+      tpsSamples: tpsData.result,
+      blocks: blocks.result,
+      trendingTokens,
+      trendingTokensError: (!trendingTokens.length ? (trendingTokensRes?.message || trendingTokensRes?.error || 'No trending tokens data') : undefined)
     });
-  } catch (err: any) {
-    console.error(err);
-    return NextResponse.json({ error: 'Failed to load Solana Eco data.' }, { status: 500 });
+  } catch (error) {
+    console.error('[Solana Eco Error]', error);
+    return new NextResponse('Error fetching data', { status: 500 });
   }
 }
