@@ -1,16 +1,13 @@
 {
-  "version": 2,
-  "builds": [
-    { "src": "lumos-landing/index.html", "use": "@vercel/static" },
-    { "src": "lumos/package.json", "use": "@vercel/next" }
-  ],
-  "routes": [
-    // Serve landing page at root
-    { "src": "/", "dest": "/lumos-landing/index.html" },
-    // Redirect /get-started or /tools to Next.js tools dashboard
-    { "src": "/get-started", "dest": "/lumos/app/tools" },
-    { "src": "/tools", "dest": "/lumos/app/tools" },
-    // Fallback: Serve Next.js for all /lumos/* routes
-    { "src": "/lumos/(.*)", "dest": "/lumos/$1" }
-  ]
-}
+    "version": 2,
+    "builds": [
+      { "src": "lumos-landing/index.html", "use": "@vercel/static" },
+      { "src": "lumos/package.json", "use": "@vercel/next" }
+    ],
+    "routes": [
+      { "src": "/", "dest": "/lumos-landing/index.html" },
+      { "src": "/get-started", "dest": "/lumos/app/tools" },
+      { "src": "/tools", "dest": "/lumos/app/tools" },
+      { "src": "/lumos/(.*)", "dest": "/lumos/$1" }
+    ]
+  }
