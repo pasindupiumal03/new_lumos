@@ -39,7 +39,7 @@ export default function AIChatPage() {
     {
       id: "1",
       content:
-        "Hello! I'm your AI trading assistant. How can I help you with your crypto trading today?",
+        "Welcome to Lumos AI! 🚀\n\nI'm your advanced crypto trading assistant. I can analyze tokens on both **Solana** and **Ethereum** networks. Here's what I can do:\n\n• **Token Analysis**: Send me any token address, name, or symbol\n• **Market Insights**: Get real-time price data and market trends\n• **Risk Assessment**: Understand potential risks and opportunities\n• **Trading Advice**: Get personalized trading strategies\n\nTry sending me a token address like `PUMP` or `0x...` to get started!",
       isUser: false,
       timestamp: new Date(Date.now() - 60000),
     },
@@ -266,7 +266,7 @@ export default function AIChatPage() {
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask me anything about crypto trading..."
+                placeholder="Enter token address, name, symbol, or ask about crypto..."
                 className="w-full pr-16 pl-5 py-4 border-2 border-[#F1E3F6] rounded-full bg-gradient-to-r from-[#FFEBF5] to-[#F3EFFF] focus:ring-2 focus:ring-[#FF1C8B] focus:border-[#FF1C8B] outline-none text-lg font-medium text-[#232323] placeholder-[#A259FF]/70 shadow-md transition"
                 disabled={isLoading}
                 style={{ fontFamily: "Montserrat,sans-serif" }}
