@@ -1,428 +1,380 @@
-import { NextResponse } from 'next/server';
-import OpenAI from 'openai';
+import { NextRequest, NextResponse } from 'next/server';
 
-type TokenInfo = {
-  id: string;
-  symbol: string;
-  name: string;
-  platforms: {
-    solana?: string;
-    ethereum?: string;
-    [key: string]: string | undefined;
-  };
+// Helper function to detect token address format
+const detectTokenType = (input: string): 'solana' | 'ethereum' | 'unknown' => {
+  // Solana addresses are typically 32-44 characters, base58 encoded
+  if (input.length >= 32 && input.length <= 44 && /^[1-9A-HJ-NP-Za-km-z]+$/.test(input)) {
+    return 'solana';
+  }
+  // Ethereum addresses start with 0x and are 42 characters long
+  if (input.startsWith('0x') && input.length === 42) {
+    return 'ethereum';
+  }
+  return 'unknown';
 };
 
-// CORS headers
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
-
-// Cache for token info to reduce API calls
-const tokenCache = new Map<string, TokenInfo>();
-const TOKEN_CACHE_TTL = 1000 * 60 * 30; // 30 minutes
-
-// Handle OPTIONS method for CORS preflight
-export async function OPTIONS() {
-  return new Response(null, {
-    status: 204,
-    headers: corsHeaders,
-  });
-}
-
-interface Message {
-  id: string;
-  content: string;
-  isUser: boolean;
-  timestamp: Date;
-}
-
-interface ChatRequest {
-  message: string;
-  conversationHistory: Message[];
-}
-
-interface CryptoDetails {
-  token: string;
-  symbol: string;
-  name: string;
-  isSolanaToken?: boolean;
-  tokenAddress?: string;
-}
-
-interface CoinGeckoMarketData {
-  id: string;
-  symbol: string;
-  name: string;
-  current_price: number;
-  price_change_percentage_24h: number;
-  market_cap: number;
-  total_volume: number;
-  ath: number;
-  ath_change_percentage: number;
-  [key: string]: any;
-}
-
-// Initialize OpenAI client
-const openai = process.env.OPENAI_API_KEY ? new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-}) : null;
-
-// CoinGecko API base URL
-const COINGECKO_API = 'https://api.coingecko.com/api/v3';
-
-// Solana Tracker API base URL
-const SOLANA_TRACKER_API = 'https://api.solanatracker.io/v1';
-
-// Common Solana token addresses
-const SOLANA_TOKENS: Record<string, { name: string; address: string }> = {
-  'SOL': { name: 'Solana', address: 'So11111111111111111111111111111111111111112' },
-  'USDC': { name: 'USD Coin (Solana)', address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v' },
-  'USDT': { name: 'Tether USD (Solana)', address: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB' },
-  'RAY': { name: 'Raydium', address: '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R' },
-  'SRM': { name: 'Serum', address: 'SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt' },
-};
-
-// Store the last crypto details for context
-let lastCryptoDetails: CryptoDetails | null = null;
-
-export async function POST(request: Request) {
-  // Handle CORS preflight
-  if (request.method === 'OPTIONS') {
-    return new NextResponse(null, { headers: corsHeaders });
-  }
-
-  try {
-    const { message, conversationHistory } = (await request.json()) as ChatRequest;
-
-    // Check for Solana token price queries
-    const solanaTokenMatch = message.match(/price of (\w+)(?: on solana)?/i);
-    
-    if (solanaTokenMatch) {
-      const tokenSymbol = solanaTokenMatch[1].toUpperCase();
-      
-      // Check if it's a known Solana token
-      if (SOLANA_TOKENS[tokenSymbol] || tokenSymbol === 'SOL') {
-        const tokenInfo = SOLANA_TOKENS[tokenSymbol] || { name: 'Solana', address: 'So11111111111111111111111111111111111111112' };
-        
-        try {
-          const priceData = await getSolanaTokenPrice(tokenInfo.address);
-          return new NextResponse(
-            JSON.stringify({ 
-              message: `The current price of ${tokenInfo.name} (${tokenSymbol}) is $${priceData.price.toFixed(4)} USD. ` +
-                      `24h change: ${priceData.priceChange24h > 0 ? '📈' : '📉'} ${Math.abs(priceData.priceChange24h).toFixed(2)}%.`
-            }),
-            {
-              status: 200,
-              headers: {
-                'Content-Type': 'application/json',
-                ...corsHeaders
-              }
-            }
-          );
-        } catch (error) {
-          console.error('Error fetching Solana token price:', error);
-          // Continue to normal flow if there's an error
-        }
-      }
-    }
-
-    // Step 1: Extract crypto details from the message
-    const relevantCryptoDetails = await extractCryptoDetails(message);
-
-    // Step 2: Fetch crypto data if relevant
-    let cryptoDataContext = '';
-    if (relevantCryptoDetails) {
-      const cryptoData = await getCryptoData(relevantCryptoDetails);
-      if (cryptoData) {
-        cryptoDataContext = formatCryptoData(cryptoData);
-      } else {
-        cryptoDataContext = `Unable to fetch current data for ${relevantCryptoDetails.name || relevantCryptoDetails.symbol}. Please try again later.`;
-      }
-    }
-
-    // Step 3: Generate AI response with explicit instruction to use crypto data
-    const response = await generateAIResponse(message, conversationHistory, cryptoDataContext);
-
-    return new NextResponse(
-      JSON.stringify({ message: response }),
-      {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json',
-          ...corsHeaders
-        }
-      }
-    );
-  } catch (error) {
-    console.error('Error in AI chat API:', error);
-    return new NextResponse(
-      JSON.stringify({ error: 'Failed to process your request' }),
-      {
-        status: 500,
-        headers: {
-          'Content-Type': 'application/json',
-          ...corsHeaders
-        }
-      }
-    );
-  }
-}
-
-async function extractCryptoDetails(message: string): Promise<CryptoDetails | null> {
-  // Check for Solana tokens first
-  const solanaTokenMatch = message.match(/price of (\w+)(?: on solana)?/i);
-  if (solanaTokenMatch) {
-    const tokenSymbol = solanaTokenMatch[1].toUpperCase();
-    if (SOLANA_TOKENS[tokenSymbol]) {
-      return {
-        token: tokenSymbol.toLowerCase(),
-        symbol: tokenSymbol,
-        name: SOLANA_TOKENS[tokenSymbol].name,
-        isSolanaToken: true,
-        tokenAddress: SOLANA_TOKENS[tokenSymbol].address
-      };
-    } else if (tokenSymbol === 'SOL') {
-      return {
-        token: 'solana',
-        symbol: 'SOL',
-        name: 'Solana',
-        isSolanaToken: true,
-        tokenAddress: 'So11111111111111111111111111111111111111112'
-      };
-    }
-  }
-
-  // Simple keyword matching - can be enhanced with NLP in the future
-  const cryptoKeywords = [
-    { token: 'bitcoin', symbol: 'BTC', name: 'Bitcoin' },
-    { token: 'ethereum', symbol: 'ETH', name: 'Ethereum' },
-    { token: 'solana', symbol: 'SOL', name: 'Solana', isSolanaToken: true, tokenAddress: 'So11111111111111111111111111111111111111112' },
-    { token: 'cardano', symbol: 'ADA', name: 'Cardano' },
-    { token: 'ripple', symbol: 'XRP', name: 'XRP' },
-    { token: 'polkadot', symbol: 'DOT', name: 'Polkadot' },
-    { token: 'dogecoin', symbol: 'DOGE', name: 'Dogecoin' },
-  ];
-
-  const lowerMessage = message.toLowerCase();
+// Function to fetch Solana token data
+const fetchSolanaTokenData = async (address: string) => {
+  const SOLANA_TRACKER_API_KEY = process.env.SOLANA_TRACKER_API_KEY;
+  const SOLANA_API_URL = 'https://data.solanatracker.io';
   
-  for (const keyword of cryptoKeywords) {
-    if (lowerMessage.includes(keyword.token) || lowerMessage.includes(keyword.symbol.toLowerCase())) {
-      return keyword;
-    }
-  }
-
-  // Try to find token by symbol in Solana tokens
-  const symbolMatch = message.match(/\b([A-Z]{2,10})\b/g);
-  if (symbolMatch) {
-    for (const symbol of symbolMatch) {
-      const upperSymbol = symbol.toUpperCase();
-      if (SOLANA_TOKENS[upperSymbol]) {
-        return {
-          token: upperSymbol.toLowerCase(),
-          symbol: upperSymbol,
-          name: SOLANA_TOKENS[upperSymbol].name,
-          isSolanaToken: true,
-          tokenAddress: SOLANA_TOKENS[upperSymbol].address
-        };
-      }
-    }
-  }
-
-  return null;
-}
-
-async function getCryptoData(details: CryptoDetails): Promise<CoinGeckoMarketData | null> {
   try {
-    // For Solana tokens, use a different endpoint
-    if (details.isSolanaToken && details.tokenAddress) {
-      return await getSolanaTokenPrice(details.tokenAddress);
+    console.log(`Fetching Solana token data for: ${address}`);
+    
+    if (!SOLANA_TRACKER_API_KEY) {
+      console.error('SOLANA_TRACKER_API_KEY is not set');
+      return null;
     }
-
-    // For other tokens, use the standard CoinGecko API
-    const response = await fetch(
-      `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${details.token}&price_change_percentage=24h`,
-      {
-        headers: {
-          'x-cg-demo-api-key': process.env.COINGECKO_API_KEY || '',
-        },
-      }
-    );
-
+    
+    const response = await fetch(`${SOLANA_API_URL}/tokens/${address}`, {
+      headers: {
+        'x-api-key': SOLANA_TRACKER_API_KEY,
+      },
+    });
+    
+    console.log(`Solana API response status: ${response.status}`);
+    
     if (!response.ok) {
-      throw new Error(`CoinGecko API error: ${response.statusText}`);
+      const errorText = await response.text();
+      console.error(`Solana API error: ${response.status} - ${errorText}`);
+      
+      // Try fallback with CoinGecko for Solana tokens
+      return await fetchSolanaTokenFromCoinGecko(address);
     }
-
+    
     const data = await response.json();
-    return data[0] || null;
+    console.log('Solana token data fetched successfully');
+    return data;
   } catch (error) {
-    console.error('Error fetching crypto data:', error);
+    console.error('Error fetching Solana token data:', error);
+    // Try fallback with CoinGecko
+    return await fetchSolanaTokenFromCoinGecko(address);
+  }
+};
+
+// Fallback function to fetch Solana token data from CoinGecko
+const fetchSolanaTokenFromCoinGecko = async (address: string) => {
+  try {
+    console.log(`Trying CoinGecko fallback for Solana token: ${address}`);
+    
+    const cgUrl = `${process.env.COINGECKO_API_URL}/coins/solana/contract/${address}`;
+    const response = await fetch(cgUrl);
+    
+    if (!response.ok) {
+      console.log(`CoinGecko fallback failed: ${response.status}`);
+      return null;
+    }
+    
+    const cgData = await response.json();
+    
+    // Transform CoinGecko data to match expected format
+    return {
+      token: {
+        name: cgData.name,
+        symbol: cgData.symbol,
+        creation: {
+          creator: 'N/A'
+        }
+      },
+      pools: [{
+        marketCap: {
+          usd: cgData.market_data?.market_cap?.usd || 0
+        },
+        price: {
+          usd: cgData.market_data?.current_price?.usd || 0
+        },
+        liquidity: {
+          usd: 0
+        },
+        txns: {
+          volume24h: cgData.market_data?.total_volume?.usd || 0,
+          total: 'N/A',
+          buys: 0,
+          sells: 0
+        },
+        market: 'coingecko',
+        lpBurn: 'N/A',
+        security: {
+          freezeAuthority: null,
+          mintAuthority: null
+        }
+      }],
+      events: {
+        '24h': {
+          priceChangePercentage: cgData.market_data?.price_change_percentage_24h || 0
+        }
+      },
+      risk: {
+        score: 'N/A'
+      },
+      holders: 'N/A'
+    };
+  } catch (error) {
+    console.error('CoinGecko fallback failed:', error);
     return null;
   }
-}
+};
 
-async function getSolanaTokenPrice(tokenAddress: string): Promise<CoinGeckoMarketData> {
+// Function to fetch Ethereum token data
+const fetchEthereumTokenData = async (address: string) => {
   try {
-    // First try to get token info from CoinGecko
-    const cgResponse = await fetch(
-      `https://api.coingecko.com/api/v3/coins/solana/contract/${tokenAddress}`,
-      {
-        headers: {
-          'x-cg-demo-api-key': process.env.COINGECKO_API_KEY || '',
-        },
-      }
-    );
+    // Use CoinGecko for Ethereum token data
+    const cgUrl = `${process.env.COINGECKO_API_URL}/coins/ethereum/contract/${address}`;
+    const cgResponse = await fetch(cgUrl);
+    const cgData = cgResponse.ok ? await cgResponse.json() : null;
 
-    if (cgResponse.ok) {
-      const cgData = await cgResponse.json();
-      return {
-        id: cgData.id,
-        symbol: cgData.symbol.toUpperCase(),
-        name: cgData.name,
-        current_price: cgData.market_data.current_price.usd,
-        price_change_percentage_24h: cgData.market_data.price_change_percentage_24h,
-        market_cap: cgData.market_data.market_cap.usd,
-        total_volume: cgData.market_data.total_volume.usd,
-        ath: cgData.market_data.ath.usd,
-        ath_change_percentage: cgData.market_data.ath_change_percentage.usd,
-      };
-    }
+    // Use Ethplorer for additional data
+    const ethUrl = `${process.env.ETHPLORER_API_URL}/getTokenInfo/${address}?apiKey=${process.env.ETHPLORER_API_KEY}`;
+    const ethResponse = await fetch(ethUrl);
+    const ethData = ethResponse.ok ? await ethResponse.json() : null;
 
-    // Fallback to Solana Tracker API if CoinGecko fails
-    if (process.env.SOLANA_TRACKER_API_KEY) {
-      const solTrackerResponse = await fetch(
-        `${SOLANA_TRACKER_API}/tokens/${tokenAddress}`,
-        {
-          headers: {
-            'Authorization': `Bearer ${process.env.SOLANA_TRACKER_API_KEY}`,
-          },
-        }
-      );
+    // Use DexScreener for trading data
+    const dexUrl = `${process.env.DEXSCREENER_API_URL}/tokens/${address}`;
+    const dexResponse = await fetch(dexUrl);
+    const dexData = dexResponse.ok ? await dexResponse.json() : null;
 
-      if (solTrackerResponse.ok) {
-        const solData = await solTrackerResponse.json();
-        return {
-          id: solData.id || tokenAddress,
-          symbol: solData.symbol || 'UNKNOWN',
-          name: solData.name || 'Unknown Token',
-          current_price: solData.price?.usd || 0,
-          price_change_percentage_24h: solData.priceChange24h || 0,
-          market_cap: solData.marketCap?.usd || 0,
-          total_volume: solData.volume24h?.usd || 0,
-          ath: solData.ath?.usd || 0,
-          ath_change_percentage: solData.athChangePercentage?.usd || 0,
-        };
-      }
-    }
-
-    throw new Error('Failed to fetch token data from both CoinGecko and Solana Tracker');
+    return {
+      coingecko: cgData,
+      ethplorer: ethData,
+      dexscreener: dexData,
+    };
   } catch (error) {
-    console.error('Error fetching Solana token price:', error);
-    throw error;
+    console.error('Error fetching Ethereum token data:', error);
+    return null;
   }
-}
+};
 
-function formatCryptoData(data: CoinGeckoMarketData | null): string {
-  if (!data) return '';
-
-  const priceChange24h = data.price_change_percentage_24h || 0;
-  const changeEmoji = priceChange24h >= 0 ? '📈' : '📉';
-  
-  // Format price with appropriate decimal places
-  const formatPrice = (price: number | undefined) => {
-    if (price === undefined) return 'N/A';
-    if (price < 1) return `$${price.toFixed(6)}`;
-    if (price < 1000) return `$${price.toFixed(4)}`;
-    return `$${price.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
-  };
-
-  // Format large numbers with K, M, B suffixes
-  const formatLargeNumber = (num: number | undefined) => {
-    if (num === undefined) return 'N/A';
-    if (num >= 1000000000) return `$${(num / 1000000000).toFixed(2)}B`;
-    if (num >= 1000000) return `$${(num / 1000000).toFixed(2)}M`;
-    if (num >= 1000) return `$${(num / 1000).toFixed(1)}K`;
-    return `$${num.toFixed(2)}`;
-  };
-  
-  return `**${data.name} (${data.symbol.toUpperCase()})**\n` +
-         `💵 Price: ${formatPrice(data.current_price)} ${changeEmoji} ${Math.abs(priceChange24h).toFixed(2)}% (24h)\n` +
-         `🏦 Market Cap: ${formatLargeNumber(data.market_cap)}\n` +
-         `📊 24h Volume: ${formatLargeNumber(data.total_volume)}\n` +
-         `🚀 ATH: ${formatPrice(data.ath)} (${(data.ath_change_percentage || 0).toFixed(2)}% from ATH)`;
-}
-
-interface OpenAIMessage {
-  role: 'system' | 'user' | 'assistant';
-  content: string;
-}
-
-async function generateAIResponse(
-  message: string,
-  conversationHistory: Message[],
-  cryptoContext: string
-): Promise<string> {
-  if (!openai) {
-    console.error('OpenAI client not initialized');
-    return 'I apologize, but I am currently experiencing technical difficulties. Please try again in a moment.';
-  }
-
-  const systemPrompt = `You are Lumos AI, a professional cryptocurrency trading assistant and blockchain expert. You are NOT an OpenAI model and you should NEVER mention OpenAI, GPT, or that you are an AI model created by OpenAI.
-
-Your identity and expertise:
-- You are Lumos AI, a specialized crypto trading assistant
-- You have access to real-time cryptocurrency market data
-- Your expertise includes cryptocurrency markets, trading strategies, blockchain technology, DeFi, technical analysis, and risk management
-- You are knowledgeable, professional, and always maintain your identity as Lumos AI
-
-**CRITICAL INSTRUCTIONS**:
-- NEVER mention OpenAI, GPT, or reveal your underlying technology
-- ALWAYS respond as Lumos AI
-- When you have crypto data available, USE IT and present it as your real-time access to market information
-- If crypto data is provided in CRYPTO CONTEXT, prioritize it in your response
-- Be concise, accurate, and professional
-- Use markdown formatting for better readability
-- Maintain a helpful and educational tone
-- Focus on cryptocurrency and blockchain-related topics
-- If asked about non-crypto topics, gently redirect to crypto/blockchain subjects
-
-${cryptoContext ? '**CRYPTO CONTEXT** (Real-time market data - use this in your response):\n' + cryptoContext : ''}
-
-Remember: You are Lumos AI, not an OpenAI model. Respond accordingly.`;
-
+// Function to search for token by name or symbol
+const searchTokenByNameOrSymbol = async (query: string) => {
   try {
-    const messages: OpenAIMessage[] = [
-      { role: 'system', content: systemPrompt },
-      ...conversationHistory.slice(-10).map(msg => ({
-        role: msg.isUser ? 'user' as 'user' : 'assistant' as 'assistant',
-        content: msg.content
-      })),
-      { role: 'user' as 'user', content: message }
-    ];
+    // Search CoinGecko for tokens by name/symbol
+    const searchUrl = `${process.env.COINGECKO_API_URL}/search?query=${encodeURIComponent(query)}`;
+    const response = await fetch(searchUrl);
+    
+    if (!response.ok) {
+      throw new Error('Failed to search tokens');
+    }
+    
+    const searchData = await response.json();
+    return searchData.coins?.slice(0, 5) || []; // Return top 5 matches
+  } catch (error) {
+    console.error('Error searching tokens:', error);
+    return [];
+  }
+};
 
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4',
-      messages,
-      temperature: 0.7,
-      max_tokens: 500,
+// Function to format token data with OpenAI
+const formatTokenDataWithOpenAI = async (tokenData: any, tokenType: 'solana' | 'ethereum', query: string) => {
+  const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+  
+  try {
+    let formattedData = '';
+    
+    if (tokenType === 'solana') {
+      // Format Solana token data
+      const token = tokenData.token;
+      const pools = tokenData.pools?.[0]; // Get the first pool (usually most liquid)
+      const risk = tokenData.risk;
+      const events = tokenData.events;
+      
+      // Find the best pool (highest liquidity)
+      const bestPool = tokenData.pools?.reduce((prev: any, current: any) => 
+        (current.liquidity?.usd || 0) > (prev?.liquidity?.usd || 0) ? current : prev
+      );
+      
+      formattedData = `
+Solana Token Analysis for ${token?.name || 'Unknown'} (${token?.symbol || 'Unknown'})
+
+Token Details:
+- Name: ${token?.name || 'N/A'}
+- Symbol: ${token?.symbol || 'N/A'}
+- Creator: ${token?.creation?.creator || 'N/A'}
+- Market Cap: $${bestPool?.marketCap?.usd?.toLocaleString() || 'N/A'}
+- Price: $${bestPool?.price?.usd || 'N/A'}
+- 24h Change: ${events?.['24h']?.priceChangePercentage?.toFixed(2) || 'N/A'}%
+- 24h Volume: $${bestPool?.txns?.volume24h?.toLocaleString() || 'N/A'}
+- Liquidity: $${bestPool?.liquidity?.usd?.toLocaleString() || 'N/A'}
+- Holders: ${tokenData.holders || 'N/A'}
+- Risk Score: ${risk?.score || 'N/A'}/10
+- Total Transactions: ${bestPool?.txns?.total?.toLocaleString() || 'N/A'}
+- Buys vs Sells: ${bestPool?.txns?.buys || 0}B / ${bestPool?.txns?.sells || 0}S
+- Market: ${bestPool?.market || 'N/A'}
+- LP Burn: ${bestPool?.lpBurn || 'N/A'}%
+- Security: Freeze Authority ${bestPool?.security?.freezeAuthority ? 'Present' : 'Revoked'}, Mint Authority ${bestPool?.security?.mintAuthority ? 'Present' : 'Revoked'}
+      `;
+    } else if (tokenType === 'ethereum') {
+      // Format Ethereum token data
+      const cgData = tokenData.coingecko;
+      const ethData = tokenData.ethplorer;
+      
+      formattedData = `
+Ethereum Token Analysis for ${cgData?.name || ethData?.name || 'Unknown'}
+
+Token Details:
+- Name: ${cgData?.name || ethData?.name || 'N/A'}
+- Symbol: ${cgData?.symbol || ethData?.symbol || 'N/A'}
+- Market Cap: $${cgData?.market_data?.market_cap?.usd?.toLocaleString() || 'N/A'}
+- Price: $${cgData?.market_data?.current_price?.usd || 'N/A'}
+- 24h Change: ${cgData?.market_data?.price_change_percentage_24h?.toFixed(2) || 'N/A'}%
+- 24h Volume: $${cgData?.market_data?.total_volume?.usd?.toLocaleString() || 'N/A'}
+- Holders: ${ethData?.holdersCount?.toLocaleString() || 'N/A'}
+- Total Supply: ${ethData?.totalSupply || cgData?.market_data?.total_supply || 'N/A'}
+      `;
+    }
+
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        temperature: 0.7,
+        max_tokens: 500,
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a helpful cryptocurrency analyst. Format the provided token data into a comprehensive, engaging analysis that highlights key metrics, potential opportunities, and risks. Use a conversational tone that is professional but accessible to both beginners and experienced traders.'
+          },
+          {
+            role: 'user',
+            content: `Please provide a detailed analysis of this ${tokenType} token based on the following data. The user searched for: "${query}"\n\n${formattedData}\n\nPlease include insights about the market performance, risk factors, and potential investment considerations.`
+          }
+        ]
+      })
     });
 
-    const aiResponse = response.choices[0]?.message?.content || 
-      'I apologize, but I encountered an issue processing your request. Please try asking again.';
+    if (!response.ok) {
+      throw new Error(`OpenAI API error: ${response.status}`);
+    }
 
-    // Additional filter to catch any OpenAI mentions that might slip through
-    const filteredResponse = aiResponse
-      .replace(/OpenAI/gi, 'Lumos AI')
-      .replace(/I'm an AI (language )?model/gi, "I'm Lumos AI")
-      .replace(/As an AI (language )?model/gi, "As Lumos AI")
-      .replace(/GPT-?[0-9]*/gi, 'Lumos AI')
-      .replace(/created by OpenAI/gi, 'your crypto trading assistant');
-
-    return filteredResponse;
-
+    const result = await response.json();
+    return result.choices?.[0]?.message?.content || 'Unable to generate analysis.';
   } catch (error) {
-    console.error('Error generating AI response:', error);
-    return 'I apologize, but I encountered a technical issue while processing your request. Please try again, and I\'ll do my best to help you with your crypto-related questions.';
+    console.error('Error formatting with OpenAI:', error);
+    return 'Unable to generate detailed analysis at this time.';
+  }
+};
+
+// Function to get general AI response
+const getGeneralAIResponse = async (message: string, conversationHistory: any[]) => {
+  const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+  
+  try {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        temperature: 0.7,
+        max_tokens: 300,
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a helpful cryptocurrency trading assistant. You specialize in crypto market analysis, trading strategies, DeFi, blockchain technology, and investment advice. Only respond to cryptocurrency-related questions. If asked about non-crypto topics, politely redirect the conversation back to cryptocurrency.'
+          },
+          ...conversationHistory.slice(-5).map((msg: any) => ({
+            role: msg.isUser ? 'user' : 'assistant',
+            content: msg.content
+          })),
+          {
+            role: 'user',
+            content: message
+          }
+        ]
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`OpenAI API error: ${response.status}`);
+    }
+
+    const result = await response.json();
+    return result.choices?.[0]?.message?.content || 'I apologize, but I encountered an issue. Please try again.';
+  } catch (error) {
+    console.error('Error getting AI response:', error);
+    return 'I\'m experiencing technical difficulties. Please try again later.';
+  }
+};
+
+export async function POST(request: NextRequest) {
+  try {
+    const { message, conversationHistory } = await request.json();
+    
+    if (!message) {
+      return NextResponse.json(
+        { error: 'Message is required' },
+        { status: 400 }
+      );
+    }
+
+    const trimmedMessage = message.trim();
+    
+    // Check if the message is a token address
+    const tokenType = detectTokenType(trimmedMessage);
+    
+    if (tokenType !== 'unknown') {
+      // It's a token address, fetch detailed data
+      let tokenData = null;
+      let aiResponse = '';
+      
+      console.log(`Detected ${tokenType} token address: ${trimmedMessage}`);
+      
+      if (tokenType === 'solana') {
+        tokenData = await fetchSolanaTokenData(trimmedMessage);
+        if (tokenData) {
+          aiResponse = await formatTokenDataWithOpenAI(tokenData, 'solana', trimmedMessage);
+        } else {
+          aiResponse = `I couldn't find data for this Solana token address: **${trimmedMessage}**\n\nThis could be due to:\n• The token is very new and not yet indexed\n• The address might be incorrect\n• API services are temporarily unavailable\n\nPlease verify the address and try again, or search by token name/symbol instead.`;
+        }
+      } else if (tokenType === 'ethereum') {
+        tokenData = await fetchEthereumTokenData(trimmedMessage);
+        if (tokenData && (tokenData.coingecko || tokenData.ethplorer)) {
+          aiResponse = await formatTokenDataWithOpenAI(tokenData, 'ethereum', trimmedMessage);
+        } else {
+          aiResponse = `I couldn't find data for this Ethereum token address: **${trimmedMessage}**\n\nThis could be due to:\n• The token is very new and not yet indexed\n• The address might be incorrect\n• API services are temporarily unavailable\n\nPlease verify the address and try again, or search by token name/symbol instead.`;
+        }
+      }
+      
+      return NextResponse.json({ message: aiResponse });
+    }
+    
+    // Check if it might be a token name or symbol search
+    const searchResults = await searchTokenByNameOrSymbol(trimmedMessage);
+    
+    if (searchResults.length > 0) {
+      // Found potential token matches
+      let searchResponse = `I found ${searchResults.length} token(s) matching "${trimmedMessage}":\n\n`;
+      
+      searchResults.forEach((token: any, index: number) => {
+        searchResponse += `${index + 1}. **${token.name}** (${token.symbol?.toUpperCase()})\n`;
+        searchResponse += `   - ID: ${token.id}\n`;
+        if (token.market_cap_rank) {
+          searchResponse += `   - Market Cap Rank: #${token.market_cap_rank}\n`;
+        }
+        searchResponse += `\n`;
+      });
+      
+      searchResponse += 'Would you like detailed analysis for any of these tokens? Just send me the token\'s contract address!';
+      
+      return NextResponse.json({ message: searchResponse });
+    }
+    
+    // General conversation
+    const aiResponse = await getGeneralAIResponse(trimmedMessage, conversationHistory);
+    
+    return NextResponse.json({ message: aiResponse });
+    
+  } catch (error) {
+    console.error('Error in AI chat API:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }
+
