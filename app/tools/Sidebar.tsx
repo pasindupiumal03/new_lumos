@@ -19,9 +19,7 @@ import { SiSolana } from 'react-icons/si';
 const tools = [
   { id: "Dashboard", label: "Dashboard", href: "/tools/dashboard", icon: <FiHome className="w-5 h-5" /> },
   { id: "AI Chat", label: "AI Chat", href: "/tools/ai-chat", icon: <FiMessageSquare className="w-5 h-5" /> },
-  { id: "MCP Server", label: "MCP Server", href: "/tools/mcp-server", icon: <FiServer className="w-5 h-5" /> },
   { id: "News Sentiment", label: "News Sentiment", href: "/tools/news-sentiment", icon: <FiTrendingUp className="w-5 h-5" /> },
-  { id: "Twitter Tracker", label: "Twitter Tracker", href: "/tools/twitter-tracker", icon: <FiTwitter className="w-5 h-5" /> },
   { id: "ETH Tracker", label: "ETH Tracker", href: "/tools/eth-tracker", icon: <FaEthereum className="w-5 h-5" /> },
   { id: "Solana Eco", label: "Solana Eco", href: "/tools/solana-eco", icon: <SiSolana className="w-5 h-5" /> },
 ];

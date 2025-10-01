@@ -6,11 +6,9 @@ import Link from "next/link";
 
 const toolRoutes: Record<number, string> = {
   1: "/tools/ai-chat",
-  2: "/tools/mcp-server",
-  3: "/tools/news-sentiment",
-  4: "/tools/twitter-tracker",
-  5: "/tools/eth-tracker",
-  6: "/tools/solana-eco",
+  2: "/tools/news-sentiment",
+  3: "/tools/eth-tracker",
+  4: "/tools/solana-eco",
 };
 
 const tools = [
@@ -24,14 +22,6 @@ const tools = [
   },
   {
     id: 2,
-    icon: Server,
-    title: "MCP SERVER",
-    description: "Crypto ticker & sentiment analysis server providing real-time market data and insights.",
-    status: "Live",
-    cta: "Connect",
-  },
-  {
-    id: 3,
     icon: TrendingUp,
     title: "NEWS SENTIMENT ANALYSIS",
     description: "Real-time analysis of market news and social sentiment to inform your decisions.",
@@ -39,15 +29,7 @@ const tools = [
     cta: "Explore",
   },
   {
-    id: 4,
-    icon: Twitter,
-    title: "TWITTER TRACKER",
-    description: "Monitor real-time Twitter activity for trending tokens and market sentiment.",
-    status: "Live",
-    cta: "Track Now",
-  },
-  {
-    id: 5,
+    id: 3,
     icon: Activity,
     title: "ETHEREUM CHAIN TRACKER",
     description: "Comprehensive tracking and analytics for the entire Ethereum ecosystem.",
@@ -55,7 +37,7 @@ const tools = [
     cta: "Analyze",
   },
   {
-    id: 6,
+    id: 4,
     icon: Zap,
     title: "SOLANA ECOSYSTEM",
     description: "Full support for Pump.fun, Raydium, Meteora, and all major Solana platforms.",
