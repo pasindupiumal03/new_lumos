@@ -74,7 +74,7 @@ export default function Sidebar({ selected }: { selected: string }) {
       {/* Overlay */}
       {isOpen && isMobile && (
         <div 
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
           onClick={toggleSidebar}
           aria-hidden="true"
         />
@@ -82,17 +82,17 @@ export default function Sidebar({ selected }: { selected: string }) {
 
       {/* Sidebar */}
       <aside 
-        className={`fixed lg:sticky top-0 left-0 h-screen w-72 bg-gray-900/95 backdrop-blur-lg border-r border-white/10 flex flex-col p-6 transition-all duration-300 z-40 overflow-y-auto ${
+        className={`fixed lg:sticky top-0 left-0 h-screen w-72 bg-black/20 backdrop-blur-md border-r border-white/10 flex flex-col p-6 transition-all duration-300 z-40 overflow-y-auto shadow-2xl ${
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >
         {/* Logo and Close Button (mobile) */}
         <div className="flex items-center justify-between mb-10">
           <div className="pl-2">
-            <span className="font-druk text-3xl bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
+            <span className="text-3xl font-black bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent" style={{fontFamily: 'Impact, sans-serif'}}>
               LUMOS
             </span>
-            <p className="text-xs text-gray-400 mt-1 font-medium tracking-wider">TRADING INTELLIGENCE</p>
+            <p className="text-xs text-white/60 mt-1 font-medium tracking-wider" style={{fontFamily: 'Poppins, sans-serif'}}>TRADING INTELLIGENCE</p>
           </div>
           <button 
             onClick={toggleSidebar}
@@ -105,17 +105,17 @@ export default function Sidebar({ selected }: { selected: string }) {
 
         {/* User Profile */}
         <div 
-          className="flex items-center gap-3 mb-8 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 cursor-pointer"
+          className="flex items-center gap-3 mb-8 p-3 rounded-xl bg-white/5 backdrop-blur-md hover:bg-white/10 transition-all duration-300 cursor-pointer border border-white/10"
           onClick={handleLinkClick}
         >
-          <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center text-white">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center text-white shadow-lg">
             <span className="font-bold">U</span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-medium text-white truncate">Welcome Back</p>
-            <p className="text-xs text-gray-400 truncate">Premium Member</p>
+            <p className="font-medium text-white truncate" style={{fontFamily: 'Poppins, sans-serif'}}>Welcome Back</p>
+            <p className="text-xs text-white/60 truncate" style={{fontFamily: 'Poppins, sans-serif'}}>Premium Member</p>
           </div>
-          <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+          <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-sm"></div>
         </div>
 
         {/* Navigation */}
@@ -126,15 +126,15 @@ export default function Sidebar({ selected }: { selected: string }) {
                 onClick={handleLinkClick}
                 className={`group flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 ${
                   selected === tool.id
-                    ? "bg-gradient-to-r from-pink-500/20 to-purple-600/20 text-white shadow-lg border-l-4 border-pink-500"
-                    : "text-gray-300 hover:bg-white/5 hover:text-white"
+                    ? "bg-white/10 backdrop-blur-md text-white shadow-lg border border-white/20 hover:shadow-[0_0_20px_rgba(91,80,225,0.3)]"
+                    : "text-white/70 hover:bg-white/5 hover:backdrop-blur-md hover:text-white"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <span className={`${selected === tool.id ? 'text-pink-400' : 'text-gray-400'} transition-colors`}>
+                  <span className={`${selected === tool.id ? 'text-pink-400' : 'text-white/60'} transition-colors`}>
                     {tool.icon}
                   </span>
-                  <span className="font-medium">{tool.label}</span>
+                  <span className="font-medium" style={{fontFamily: 'Poppins, sans-serif'}}>{tool.label}</span>
                 </div>
                 <div className="flex items-center">
                   {selected === tool.id && (
@@ -148,12 +148,12 @@ export default function Sidebar({ selected }: { selected: string }) {
         </nav>
 
         {/* Footer */}
-        <div className="mt-auto pt-6 border-t border-white/5">
-          <div className="relative group">
-            <div className="absolute inset-0 bg-gradient-to-r from-pink-500 to-purple-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
+        <div className="mt-auto pt-6 border-t border-white/10">
+          <div className="bg-white/5 backdrop-blur-md border border-white/20 rounded-lg p-4 shadow-lg">
             <button 
-              className="relative w-full bg-black/80 hover:bg-black text-white py-3 px-4 rounded-lg text-sm font-medium transition-all duration-300 flex items-center justify-center gap-2"
+              className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white py-3 px-4 rounded-lg text-sm font-medium transition-all duration-300 flex items-center justify-center gap-2 hover:shadow-lg hover:from-pink-600 hover:to-purple-700"
               onClick={handleLinkClick}
+              style={{fontFamily: 'Poppins, sans-serif'}}
             >
               <FiZap className="w-4 h-4" />
               Upgrade to Pro
