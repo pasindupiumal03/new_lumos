@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { FiSearch, FiExternalLink, FiClock } from 'react-icons/fi';
+import { FiSearch, FiExternalLink, FiClock, FiArrowUp, FiArrowDown, FiCopy } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import Sidebar from '../Sidebar';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
@@ -167,257 +167,261 @@ export default function EthTrackerPage() {
   }, [ethData]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-[#FFEBF5] to-[#F3EFFF] text-[#232323] font-[Montserrat,sans-serif] flex">
+    <div className="flex min-h-screen custom-gradient">
       <Sidebar selected="ETH Tracker" />
-      
-      <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <header className="bg-card border-b border-border py-2">
-          <div className="px-4 sm:px-6">
-            <div className="flex items-center justify-between">
-              <button
-                onClick={() => setIsSidebarOpen(true)}
-                className="lg:hidden p-2 rounded-md text-foreground hover:bg-muted transition-colors"
-              >
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
-              <h1 className="text-4xl font-extrabold bg-gradient-to-r from-[#FF1C8B] via-[#A259FF] to-[#6C38CC] bg-clip-text text-transparent uppercase drop-shadow-lg tracking-tight" style={{letterSpacing:'0.04em'}}>
-                Ethereum Tracker
+
+      <main className="flex-1 px-8 py-12 overflow-auto" style={{fontFamily:'Poppins,sans-serif'}}>
+        {/* Header Section */}
+        <div className="mb-12">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+            <div>
+              <h1 className="font-black text-5xl md:text-7xl tracking-wider text-white leading-tight drop-shadow-xl" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.15em'}}>
+                ETHEREUM <span className="text-[#3b0766]">TRACKER</span>
               </h1>
-              <div className="w-6"></div> {/* Spacer for flex alignment */}
+              <p className="text-lg text-white/70 mt-4 max-w-2xl font-medium" style={{fontFamily:'Poppins,sans-serif'}}>
+                Real-time Ethereum token analytics and market insights.<br/>
+                Track any ERC-20 token with comprehensive data.
+              </p>
             </div>
           </div>
-        </header>
-
-        {/* Main Content */}
-        <main className="flex-1 px-4 sm:px-6 py-4 overflow-auto">
-          {/* Search Bar */}
-          <div className="max-w-3xl mx-auto mb-8">
-            <div className="relative rounded-2xl shadow-lg">
+          <div className="h-1 w-20 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full mt-4 mb-6" />
+        </div>
+        {/* Search Bar */}
+        <div className="max-w-4xl mx-auto mb-12">
+          <div className="bg-white/5 backdrop-blur-md border-2 border-t-white/30 border-r-white/10 border-b-white/10 border-l-white/10 rounded-3xl shadow-2xl p-8">
+            <h2 className="text-2xl font-black text-white tracking-wider flex items-center gap-3 mb-6" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.12em'}}>
+              <span className="w-3 h-6 bg-[#3b0766] rounded-full inline-block"></span>
+              TOKEN SEARCH
+            </h2>
+            <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <FiSearch className="h-6 w-6 text-[#A259FF]" />
+                <FiSearch className="h-6 w-6 text-white/50" />
               </div>
               <input
                 type="text"
-                className="block w-full pl-12 pr-32 py-4 border-2 border-[#F1E3F6] bg-white/90 rounded-2xl text-lg font-medium focus:ring-2 focus:ring-[#FF1C8B]/40 focus:border-[#A259FF] transition-colors placeholder-[#A259FF]/70"
-                placeholder="Enter Ethereum token address..."
+                className="w-full pl-12 pr-32 py-4 border-2 border-white/10 rounded-2xl bg-white/5 backdrop-blur-md focus:ring-2 focus:ring-[#5B50E1] focus:border-[#5B50E1] outline-none text-white placeholder-white/50 shadow-xl transition-all text-lg font-medium"
+                placeholder="Enter Ethereum token address (0x...)" 
                 value={tokenAddress}
                 onChange={(e) => setTokenAddress(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && tokenAddress.trim() && fetchData(tokenAddress)}
                 disabled={tokenLoading}
-                style={{fontFamily:'Montserrat,sans-serif'}}
+                style={{fontFamily:'Poppins,sans-serif'}}
               />
               <button
                 onClick={() => tokenAddress.trim() && fetchData(tokenAddress)}
                 disabled={!tokenAddress.trim() || tokenLoading}
-                className="absolute inset-y-0 right-0 px-8 flex items-center bg-gradient-to-r from-[#FF1C8B] via-[#A259FF] to-[#6C38CC] text-white font-bold rounded-r-2xl text-lg shadow hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                style={{fontFamily:'Montserrat,sans-serif'}}
+                className="absolute inset-y-0 right-0 px-8 flex items-center gradient-button text-white font-bold rounded-r-2xl text-lg shadow-xl hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                style={{fontFamily:'Poppins,sans-serif'}}
               >
-                {tokenLoading ? 'Searching...' : 'Search'}
+                {tokenLoading ? 'Searching...' : 'Search Token'}
               </button>
             </div>
           </div>
+        </div>
 
-          {loading ? (
-            <div className="flex justify-center items-center py-16">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-            </div>
-          ) : ethData ? (
-            <div className="max-w-7xl mx-auto space-y-6">
-              {/* Token Details */}
-              {ethData.tokenData && !ethData.tokenData.error && (
-                <Card className="glass-card border-primary/30 glow-primary mt-6">
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="flex items-center gap-3">
-                        <div className="relative">
-                          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/20 to-accent/20 blur-sm"></div>
-                          {ethData.tokenData.logo ? (
-                            <Image
-                              src={ethData.tokenData.logo}
-                              alt={ethData.tokenData.name}
-                              width={48}
-                              height={48}
-                              className="rounded-full relative z-10 border-2 border-primary/30"
-                            />
-                          ) : (
-                            <div className="w-12 h-12 rounded-full relative z-10 border-2 border-primary/30 bg-gradient-to-r from-primary/20 to-accent/20 flex items-center justify-center">
-                              <span className="text-sm font-bold text-primary">
-                                {ethData.tokenData.symbol?.slice(0, 2) || "??"}
-                              </span>
-                            </div>
-                          )}
-                          {/* Verified badge (optional) */}
-                        </div>
-                        <div>
-                          <h3 className="gradient-text text-xl font-bold">{ethData.tokenData.name}</h3>
-                          <p className="text-sm text-muted-foreground">{ethData.tokenData.symbol}</p>
-                        </div>
-                      </CardTitle>
-                    </div>
-                  </CardHeader>
-
-                  <CardContent className="space-y-6">
-                    {/* Price and Changes */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <Card className="glass-card border-primary/20">
-                        <CardContent className="p-4">
-                          <div className="flex items-center gap-2 mb-2">
-                            {/* <DollarSign className="h-4 w-4 text-primary" /> */}
-                            <span className="text-sm text-muted-foreground">Current Price</span>
-                          </div>
-                          <p className="text-2xl font-bold gradient-text">{ethData.tokenData.price ? `$${Number(ethData.tokenData.price).toFixed(6)}` : 'N/A'}</p>
-                        </CardContent>
-                      </Card>
-                      <Card className="glass-card border-primary/20">
-                        <CardContent className="p-4">
-                          <div className="flex items-center gap-2 mb-2">
-                            {/* <Clock className="h-4 w-4 text-accent" /> */}
-                            <span className="text-sm text-muted-foreground">24h Change</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            {/* <TrendIcon24h ... /> */}
-                            <p className={`text-lg font-semibold ${
-                              typeof ethData.tokenData.change24h === 'number' && ethData.tokenData.change24h > 0
-                                ? 'text-green-400'
-                                : 'text-red-400'
-                            }`}>
-                              {typeof ethData.tokenData.change24h === 'number'
-                                ? `${ethData.tokenData.change24h > 0 ? '+' : ''}${ethData.tokenData.change24h.toFixed(2)}%`
-                                : 'N/A'}
-                            </p>
-                          </div>
-                        </CardContent>
-                      </Card>
-                      <Card className="glass-card border-primary/20">
-                        <CardContent className="p-4">
-                          <div className="flex items-center gap-2 mb-2">
-                            {/* <BarChart3 className="h-4 w-4 text-accent" /> */}
-                            <span className="text-sm text-muted-foreground">Market Cap</span>
-                          </div>
-                          <p className="text-xl font-bold text-foreground">{ethData.tokenData.marketCap ? formatCurrency(ethData.tokenData.marketCap) : 'N/A'}</p>
-                        </CardContent>
-                      </Card>
-                    </div>
-
-                    {/* Market Stats */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Card className="glass-card border-primary/20">
-                        <CardContent className="p-4">
-                          <div className="flex items-center gap-2 mb-2">
-                            {/* <TrendingUp className="h-4 w-4 text-primary" /> */}
-                            <span className="text-sm text-muted-foreground">Volume (24h)</span>
-                          </div>
-                          <p className="text-xl font-bold text-foreground">{ethData.tokenData.volume24h ? formatCurrency(ethData.tokenData.volume24h) : 'N/A'}</p>
-                        </CardContent>
-                      </Card>
-                      <Card className="glass-card border-primary/20">
-                        <CardContent className="p-4">
-                          <div className="flex items-center gap-2 mb-2">
-                            {/* <Users className="h-4 w-4 text-primary" /> */}
-                            <span className="text-sm text-muted-foreground">Holders</span>
-                          </div>
-                          <p className="text-xl font-bold text-foreground">{ethData.tokenData.holders ? formatNumber(ethData.tokenData.holders) : 'N/A'}</p>
-                        </CardContent>
-                      </Card>
-                    </div>
-
-                    {/* Actions */}
-                    <div className="flex gap-3">
-                      <Button
-                        variant="default"
-                        onClick={() => window.open(`https://etherscan.io/token/${ethData.tokenData.address}`, '_blank')}
-                        className="glass-button hover:glow-primary bg-gradient-to-r from-primary/20 to-accent/20 flex-1"
-                      >
-                        {/* <ExternalLink className="h-4 w-4 mr-2" /> */}
-                        View on Etherscan
-                      </Button>
-                      <Button
-                        variant="outline"
-                        onClick={() => navigator.clipboard.writeText(ethData.tokenData.address)}
-                        className="glass-button hover:glow-accent"
-                      >
-                        Copy Address
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* Token Error */}
-              {ethData.tokenData && ethData.tokenData.error && (
-                <div className="bg-card border border-red-200 rounded-xl p-6 shadow-sm">
-                  <div className="text-center">
-                    <div className="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-red-100 text-red-600 mb-4">
-                      <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                      </svg>
-                    </div>
-                    <h3 className="text-lg font-medium text-red-600 mb-2">Token Not Found</h3>
-                    <p className="text-muted-foreground">{ethData.tokenData.error}</p>
+        {loading ? (
+          <div className="text-center py-12 text-lg text-white/60 font-bold" style={{fontFamily:'Poppins,sans-serif'}}>
+            Loading ethereum data...
+          </div>
+        ) : ethData ? (
+          <div className="max-w-7xl mx-auto space-y-8">
+            {/* Token Details */}
+            {ethData.tokenData && !ethData.tokenData.error && (
+              <div className="bg-white/5 backdrop-blur-md border-2 border-t-white/30 border-r-white/10 border-b-white/10 border-l-white/10 rounded-3xl shadow-2xl p-10">
+                <div className="flex items-center gap-6 mb-8 pb-6 border-b border-white/20">
+                  <div className="relative">
+                    {ethData.tokenData.logo ? (
+                      <Image
+                        src={ethData.tokenData.logo}
+                        alt={ethData.tokenData.name}
+                        width={64}
+                        height={64}
+                        className="rounded-full border-4 border-white/20 shadow-xl"
+                      />
+                    ) : (
+                      <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm border-4 border-white/20 shadow-xl flex items-center justify-center">
+                        <span className="text-lg font-bold text-white">
+                          {ethData.tokenData.symbol?.slice(0, 2) || "??"}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-3xl font-bold text-white mb-2" style={{fontFamily:'Poppins,sans-serif'}}>
+                      {ethData.tokenData.name}
+                    </h3>
+                    <p className="text-lg text-white/70 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>
+                      {ethData.tokenData.symbol}
+                    </p>
                   </div>
                 </div>
-              )}
 
-              {/* Trending Tokens */}
-              {ethData.trendingTokens && ethData.trendingTokens.length > 0 && (
-                <div className="bg-gradient-to-br from-[#F3EFFF]/80 to-[#FFEBF5]/90 border-2 border-[#F1E3F6] rounded-3xl p-8 shadow-lg">
-                  <h2 className="text-xl font-extrabold bg-gradient-to-r from-[#FF1C8B] via-[#A259FF] to-[#6C38CC] bg-clip-text text-transparent uppercase tracking-tight mb-4" style={{letterSpacing:'0.04em',fontFamily:'Montserrat,sans-serif'}}>Trending ETH Tokens (24h)</h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {ethData.trendingTokens.map((token: any) => (
-                      <div key={token.tokenAddress} className="bg-white rounded-2xl p-6 shadow-lg flex flex-col items-center hover:scale-105 transition-transform border-2 border-[#F1E3F6] group">
-                        <img src={token.logo} alt={token.name} className="w-12 h-12 rounded-full mb-2 border-4 border-[#FFEBF5] group-hover:border-[#FF1C8B] transition-all" />
-                        <span className ="text-lg font-bold text-[#232323] mb-1" style={{fontFamily:'Montserrat,sans-serif'}}>{token.name}</span>
-                        <span className ="text-xs font-semibold text-[#A259FF] bg-[#F3EFFF] px-2 py-1 rounded-full mb-2 uppercase tracking-wide">{token.symbol}</span>
-                        <span className ="text-xl font-extrabold text-[#FF1C8B]">${Number(token.usdPrice).toFixed(6)}</span>
-                        <span className ={`text-sm font-mono mt-1 ${token.pricePercentChange['24h'] > 0 ? 'text-green-600' : token.pricePercentChange['24h'] < 0 ? 'text-red-600' : 'text-gray-600'}`}>
+                {/* Price and Changes */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                  <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all">
+                    <div className="flex items-center gap-2 mb-3">
+                      <FiClock className="h-5 w-5 text-[#5B50E1]" />
+                      <span className="text-sm text-white/70 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>Current Price</span>
+                    </div>
+                    <p className="text-3xl font-black text-white" style={{fontFamily:'Poppins,sans-serif'}}>
+                      {ethData.tokenData.price ? `$${Number(ethData.tokenData.price).toFixed(6)}` : 'N/A'}
+                    </p>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all">
+                    <div className="flex items-center gap-2 mb-3">
+                      {typeof ethData.tokenData.change24h === 'number' && ethData.tokenData.change24h > 0 ? (
+                        <FiArrowUp className="h-5 w-5 text-green-400" />
+                      ) : (
+                        <FiArrowDown className="h-5 w-5 text-red-400" />
+                      )}
+                      <span className="text-sm text-white/70 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>24h Change</span>
+                    </div>
+                    <p className={`text-3xl font-black ${
+                      typeof ethData.tokenData.change24h === 'number' && ethData.tokenData.change24h > 0
+                        ? 'text-green-400'
+                        : 'text-red-400'
+                    }`} style={{fontFamily:'Poppins,sans-serif'}}>
+                      {typeof ethData.tokenData.change24h === 'number'
+                        ? `${ethData.tokenData.change24h > 0 ? '+' : ''}${ethData.tokenData.change24h.toFixed(2)}%`
+                        : 'N/A'}
+                    </p>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all">
+                    <div className="flex items-center gap-2 mb-3">
+                      <FiExternalLink className="h-5 w-5 text-[#5B50E1]" />
+                      <span className="text-sm text-white/70 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>Market Cap</span>
+                    </div>
+                    <p className="text-3xl font-black text-white" style={{fontFamily:'Poppins,sans-serif'}}>
+                      {ethData.tokenData.marketCap ? formatCurrency(ethData.tokenData.marketCap) : 'N/A'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Market Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                  <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all">
+                    <div className="flex items-center gap-2 mb-3">
+                      <FiArrowUp className="h-5 w-5 text-[#5B50E1]" />
+                      <span className="text-sm text-white/70 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>Volume (24h)</span>
+                    </div>
+                    <p className="text-2xl font-black text-white" style={{fontFamily:'Poppins,sans-serif'}}>
+                      {ethData.tokenData.volume24h ? formatCurrency(ethData.tokenData.volume24h) : 'N/A'}
+                    </p>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all">
+                    <div className="flex items-center gap-2 mb-3">
+                      <FiCopy className="h-5 w-5 text-[#5B50E1]" />
+                      <span className="text-sm text-white/70 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>Holders</span>
+                    </div>
+                    <p className="text-2xl font-black text-white" style={{fontFamily:'Poppins,sans-serif'}}>
+                      {ethData.tokenData.holders ? formatNumber(ethData.tokenData.holders) : 'N/A'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => window.open(`https://etherscan.io/token/${ethData.tokenData.address}`, '_blank')}
+                    className="flex-1 gradient-button text-white px-8 py-4 rounded-2xl font-bold shadow-xl hover:shadow-2xl transition-all text-lg flex items-center justify-center gap-3"
+                    style={{fontFamily:'Poppins,sans-serif'}}
+                  >
+                    <FiExternalLink className="w-5 h-5" />
+                    View on Etherscan
+                  </button>
+                  <button
+                    onClick={() => navigator.clipboard.writeText(ethData.tokenData.address)}
+                    className="bg-white/10 text-white/70 hover:bg-white/20 hover:text-white px-8 py-4 rounded-2xl font-bold transition-all text-lg flex items-center gap-3 border border-white/20"
+                    style={{fontFamily:'Poppins,sans-serif'}}
+                  >
+                    <FiCopy className="w-5 h-5" />
+                    Copy Address
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Token Error */}
+            {ethData.tokenData && ethData.tokenData.error && (
+              <div className="bg-white/5 backdrop-blur-md border-2 border-red-500/30 rounded-3xl shadow-2xl p-10 text-center">
+                <div className="mx-auto h-16 w-16 flex items-center justify-center rounded-full bg-red-500/20 text-red-400 mb-6">
+                  <svg className="h-8 w-8" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-red-400 mb-4" style={{fontFamily:'Poppins,sans-serif'}}>Token Not Found</h3>
+                <p className="text-white/70" style={{fontFamily:'Poppins,sans-serif'}}>{ethData.tokenData.error}</p>
+              </div>
+            )}
+
+            {/* Trending Tokens */}
+            {ethData.trendingTokens && ethData.trendingTokens.length > 0 && (
+              <div className="bg-white/5 backdrop-blur-md border-2 border-t-white/30 border-r-white/10 border-b-white/10 border-l-white/10 rounded-3xl shadow-2xl p-10">
+                <h2 className="text-3xl font-black text-white tracking-wider flex items-center gap-3 mb-8" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.12em'}}>
+                  <span className="w-3 h-8 bg-[#3b0766] rounded-full inline-block"></span>
+                  TRENDING ETH TOKENS (24H)
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {ethData.trendingTokens.map((token: any) => (
+                    <div key={token.tokenAddress} className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-xl hover:shadow-2xl hover:bg-white/15 transition-all group cursor-pointer">
+                      <div className="flex flex-col items-center text-center">
+                        <img src={token.logo} alt={token.name} className="w-16 h-16 rounded-full mb-4 border-2 border-white/20 group-hover:border-[#5B50E1] transition-all shadow-lg" />
+                        <h3 className="text-lg font-bold text-white mb-2" style={{fontFamily:'Poppins,sans-serif'}}>{token.name}</h3>
+                        <span className="text-xs font-bold text-white/70 bg-white/10 px-3 py-1 rounded-full mb-3 uppercase tracking-wide" style={{fontFamily:'Poppins,sans-serif'}}>{token.symbol}</span>
+                        <p className="text-xl font-black text-[#5B50E1] mb-2" style={{fontFamily:'Poppins,sans-serif'}}>${Number(token.usdPrice).toFixed(6)}</p>
+                        <span className={`text-sm font-bold px-3 py-1 rounded-full ${
+                          token.pricePercentChange['24h'] > 0 ? 'bg-green-100 text-green-800' : 
+                          token.pricePercentChange['24h'] < 0 ? 'bg-red-100 text-red-800' : 
+                          'bg-blue-100 text-blue-800'
+                        }`} style={{fontFamily:'Poppins,sans-serif'}}>
                           {token.pricePercentChange['24h'] > 0 ? '+' : ''}{token.pricePercentChange['24h']?.toFixed(2)}%
                         </span>
-                        <p className="text-sm font-mono mt-1">Volume (24h): ${token.totalVolume['24h'] ? token.totalVolume['24h'].toLocaleString() : 'N/A'}</p>
+                        <p className="text-xs text-white/60 mt-3 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>
+                          Volume: ${token.totalVolume['24h'] ? token.totalVolume['24h'].toLocaleString() : 'N/A'}
+                        </p>
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
                 </div>
-              )}
-            </div>
-          ) : (
-            <div className="text-center py-16">
-              <div className="mx-auto h-20 w-20 flex items-center justify-center rounded-full bg-gradient-to-br from-[#FFEBF5] to-[#A259FF]/20 text-[#FF1C8B] mb-4 shadow-lg">
-                <svg className="h-8 w-8" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z" />
-                </svg>
               </div>
-              <h3 className="text-2xl font-extrabold bg-gradient-to-r from-[#FF1C8B] via-[#A259FF] to-[#6C38CC] bg-clip-text text-transparent uppercase drop-shadow-lg tracking-tight" style={{letterSpacing:'0.04em',fontFamily:'Montserrat,sans-serif'}}>Ethereum Token Tracker</h3>
-              <p className="text-muted-foreground mt-1 max-w-md mx-auto">
-                Enter an Ethereum token address to view detailed token information, or browse trending tokens above
-              </p>
+            )}
+          </div>
+        ) : (
+          <div className="bg-white/5 backdrop-blur-md border-2 border-t-white/30 border-r-white/10 border-b-white/10 border-l-white/10 rounded-3xl shadow-2xl p-16 text-center">
+            <div className="mx-auto h-24 w-24 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-sm border-2 border-white/20 text-[#5B50E1] mb-8 shadow-xl">
+              <svg className="h-12 w-12" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z" />
+              </svg>
             </div>
-          )}
-          
-          {/* Etherscan Banner */}
-          <div className="mt-8 max-w-4xl mx-auto w-full group relative">
-            <div className="rounded-lg overflow-hidden shadow-md border border-border relative">
-              <div className="relative">
-                <Image 
-                  src="/etherscan-social.jpg" 
-                  alt="Ethereum Blockchain Explorer"
-                  width={1200}
-                  height={300}
-                  className="w-full h-auto object-cover transition-all duration-300 group-hover:blur-sm group-hover:brightness-75"
-                  priority
-                />
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <span className="text-white text-lg font-medium bg-black/60 px-4 py-2 rounded-lg backdrop-blur-sm">
-                    Powered by Etherscan.io
-                  </span>
+            <h3 className="text-3xl font-bold text-white mb-4" style={{fontFamily:'Poppins,sans-serif'}}>Ready to Track Tokens</h3>
+            <p className="text-white/70 text-lg max-w-md mx-auto" style={{fontFamily:'Poppins,sans-serif'}}>
+              Enter an Ethereum token address above to view detailed analytics, market data, and trading insights.
+            </p>
+          </div>
+        )}
+        
+        {/* Etherscan Banner */}
+        <div className="mt-12 max-w-6xl mx-auto">
+          <div className="bg-white/5 backdrop-blur-md border-2 border-t-white/30 border-r-white/10 border-b-white/10 border-l-white/10 rounded-3xl shadow-2xl overflow-hidden group hover:shadow-[0_0_50px_rgba(91,80,225,0.3)] transition-all duration-300">
+            <div className="relative">
+              <Image 
+                src="/etherscan-social.jpg" 
+                alt="Ethereum Blockchain Explorer"
+                width={1200}
+                height={300}
+                className="w-full h-64 object-cover transition-all duration-300 group-hover:scale-105"
+                priority
+              />
+              <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                <div className="text-center">
+                  <h4 className="text-white text-2xl font-bold mb-2" style={{fontFamily:'Poppins,sans-serif'}}>Powered by Etherscan.io</h4>
+                  <p className="text-white/80" style={{fontFamily:'Poppins,sans-serif'}}>The Ethereum Blockchain Explorer</p>
                 </div>
               </div>
             </div>
           </div>
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
   );
 }
