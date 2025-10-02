@@ -330,6 +330,31 @@
   box-shadow: 0 4px 12px rgba(236, 72, 153, 0.15), 0 2px 6px rgba(236, 72, 153, 0.2);
 }
 
+/* Custom gradient background - dark purple center to black edges */
+.custom-gradient {
+  background: radial-gradient(ellipse at center, #220C34 0%, #1D0C2F 20%, #160825 40%, #0C071B 70%, #000000 100%);
+}
+
+/* Multi-color gradient button */
+.gradient-button {
+  background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 25%, #EC4899 50%, #F97316 75%, #EF4444 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+  transition: all 0.3s ease;
+}
+
+.gradient-button:hover {
+  background-position: 100% 100%;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3), 0 5px 15px rgba(139, 92, 246, 0.2);
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 /* Custom animations */
 @keyframes glow {
   0%,
