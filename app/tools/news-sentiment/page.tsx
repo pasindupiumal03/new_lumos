@@ -11,6 +11,9 @@ import {
   FiExternalLink,
   FiClock,
 } from "react-icons/fi";
+import { RiSearchEyeLine } from "react-icons/ri";
+import { FcPositiveDynamic, FcNegativeDynamic } from "react-icons/fc";
+import { GiNewspaper } from "react-icons/gi";
 import { FaBitcoin, FaEthereum } from "react-icons/fa";
 import { SiSolana } from "react-icons/si";
 import {
@@ -189,171 +192,185 @@ export default function NewsSentiment() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-white via-[#FFEBF5] to-[#F3EFFF] font-[Montserrat,sans-serif] text-[#232323]">
+    <div className="flex min-h-screen custom-gradient">
       <Sidebar selected="News Sentiment" />
 
-      <main className="flex-1 p-8 overflow-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
-          <div>
-            <h1
-              className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-[#FF1C8B] via-[#A259FF] to-[#6C38CC] bg-clip-text text-transparent uppercase drop-shadow-lg mb-2"
-              style={{ letterSpacing: "0.04em" }}
-            >
-              News Sentiment Analysis
-            </h1>
-            <p className="text-base text-[#A259FF] font-medium">
-              Track market sentiment across crypto & US market news sources
-            </p>
-          </div>
+      <main className="flex-1 px-8 py-12 overflow-auto" style={{fontFamily:'Poppins,sans-serif'}}>
+        <div className="mb-12">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+            <div>
+              <h1 className="font-black text-5xl md:text-7xl tracking-wider text-white leading-tight drop-shadow-xl" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.15em'}}>
+                NEWS <span className="text-[#3b0766]">SENTIMENT</span>
+              </h1>
+              <p className="text-lg text-white/70 mt-4 max-w-2xl font-medium" style={{fontFamily:'Poppins,sans-serif'}}>
+                Track market sentiment across crypto & US market news sources.<br/>
+                Real-time analysis for informed trading decisions.
+              </p>
+            </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-            <div className="relative flex-1 max-w-md">
-              <div className="relative">
-                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                <Input
-                  type="text"
-                  placeholder={
-                    category === "crypto"
-                      ? "Search crypto news or keywords (e.g., BTC,ETH,SOL)"
-                      : "Search US market news or keywords (e.g., Fed,TESLA,NVIDIA)"
-                  }
-                  className="pl-9 bg-background/80 border-border/50 focus-visible:ring-primary/50"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
+            <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+              <div className="relative flex-1 max-w-md">
+                <div className="relative">
+                  <RiSearchEyeLine className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/70 h-6 w-6" />
+                  <input
+                    type="text"
+                    placeholder={
+                      category === "crypto"
+                        ? "Search crypto news or keywords (e.g., BTC,ETH,SOL)"
+                        : "Search US market news or keywords (e.g., Fed,TESLA,NVIDIA)"
+                    }
+                    className="w-full pl-12 pr-4 py-3 border-2 border-white/10 rounded-2xl bg-white/5 backdrop-blur-md focus:ring-2 focus:ring-[#5B50E1] focus:border-[#5B50E1] outline-none text-white placeholder-white/50 shadow-xl transition-all"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    style={{fontFamily:'Poppins,sans-serif'}}
+                  />
+                </div>
+              </div>
+
+              <div className="w-[200px]">
+                <select
+                  value={selectedSentiment}
+                  onChange={(e) => setSelectedSentiment(e.target.value as Sentiment)}
+                  className="w-full px-4 py-3 border-2 border-white/10 rounded-2xl bg-white/5 backdrop-blur-md focus:ring-2 focus:ring-[#5B50E1] focus:border-[#5B50E1] outline-none text-white shadow-xl transition-all"
+                  style={{fontFamily:'Poppins,sans-serif', backgroundColor: 'rgba(255,255,255,0.05)'}}
+                >
+                  <option value="all" style={{backgroundColor: 'rgba(20,20,30,0.95)', color: 'white'}}>All Sentiments</option>
+                  <option value="positive" style={{backgroundColor: 'rgba(20,20,30,0.95)', color: 'white'}}>Positive</option>
+                  <option value="negative" style={{backgroundColor: 'rgba(20,20,30,0.95)', color: 'white'}}>Negative</option>
+                  <option value="neutral" style={{backgroundColor: 'rgba(20,20,30,0.95)', color: 'white'}}>Neutral</option>
+                </select>
               </div>
             </div>
-
-            <div className="w-[180px]">
-              <Select
-                value={selectedSentiment}
-                onValueChange={(value) => setSelectedSentiment(value as Sentiment)}
-              >
-                <SelectTrigger className="bg-background/80 border-border/50">
-                  <SelectValue placeholder="Filter by sentiment" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Sentiments</SelectItem>
-                  <SelectItem value="positive" className="text-green-600">Positive</SelectItem>
-                  <SelectItem value="negative" className="text-red-600">Negative</SelectItem>
-                  <SelectItem value="neutral"  className="text-amber-600">Neutral</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
           </div>
+          <div className="h-1 w-20 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full mt-4 mb-6" />
         </div>
 
         {/* Tabs */}
-        <div className="mb-6 flex items-center gap-2">
-          <Button
-            variant={category === "crypto" ? "default" : "outline"}
+        <div className="mb-8 flex items-center gap-4">
+          <button
             onClick={() => { setCategory("crypto"); setQuickFilter(""); }}
-            className={cn("rounded-full px-4")}
+            className={`px-6 py-2 rounded-xl font-bold text-lg transition-all focus:outline-none ${
+              category === "crypto"
+                ? "gradient-button text-white shadow-lg"
+                : "bg-white/10 text-white/70 hover:bg-white/20 border border-white/20"
+            }`}
+            style={{fontFamily:'Poppins,sans-serif'}}
           >
-            Crypto
-          </Button>
-          <Button
-            variant={category === "us" ? "default" : "outline"}
+            Crypto News
+          </button>
+          <button
             onClick={() => { setCategory("us"); setQuickFilter(""); }}
-            className={cn("rounded-full px-4")}
+            className={`px-6 py-2 rounded-xl font-bold text-lg transition-all focus:outline-none ${
+              category === "us"
+                ? "gradient-button text-white shadow-lg"
+                : "bg-white/10 text-white/70 hover:bg-white/20 border border-white/20"
+            }`}
+            style={{fontFamily:'Poppins,sans-serif'}}
           >
             US Markets
-          </Button>
+          </button>
 
           {/* Quick chips for the active tab */}
-          <div className="ml-4 flex gap-2">
+          <div className="ml-4 flex gap-3">
             {QUICK_CHIPS[category].map((c) => (
-              <Badge
+              <button
                 key={c}
                 onClick={() => setQuickFilter((prev) => (prev === c ? "" : c))}
-                className={cn(
-                  "cursor-pointer rounded-full px-3 py-1",
-                  quickFilter === c ? "bg-[#A259FF] text-white" : "bg-[#F1E3F6] text-[#6C38CC]"
-                )}
+                className={`cursor-pointer rounded-full px-4 py-2 font-semibold text-sm transition-all ${
+                  quickFilter === c ? "bg-[#5B50E1] text-white shadow-lg" : "bg-white/10 text-white/70 hover:bg-white/20 border border-white/20"
+                }`}
+                style={{fontFamily:'Poppins,sans-serif'}}
               >
                 {c}
-              </Badge>
+              </button>
             ))}
           </div>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          <Card className="bg-gradient-to-br from-[#F3EFFF]/80 to-[#FFEBF5]/90 border-2 border-[#F1E3F6] shadow-lg rounded-3xl">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-base font-bold text-[#FF1C8B]">Positive Sentiment</CardTitle>
-              <div className="h-5 w-5 text-green-500">
-                <FiArrowUp className="h-5 w-5" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-extrabold">
-                {filteredNews.filter((n) => n.sentiment === "positive").length}
-              </div>
-              <p className="text-xs text-[#A259FF] font-medium">Updated on refresh</p>
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <div className="bg-white/5 backdrop-blur-md border-2 border-t-white/30 border-r-white/10 border-b-white/10 border-l-white/10 rounded-3xl shadow-2xl px-9 py-10 flex flex-col items-center justify-center hover:shadow-[0_0_50px_rgba(91,80,225,0.3)] hover:border-t-[#5B50E1]/50 transition-all duration-300">
+            <div className="text-5xl mb-4 drop-shadow-sm">
+              <FcPositiveDynamic className="w-12 h-12" />
+            </div>
+            <div className="text-3xl font-black text-white mb-2 tracking-tight" style={{fontFamily:'Poppins,sans-serif'}}>
+              {filteredNews.filter((n) => n.sentiment === "positive").length}
+            </div>
+            <div className="text-xs font-bold text-white/60 uppercase tracking-widest text-center" style={{fontFamily:'Poppins,sans-serif'}}>
+              Positive Sentiment
+            </div>
+          </div>
 
-          <Card className="bg-gradient-to-br from-[#F3EFFF]/80 to-[#FFEBF5]/90 border-2 border-[#F1E3F6] shadow-lg rounded-3xl">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-base font-bold text-[#FF1C8B]">Negative Sentiment</CardTitle>
-              <div className="h-5 w-5 text-red-500">
-                <FiArrowDown className="h-5 w-5" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-extrabold">
-                {filteredNews.filter((n) => n.sentiment === "negative").length}
-              </div>
-              <p className="text-xs text-[#A259FF] font-medium">Updated on refresh</p>
-            </CardContent>
-          </Card>
+          <div className="bg-white/5 backdrop-blur-md border-2 border-t-white/30 border-r-white/10 border-b-white/10 border-l-white/10 rounded-3xl shadow-2xl px-9 py-10 flex flex-col items-center justify-center hover:shadow-[0_0_50px_rgba(91,80,225,0.3)] hover:border-t-[#5B50E1]/50 transition-all duration-300">
+            <div className="text-5xl mb-4 drop-shadow-sm">
+              <FcNegativeDynamic className="w-12 h-12" />
+            </div>
+            <div className="text-3xl font-black text-white mb-2 tracking-tight" style={{fontFamily:'Poppins,sans-serif'}}>
+              {filteredNews.filter((n) => n.sentiment === "negative").length}
+            </div>
+            <div className="text-xs font-bold text-white/60 uppercase tracking-widest text-center" style={{fontFamily:'Poppins,sans-serif'}}>
+              Negative Sentiment
+            </div>
+          </div>
 
-          <Card className="bg-gradient-to-br from-[#F3EFFF]/80 to-[#FFEBF5]/90 border-2 border-[#F1E3F6] shadow-lg rounded-3xl">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-base font-bold text-[#FF1C8B]">Total Articles</CardTitle>
-              <FiClock className="h-5 w-5 text-[#A259FF]" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-extrabold">{filteredNews.length}</div>
-              <p className="text-xs text-[#A259FF] font-medium">Fetched this load</p>
-            </CardContent>
-          </Card>
+          <div className="bg-white/5 backdrop-blur-md border-2 border-t-white/30 border-r-white/10 border-b-white/10 border-l-white/10 rounded-3xl shadow-2xl px-9 py-10 flex flex-col items-center justify-center hover:shadow-[0_0_50px_rgba(91,80,225,0.3)] hover:border-t-[#5B50E1]/50 transition-all duration-300">
+            <div className="text-5xl mb-4 drop-shadow-sm">
+              <GiNewspaper className="w-12 h-12 text-blue-400" />
+            </div>
+            <div className="text-3xl font-black text-white mb-2 tracking-tight" style={{fontFamily:'Poppins,sans-serif'}}>
+              {filteredNews.length}
+            </div>
+            <div className="text-xs font-bold text-white/60 uppercase tracking-widest text-center" style={{fontFamily:'Poppins,sans-serif'}}>
+              Total Articles
+            </div>
+          </div>
         </div>
 
         {/* News Feed */}
-        <Card className="bg-background/80 backdrop-blur-sm border-border/50">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-lg font-medium">Latest {category === "crypto" ? "Crypto" : "US Market"} News</CardTitle>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={handlePrevPage} disabled={currentPage === 1 || isLoading} className="h-8 w-8 p-0">
-                <FiChevronLeft className="h-4 w-4" />
-              </Button>
-              <span className="text-sm text-muted-foreground">
+        <div className="bg-white/5 backdrop-blur-md border-2 border-t-white/30 border-r-white/10 border-b-white/10 border-l-white/10 rounded-3xl shadow-2xl p-10 mb-12">
+          <div className="flex items-center gap-4 mb-8">
+            <h2 className="text-3xl font-black text-white tracking-wider flex items-center gap-3 mb-0" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.12em'}}>
+              <span className="w-3 h-8 bg-[#3b0766] rounded-full inline-block"></span>
+              LATEST {category === "crypto" ? "CRYPTO" : "US MARKET"} NEWS
+            </h2>
+            <div className="ml-auto flex items-center gap-3">
+              <button
+                onClick={handlePrevPage}
+                disabled={currentPage === 1 || isLoading}
+                className="p-2 rounded-xl bg-white/10 text-white/70 hover:bg-white/20 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              >
+                <FiChevronLeft className="h-5 w-5" />
+              </button>
+              <span className="text-sm text-white/60 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>
                 Page {currentPage} of {totalPages}
               </span>
-              <Button variant="outline" size="sm" onClick={handleNextPage} disabled={currentPage >= totalPages || isLoading} className="h-8 w-8 p-0">
-                <FiChevronRight className="h-4 w-4" />
-              </Button>
+              <button
+                onClick={handleNextPage}
+                disabled={currentPage >= totalPages || isLoading}
+                className="p-2 rounded-xl bg-white/10 text-white/70 hover:bg-white/20 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              >
+                <FiChevronRight className="h-5 w-5" />
+              </button>
             </div>
-          </CardHeader>
-          <CardContent>
+          </div>
+          <div>
             {isLoading ? (
-              <div className="text-center py-12 text-muted-foreground">Loading news articles...</div>
+              <div className="text-center py-12 text-lg text-white/60 font-bold" style={{fontFamily:'Poppins,sans-serif'}}>Loading news articles...</div>
             ) : error ? (
-              <div className="text-center py-12 text-red-500">{error}</div>
+              <div className="text-center py-12 text-red-400 font-bold" style={{fontFamily:'Poppins,sans-serif'}}>{error}</div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {paginatedNews.map((item) => (
                   <div
                     key={item.id}
-                    className="group p-4 hover:bg-accent/50 rounded-lg transition-colors border-b border-border/50 last:border-0"
+                    className="group p-6 hover:bg-white/10 rounded-2xl transition-all border border-white/10 hover:border-white/20 shadow-xl backdrop-blur-sm cursor-pointer"
+                    onClick={() => setSelectedNews(item)}
                   >
-                    <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-start justify-between gap-4">
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-2">
+                        <div className="flex items-center gap-3 mb-3">
                           {/* Source Avatar */}
-                          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-[#FFEBF5] to-[#F3EFFF] flex items-center justify-center overflow-hidden border border-[#F1E3F6] shadow-sm">
+                          <div className="flex-shrink-0 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center overflow-hidden border border-white/20 shadow-xl">
                             <img
                               src={item.source?.logo}
                               alt={item.source?.name ? `${item.source.name} logo` : "Source logo"}
@@ -361,81 +378,65 @@ export default function NewsSentiment() {
                               onError={(e) => {
                                 const target = e.target as HTMLImageElement;
                                 target.src = `data:image/svg+xml,${encodeURIComponent(
-                                  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#A259FF"><circle cx="12" cy="12" r="10"/></svg>'
+                                  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#5B50E1"><circle cx="12" cy="12" r="10"/></svg>'
                                 )}`;
                                 target.onerror = null;
                               }}
                             />
                           </div>
 
-                          <div className="flex items-center gap-1.5 text-xs">
-                            <span className="font-medium text-foreground truncate max-w-[140px]" title={item.source?.name || ""}>
+                          <div className="flex items-center gap-2 text-sm" style={{fontFamily:'Poppins,sans-serif'}}>
+                            <span className="font-semibold text-white truncate max-w-[140px]" title={item.source?.name || ""}>
                               {item.source?.name || "Source"}
                             </span>
-                            <span className="text-muted-foreground">•</span>
-                            <span className="text-muted-foreground">{item.time}</span>
+                            <span className="text-white/40">•</span>
+                            <span className="text-white/60">{item.time}</span>
                           </div>
 
-                          <div className="ml-1">{getCoinIcon(item.coin)}</div>
+                          <div className="ml-2">{getCoinIcon(item.coin)}</div>
 
                           <div className="ml-auto">
-                            <Badge
-                              className={cn(
-                                "text-xs font-bold px-3 py-1 rounded-full shadow-sm tracking-wide",
+                            <span
+                              className={`text-xs px-3 py-1 rounded-full font-medium ${
                                 item.sentiment === "positive"
-                                  ? "bg-gradient-to-r from-green-200 to-green-400 text-green-800 border border-green-300"
+                                  ? "bg-green-100 text-green-800"
                                   : item.sentiment === "negative"
-                                  ? "bg-gradient-to-r from-red-200 to-red-400 text-red-800 border border-red-300"
-                                  : "bg-gradient-to-r from-yellow-100 to-yellow-300 text-yellow-800 border border-yellow-300"
-                              )}
+                                  ? "bg-red-100 text-red-800"
+                                  : "bg-blue-100 text-blue-800"
+                              }`}
                             >
-                              {item.sentiment === "positive" ? "😊 " : item.sentiment === "negative" ? "😟 " : "😐 "}
                               {item.sentiment.charAt(0).toUpperCase() + item.sentiment.slice(1)}
-                            </Badge>
+                            </span>
                           </div>
                         </div>
 
-                        <a
-                          href={item.url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="block"
-                        >
-                          <h3 className="font-medium text-foreground mb-1.5 group-hover:text-primary transition-colors">
-                            {item.title}
-                          </h3>
-                        </a>
+                        <h3 className="font-bold text-lg text-white mb-2 group-hover:text-[#5B50E1] transition-colors line-clamp-2 cursor-pointer" style={{fontFamily:'Poppins,sans-serif'}}>
+                          {item.title}
+                        </h3>
 
-                        <p className="text-sm text-muted-foreground mb-3 line-clamp-3">
+                        <p className="text-sm text-white/70 mb-4 line-clamp-3" style={{fontFamily:'Poppins,sans-serif'}}>
                           {item.excerpt}
                         </p>
 
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center text-xs text-muted-foreground"></div>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-xs h-8 gap-1"
-                            onClick={() => window.open(item.url, "_blank")}
-                          >
-                            Read more <FiExternalLink className="ml-1 h-3 w-3" />
-                          </Button>
+                          <div className="flex items-center text-xs text-white/50"></div>
+                          <div className="text-sm text-white/60 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>
+                            Click to read more
+                          </div>
                         </div>
-                      </div>
-
-                      {/* Thumbnail or sentiment emoji */}
+                      </div>                      {/* Thumbnail or sentiment emoji */}
                       {item.thumbnail ? (
                         <img
                           src={item.thumbnail}
                           alt="thumbnail"
-                          className="w-20 h-20 rounded-lg object-cover flex-shrink-0 border border-[#F1E3F6]"
+                          className="w-24 h-24 rounded-2xl object-cover flex-shrink-0 border border-white/20 shadow-lg"
                           onError={(e) => {
                             (e.target as HTMLImageElement).style.display = "none";
                           }}
                         />
                       ) : (
-                        <div className="w-16 h-16 rounded-lg bg-muted/50 flex-shrink-0 flex items-center justify-center">
-                          <div className="text-2xl">
+                        <div className="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-sm flex-shrink-0 flex items-center justify-center border border-white/20 shadow-lg">
+                          <div className="text-3xl">
                             {item.sentiment === "positive" ? "📈" : item.sentiment === "negative" ? "📉" : "📊"}
                           </div>
                         </div>
@@ -445,94 +446,138 @@ export default function NewsSentiment() {
                 ))}
 
                 {filteredNews.length === 0 && !isLoading && (
-                  <div className="text-center py-12 text-muted-foreground">No news articles found.</div>
+                  <div className="text-center py-12 text-white/60 font-semibold" style={{fontFamily:'Poppins,sans-serif'}}>No news articles found.</div>
                 )}
               </div>
             )}
-          </CardContent>
-          <CardFooter className="flex justify-between items-center pt-4 border-t border-border/50">
-            <Button variant="outline" size="sm" onClick={handlePrevPage} disabled={currentPage === 1 || isLoading} className="gap-1">
+          </div>
+          <div className="flex justify-between items-center pt-6 mt-6 border-t border-white/20">
+            <button
+              onClick={handlePrevPage}
+              disabled={currentPage === 1 || isLoading}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 text-white/70 hover:bg-white/20 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all font-semibold"
+              style={{fontFamily:'Poppins,sans-serif'}}
+            >
               <FiChevronLeft className="h-4 w-4" /> Previous
-            </Button>
-            <span className="text-sm text-muted-foreground">
+            </button>
+            <span className="text-sm text-white/60 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>
               Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, filteredNews.length)} of {filteredNews.length} results
             </span>
-            <Button variant="outline" size="sm" onClick={handleNextPage} disabled={currentPage >= totalPages || isLoading} className="gap-1">
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage >= totalPages || isLoading}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 text-white/70 hover:bg-white/20 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all font-semibold"
+              style={{fontFamily:'Poppins,sans-serif'}}
+            >
               Next <FiChevronRight className="h-4 w-4" />
-            </Button>
-          </CardFooter>
-        </Card>
+            </button>
+          </div>
+        </div>
 
-        {/* Optional: keep your Dialog if you want a modal view */}
-        <Dialog open={!!selectedNews} onOpenChange={(open) => !open && setSelectedNews(null)}>
-          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-white via-[#FFEBF5]/80 to-[#F3EFFF]/90 border-2 border-[#F1E3F6] rounded-3xl shadow-2xl">
-            {selectedNews && (
-              <>
-                <DialogHeader>
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <img
-                          src={selectedNews.source?.logo}
-                          alt={selectedNews.source?.name || "Source logo"}
-                          className="w-6 h-6 rounded-full object-cover"
-                        />
-                        <div className="flex items-center gap-1.5">
-                          <span className="font-medium text-foreground">{selectedNews.source?.name || "Unknown Source"}</span>
-                          <span className="text-muted-foreground">•</span>
-                          <span className="text-muted-foreground text-sm">{selectedNews.time}</span>
-                        </div>
-                        <div className="ml-1">{getCoinIcon(selectedNews.coin)}</div>
-                      </div>
-                      <DialogTitle
-                        className="text-3xl font-extrabold bg-gradient-to-r from-[#FF1C8B] via-[#A259FF] to-[#6C38CC] bg-clip-text text-transparent uppercase drop-shadow-lg mb-2 mt-2"
-                        style={{ letterSpacing: "0.04em", fontFamily: "Montserrat,sans-serif" }}
-                      >
-                        {selectedNews.title}
-                      </DialogTitle>
-                    </div>
-                    <Badge
-                      className={cn(
-                        "text-sm font-bold px-4 py-2 rounded-full shadow-sm tracking-wide",
-                        selectedNews.sentiment === "positive"
-                          ? "bg-gradient-to-r from-green-200 to-green-400 text-green-800 border border-green-300"
-                          : selectedNews.sentiment === "negative"
-                          ? "bg-gradient-to-r from-red-200 to-red-400 text-red-800 border border-red-300"
-                          : "bg-gradient-to-r from-yellow-100 to-yellow-300 text-yellow-800 border border-yellow-300"
-                      )}
-                    >
-                      {selectedNews.sentiment === "positive" ? "😊 " : selectedNews.sentiment === "negative" ? "😟 " : "😐 "}
-                      {selectedNews.sentiment.charAt(0).toUpperCase() + selectedNews.sentiment.slice(1)}
-                    </Badge>
-                  </div>
-                </DialogHeader>
-
-                <div className="space-y-4 py-4">
-                  {selectedNews.thumbnail && (
+        {/* News Detail Modal */}
+        {selectedNews && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md">
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[95vh] overflow-y-auto mx-4 relative animate-fadeIn">
+              <div className="p-8">
+                {/* Close button */}
+                <button
+                  onClick={() => setSelectedNews(null)}
+                  className="absolute top-4 right-4 p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white/70 hover:text-white transition-all"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+                {/* Header with source info */}
+                <div className="flex items-center gap-4 mb-6 pb-4 border-b border-white/20">
+                  <div className="flex-shrink-0 w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center overflow-hidden border border-white/20 shadow-xl">
                     <img
-                      src={selectedNews.thumbnail}
-                      alt="thumbnail"
-                      className="w-full max-h-[360px] object-cover rounded-xl border border-[#F1E3F6]"
+                      src={selectedNews.source?.logo}
+                      alt={selectedNews.source?.name || "Source logo"}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = `data:image/svg+xml,${encodeURIComponent(
+                          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#5B50E1"><circle cx="12" cy="12" r="10"/></svg>'
+                        )}`;
+                        target.onerror = null;
+                      }}
                     />
-                  )}
-
-                  <div className="prose dark:prose-invert max-w-none">
-                    <p className="text-foreground">{selectedNews.fullContent || selectedNews.excerpt}</p>
                   </div>
-
-                  <div className="flex items-center justify-between pt-4 border-t border-border/50">
-                    <div className="flex items-center text-sm text-muted-foreground"></div>
-                    <div className="flex gap-2">
-                      <Button size="sm" onClick={() => window.open(selectedNews.url, "_blank")}>
-                        View on {selectedNews.source?.name || "Source"}
-                      </Button>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-white" style={{fontFamily:'Poppins,sans-serif'}}>
+                      {selectedNews.source?.name || "Unknown Source"}
+                    </h3>
+                    <div className="flex items-center gap-2 text-sm text-white/70" style={{fontFamily:'Poppins,sans-serif'}}>
+                      <span>{selectedNews.time}</span>
+                      <span>•</span>
+                      <span>{new Date(selectedNews.publishedAt).toLocaleDateString()}</span>
                     </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {getCoinIcon(selectedNews.coin)}
+                    <span
+                      className={`text-sm px-3 py-2 rounded-full font-medium ${
+                        selectedNews.sentiment === "positive"
+                          ? "bg-green-500/20 text-green-300 border border-green-500/30"
+                          : selectedNews.sentiment === "negative"
+                          ? "bg-red-500/20 text-red-300 border border-red-500/30"
+                          : "bg-blue-500/20 text-blue-300 border border-blue-500/30"
+                      }`}
+                      style={{fontFamily:'Poppins,sans-serif'}}
+                    >
+                      {selectedNews.sentiment.charAt(0).toUpperCase() + selectedNews.sentiment.slice(1)}
+                    </span>
                   </div>
                 </div>
-              </>
-            )}
-          </DialogContent>
-        </Dialog>
+
+                {/* Title */}
+                <h1 className="text-3xl md:text-4xl font-bold text-white mb-6 leading-tight" style={{fontFamily:'Poppins,sans-serif'}}>
+                  {selectedNews.title}
+                </h1>
+
+                {/* Image */}
+                {selectedNews.thumbnail && (
+                  <div className="mb-6">
+                    <img
+                      src={selectedNews.thumbnail}
+                      alt="Article image"
+                      className="w-full max-h-[400px] object-cover rounded-2xl border border-white/20 shadow-xl"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = "none";
+                      }}
+                    />
+                  </div>
+                )}
+
+                {/* Content */}
+                <div className="mb-8">
+                  <p className="text-lg text-white/80 leading-relaxed" style={{fontFamily:'Poppins,sans-serif'}}>
+                    {selectedNews.fullContent || selectedNews.excerpt}
+                  </p>
+                </div>
+
+                {/* Footer */}
+                <div className="flex items-center justify-between pt-6 border-t border-white/20">
+                  <div className="flex items-center gap-2 text-sm text-white/60" style={{fontFamily:'Poppins,sans-serif'}}>
+                    <span>Published: {new Date(selectedNews.publishedAt).toLocaleDateString('en-US', { 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}</span>
+                  </div>
+                  <button
+                    onClick={() => window.open(selectedNews.url, "_blank")}
+                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#5B50E1] hover:bg-[#5B50E1]/80 text-white font-semibold transition-all shadow-lg"
+                    style={{fontFamily:'Poppins,sans-serif'}}
+                  >
+                    Read Full Article <FiExternalLink className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
