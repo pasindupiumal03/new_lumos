@@ -7,25 +7,30 @@ import {
   FiArrowUp,
   FiArrowDown,
   FiExternalLink,
-} from "react-icons/fi";
-import { FaBitcoin, FaEthereum } from "react-icons/fa";
-import { SiRipple } from "react-icons/si";
+  FiCopy,
+  } from "react-icons/fi";
+  import { FaBitcoin, FaEthereum, FaCoins } from "react-icons/fa";
+  import { SiRipple, SiCoinmarketcap } from "react-icons/si";
+  import { Ri24HoursLine, RiBtcFill } from "react-icons/ri";
+  import { MdOutlineSentimentVeryDissatisfied } from "react-icons/md";
 
 
 const fallbackStats = [
-  { id: 1, label: "Total Coins", value: "12,345", icon: "📊" },
-  { id: 2, label: "Market Cap", value: "$2.1T", change: 1.8, icon: "💎" },
-  { id: 3, label: "24h Volume", value: "$65B", icon: "📈" },
-  { id: 4, label: "BTC Dominance", value: "48.2%", icon: "₿" },
-  { id: 5, label: "Market Sentiment", value: "Neutral", icon: "🌡️" },
+  { id: 1, label: "Total Coins", value: "12,345", icon: <FaCoins className="w-8 h-8 text-[#5B50E1]" /> },
+  { id: 2, label: "Market Cap", value: "$2.1T", change: 1.8, icon: <SiCoinmarketcap className="w-8 h-8 text-[#5B50E1]" /> },
+  { id: 3, label: "24h Volume", value: "$65B", icon: <Ri24HoursLine className="w-8 h-8 text-[#5B50E1]" /> },
+  { id: 4, label: "BTC Dominance", value: "48.2%", icon: <RiBtcFill className="w-8 h-8 text-[#5B50E1]" /> },
+  { id: 5, label: "Market Sentiment", value: "Neutral", icon: <MdOutlineSentimentVeryDissatisfied className="w-8 h-8 text-[#5B50E1]" /> },
 ];
+
+import type { ReactNode } from "react";
 
 interface StatItem {
   id: number;
   label: string;
   value: string;
   change?: number;
-  icon: string;
+  icon: ReactNode;
 }
 
 interface NewsItem {
@@ -52,6 +57,7 @@ interface CoinItem {
   price: string;
   change: number;
   address: string;
+  shortAddress: string;
   since: string;
   volume: string;
   image?: string | null;
@@ -462,7 +468,8 @@ export default function Dashboard() {
             name: name,
             price: priceUsd ? `$${Number(priceUsd).toFixed(6)}` : "$0.00",
             change: Number(change) || 0,
-            address: tokenAddress
+            address: tokenAddress || "Unknown",
+            shortAddress: tokenAddress
               ? `${tokenAddress.slice(0, 6)}...${tokenAddress.slice(-4)}`
               : "Unknown",
             since: createdAt ? getTimeAgo(createdAt) : "Unknown",
@@ -513,28 +520,29 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex min-h-screen bg-white bg-[url('/lumos-bg.png')] bg-cover bg-no-repeat">
+    <div className="flex min-h-screen custom-gradient">
       <Sidebar selected="Dashboard" />
-      <main className="flex-1 px-8 py-12 overflow-auto font-sans">
+      <main className="flex-1 px-8 py-12 overflow-auto" style={{fontFamily:'Poppins,sans-serif'}}>
         {/* All dashboard content goes here */}
         <div className="mb-12">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
             <div>
-              <h1 className="font-oswald font-black text-5xl md:text-7xl tracking-tight text-black leading-tight drop-shadow-md">
-                Market <span className="text-[#ec4899]">Dashboard</span>
+              <h1 className="font-black text-5xl md:text-7xl tracking-wider text-white leading-tight drop-shadow-xl" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.15em'}}>
+                MARKET <span className="text-[#3b0766]">DASHBOARD</span>
               </h1>
-              <p className="text-lg text-gray-700 mt-4 max-w-2xl font-medium">
+              <p className="text-lg text-white/70 mt-4 max-w-2xl font-medium" style={{fontFamily:'Poppins,sans-serif'}}>
                 Real-time insights and analytics for informed trading decisions.<br/>
                 Track market movements and discover opportunities.
               </p>
             </div>
             <div className="flex md:block justify-center">
               <button
-                className="flex items-center gap-3 bg-gradient-to-r from-[#ec4899] to-[#a21caf] text-white px-8 py-4 rounded-2xl font-bold shadow-xl hover:shadow-2xl hover:scale-105 transition-all text-lg"
+                className="gradient-button text-white px-8 py-4 rounded-2xl font-bold shadow-xl hover:shadow-2xl transition-all text-lg flex items-center gap-3"
                 onClick={handleRefresh}
+                style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.08em'}}
               >
                 <FiRefreshCw className="w-5 h-5" />
-                Refresh Data
+                REFRESH DATA
               </button>
             </div>
           </div>
@@ -543,30 +551,37 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
           {isStatsLoading ? (
-            <div className="text-center py-12 text-gray-600 col-span-full">
+            <div className="text-center py-12 text-white/60 col-span-full" style={{fontFamily:'Poppins,sans-serif'}}>
               Loading market stats...
             </div>
           ) : statsError ? (
-            <div className="text-center py-12 text-red-500 col-span-full">
+            <div className="text-center py-12 text-red-400 col-span-full" style={{fontFamily:'Poppins,sans-serif'}}>
               {statsError}
             </div>
           ) : statsData.length === 0 ? (
-            <div className="text-center py-12 text-gray-600 col-span-full">
+            <div className="text-center py-12 text-white/60 col-span-full" style={{fontFamily:'Poppins,sans-serif'}}>
               No market stats available.
             </div>
           ) : (
             statsData.map((stat) => (
               <div
                 key={stat.id}
-                className="bg-white rounded-3xl shadow-2xl px-9 py-10 flex flex-col items-center justify-center border-2 border-[#ec4899] hover:border-[#a21caf] transition-all duration-200"
+                className="bg-white/5 backdrop-blur-md border-2 border-t-white/30 border-r-white/10 border-b-white/10 border-l-white/10 rounded-3xl shadow-2xl px-9 py-10 flex flex-col items-center justify-center hover:shadow-[0_0_50px_rgba(91,80,225,0.3)] hover:border-t-[#5B50E1]/50 transition-all duration-300"
               >
                 <div className="text-5xl mb-4 drop-shadow-sm">
-                  {stat.icon}
+                  {typeof stat.icon === "string" ? (
+                    stat.icon === "📊" ? <FaCoins className="w-8 h-8 text-[#5B50E1]" />
+                    : stat.icon === "💎" ? <SiCoinmarketcap className="w-8 h-8 text-[#5B50E1]" />
+                    : stat.icon === "📈" ? <Ri24HoursLine className="w-8 h-8 text-[#5B50E1]" />
+                    : stat.icon === "₿" ? <RiBtcFill className="w-8 h-8 text-[#5B50E1]" />
+                    : stat.icon === "🌡️" ? <MdOutlineSentimentVeryDissatisfied className="w-8 h-8 text-[#5B50E1]" />
+                    : stat.icon
+                  ) : stat.icon}
                 </div>
-                <div className="text-2xl font-black font-oswald text-black mb-2 tracking-tight">
+                <div className="text-2xl font-black text-white mb-2 tracking-tight" style={{fontFamily:'Poppins,sans-serif'}}>
                   {stat.value}
                 </div>
-                <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+                <div className="text-xs font-bold text-white/60 uppercase tracking-widest" style={{fontFamily:'Poppins,sans-serif'}}>
                   {stat.label}
                 </div>
                 {typeof stat.change === "number" && (
@@ -580,30 +595,32 @@ export default function Dashboard() {
         </div>
 
         {/* News Section */}
-        <div className="bg-white rounded-3xl shadow-2xl p-10 mb-12 border-2 border-[#ec4899]/10">
+        <div className="bg-white/5 backdrop-blur-md border-2 border-t-white/30 border-r-white/10 border-b-white/10 border-l-white/10 rounded-3xl shadow-2xl p-10 mb-12">
           <div className="flex items-center gap-4 mb-8">
-            <h2 className="font-oswald text-3xl font-black text-black tracking-tighter flex items-center gap-3 mb-0">
-              <span className="w-3 h-8 bg-[#a21caf] rounded-full inline-block"></span>
-              Market News
+            <h2 className="text-3xl font-black text-white tracking-wider flex items-center gap-3 mb-0" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.12em'}}>
+              <span className="w-3 h-8 bg-[#3b0766] rounded-full inline-block"></span>
+              MARKET NEWS
             </h2>
             <div className="ml-auto flex gap-2">
               <button
                 className={`px-6 py-2 rounded-xl font-bold text-lg transition-all focus:outline-none ${
                   activeTab === "crypto"
-                    ? "bg-gradient-to-r from-[#ec4899] to-[#a21caf] text-white shadow-lg"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    ? "gradient-button text-white shadow-lg"
+                    : "bg-white/10 text-white/70 hover:bg-white/20 border border-white/20"
                 }`}
                 onClick={() => setActiveTab("crypto")}
+                style={{fontFamily:'Poppins,sans-serif'}}
               >
                 Crypto News
               </button>
               <button
                 className={`px-6 py-2 rounded-xl font-bold text-lg transition-all focus:outline-none ${
                   activeTab === "us"
-                    ? "bg-gradient-to-r from-[#a21caf] to-[#ec4899] text-white shadow-lg"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    ? "gradient-button text-white shadow-lg"
+                    : "bg-white/10 text-white/70 hover:bg-white/20 border border-white/20"
                 }`}
                 onClick={() => setActiveTab("us")}
+                style={{fontFamily:'Poppins,sans-serif'}}
               >
                 US News
               </button>
@@ -612,15 +629,15 @@ export default function Dashboard() {
 
           <div>
             {isNewsLoading ? (
-              <div className="text-center py-12 text-lg text-gray-400 font-bold">
+              <div className="text-center py-12 text-lg text-white/60 font-bold" style={{fontFamily:'Poppins,sans-serif'}}>
                 Loading news...
               </div>
             ) : newsError ? (
-              <div className="text-center py-12 text-red-500 font-bold">
+              <div className="text-center py-12 text-red-400 font-bold" style={{fontFamily:'Poppins,sans-serif'}}>
                 {newsError}
               </div>
             ) : (activeTab === "crypto" ? cryptoNews : usNews).length === 0 ? (
-              <div className="text-center py-12 text-gray-600 font-semibold">
+              <div className="text-center py-12 text-white/60 font-semibold" style={{fontFamily:'Poppins,sans-serif'}}>
                 No news found.
               </div>
             ) : (
@@ -630,7 +647,7 @@ export default function Dashboard() {
                   .map((item) => (
                     <div
                       key={item.id}
-                      className="relative bg-white rounded-2xl shadow-md border border-gray-100 p-6 flex flex-col gap-3 hover:shadow-xl transition-all cursor-pointer"
+                      className="relative bg-white/10 backdrop-blur-md rounded-2xl shadow-md border border-white/20 p-6 flex flex-col gap-3 hover:shadow-xl hover:bg-white/15 transition-all cursor-pointer"
                       onClick={() => setSelectedNews(item)}
                     >
                       <div className="flex items-center gap-3 mb-2">
@@ -644,10 +661,10 @@ export default function Dashboard() {
                           }}
                         />
                         <div className="flex flex-col">
-                          <span className="text-xs font-semibold text-gray-700">
+                          <span className="text-xs font-semibold text-white" style={{fontFamily:'Poppins,sans-serif'}}>
                             {item.source.name}
                           </span>
-                          <span className="text-xs text-gray-400">
+                          <span className="text-xs text-white/60" style={{fontFamily:'Poppins,sans-serif'}}>
                             {item.time}
                           </span>
                         </div>
@@ -657,10 +674,10 @@ export default function Dashboard() {
                       </div>
 
                       <div className="flex-1">
-                        <h3 className="font-bold text-lg text-black mb-1 line-clamp-2">
+                        <h3 className="font-bold text-lg text-white mb-1 line-clamp-2" style={{fontFamily:'Poppins,sans-serif'}}>
                           {item.title}
                         </h3>
-                        <p className="text-sm text-gray-600 line-clamp-3">
+                        <p className="text-sm text-white/70 line-clamp-3" style={{fontFamily:'Poppins,sans-serif'}}>
                           {item.summary}
                         </p>
                       </div>
@@ -684,18 +701,18 @@ export default function Dashboard() {
         </div>
 
         {/* Trending Coins Section */}
-        <div className="bg-white rounded-3xl shadow-2xl p-10 mb-12 border-2 border-[#a21caf]/10">
-          <h2 className="font-oswald text-3xl font-black text-black mb-8 tracking-tighter flex items-center gap-3">
-            <span className="w-3 h-8 bg-[#ec4899] rounded-full inline-block"></span>
-            Trending Solana Tokens <span className="text-[#ec4899]">(24h)</span>
+        <div className="bg-white/5 backdrop-blur-md border-2 border-t-white/30 border-r-white/10 border-b-white/10 border-l-white/10 rounded-3xl shadow-2xl p-10 mb-12">
+          <h2 className="text-3xl font-black text-white mb-8 tracking-wider flex items-center gap-3" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.12em'}}>
+            <span className="w-3 h-8 bg-[#3b0766] rounded-full inline-block"></span>
+            TRENDING SOLANA TOKENS <span className="text-[#3b0766]">(24H)</span>
           </h2>
-          <div className="divide-y divide-gray-100">
+          <div className="divide-y border-gray-200/20">
             {isCoinsLoading ? (
-              <div className="text-center py-8 text-lg text-gray-400 font-bold">
+              <div className="text-center py-8 text-lg text-white/60 font-bold" style={{fontFamily:'Poppins,sans-serif'}}>
                 Loading trending coins...
               </div>
             ) : !coinData || coinData.length === 0 ? (
-              <div className="text-center py-14 text-gray-600 font-semibold">
+              <div className="text-center py-14 text-white/60 font-semibold" style={{fontFamily:'Poppins,sans-serif'}}>
                 No trending coins found.
               </div>
             ) : (
@@ -704,9 +721,11 @@ export default function Dashboard() {
                 .map((coin, index) => (
                   <div
                     key={coin.id}
-                    className="group p-4 -mx-4 hover:bg-gray-50 rounded-xl transition-colors duration-200"
+                    className="group p-4 -mx-4 hover:bg-white/20 rounded-xl transition-colors duration-200 border-2 border-gray-200/20 shadow-lg mb-4"
                   >
-                    <div className="flex items-center justify-between mb-2">
+                    {/* Desktop view */}
+                    <div className="hidden sm:flex items-center mb-2">
+                      {/* Token info (image, name, since) */}
                       <div className="flex items-center gap-3">
                         {coin.image ? (
                           <img
@@ -724,39 +743,102 @@ export default function Dashboard() {
                           </div>
                         )}
                         <div>
-                          <h3 className="font-semibold text-gray-900 group-hover:text-pink-600 transition-colors">
+                          <h3 className="font-semibold text-white group-hover:text-[#5B50E1] transition-colors" style={{fontFamily:'Poppins,sans-serif'}}>
                             {coin.name || "Unknown Token"}
                           </h3>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-white/60" style={{fontFamily:'Poppins,sans-serif'}}>
                             {coin.since || "Unknown"}
                           </p>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className="font-medium">
-                          {coin.price || "$0.00"}
-                        </p>
+                      {/* Centered PriceChange */}
+                      <div className="flex-1 flex justify-center">
                         <PriceChange change={coin.change || 0} />
                       </div>
+                      {/* Price */}
+                      <div className="text-right">
+                        <p className="font-medium text-white" style={{fontFamily:'Poppins,sans-serif'}}>
+                          {coin.price || "$0.00"}
+                        </p>
+                      </div>
                     </div>
-                    <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
-                      <div className="text-xs text-gray-500">
-                        <div className="text-gray-400 text-xxs">
+                    <div className="hidden sm:flex items-center justify-between mt-3 pt-3 border-t border-white/20">
+                      <div className="text-xs text-white/70" style={{fontFamily:'Poppins,sans-serif'}}>
+                        <div className="text-white/50 text-xxs">
                           Volume (24h)
                         </div>
                         <div>{coin.volume || "$0"}</div>
                       </div>
-                      <div className="text-xs">
-                        <div className="text-gray-400 text-xxs">
+                      <div className="text-xs text-white/70" style={{fontFamily:'Poppins,sans-serif'}}>
+                        <div className="text-white/50 text-xxs">
                           Address
                         </div>
-                        <div className="font-mono">
-                          {coin.address || "0x...unknown"}
+                        <div className="flex items-center gap-2 font-mono">
+                          <span>{coin.shortAddress || "0x...unknown"}</span>
+                          {coin.address && coin.address !== "Unknown" && (
+                            <button
+                              className="text-white/60 hover:text-[#5B50E1] focus:outline-none"
+                              title="Copy address"
+                              onClick={() => {
+                                navigator.clipboard.writeText(coin.address);
+                              }}
+                            >
+                              <FiCopy className="w-4 h-4" />
+                            </button>
+                          )}
                         </div>
                       </div>
-                      <button className="text-xs text-pink-600 hover:text-pink-700 flex items-center gap-1">
+                      <a
+                        href={coin.address && coin.address !== "Unknown" ? `https://pump.fun/coin/${coin.address}` : undefined}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-[#5B50E1] hover:text-white flex items-center gap-1 transition-colors"
+                        style={{fontFamily:'Poppins,sans-serif'}}>
                         Trade
-                      </button>
+                      </a>
+                    </div>
+                    {/* Mobile view */}
+                    <div className="flex flex-col sm:hidden gap-2">
+                      <div className="flex items-center gap-3">
+                        {coin.image ? (
+                          <img
+                            src={coin.image}
+                            alt={coin.name || 'Token'}
+                            className="w-10 h-10 rounded-full object-cover border border-gray-200 shadow-sm"
+                            onError={(e) => {
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.src = '/default-token.png';
+                            }}
+                          />
+                        ) : (
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center text-pink-600 font-bold">
+                            {coin.name ? coin.name.charAt(0).toUpperCase() : "?"}
+                          </div>
+                        )}
+                        <div>
+                          <h3 className="font-semibold text-white" style={{fontFamily:'Poppins,sans-serif'}}>
+                            {coin.name || "Unknown Token"}
+                          </h3>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="text-xs text-white/70" style={{fontFamily:'Poppins,sans-serif'}}>
+                          <span className="text-white/50 text-xxs">Price</span>
+                          <div>{coin.price || "$0.00"}</div>
+                        </div>
+                        <div className="text-xs text-white/70" style={{fontFamily:'Poppins,sans-serif'}}>
+                          <span className="text-white/50 text-xxs">Volume (24h)</span>
+                          <div>{coin.volume || "$0"}</div>
+                        </div>
+                        <a
+                          href={coin.address && coin.address !== "Unknown" ? `https://pump.fun/coin/${coin.address}` : undefined}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-[#5B50E1] hover:text-white flex items-center gap-1 transition-colors"
+                          style={{fontFamily:'Poppins,sans-serif'}}>
+                          Trade
+                        </a>
+                      </div>
                     </div>
                   </div>
                 ))
@@ -766,10 +848,10 @@ export default function Dashboard() {
 
         {/* News Modal Popup */}
         {selectedNews && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-            <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-8 relative animate-fadeIn">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md">
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-2xl max-w-lg w-full p-8 relative animate-fadeIn">
               <button
-                className="absolute top-4 right-4 text-gray-400 hover:text-pink-600 text-2xl font-bold focus:outline-none"
+                className="absolute top-4 right-4 text-white/60 hover:text-[#5B50E1] text-2xl font-bold focus:outline-none"
                 onClick={() => setSelectedNews(null)}
                 aria-label="Close"
               >
@@ -786,19 +868,19 @@ export default function Dashboard() {
                   }}
                 />
                 <div className="flex flex-col">
-                  <span className="text-sm font-semibold text-gray-700">
+                  <span className="text-sm font-semibold text-white" style={{fontFamily:'Poppins,sans-serif'}}>
                     {selectedNews.source.name}
                   </span>
-                  <span className="text-xs text-gray-400">{selectedNews.time}</span>
+                  <span className="text-xs text-white/60" style={{fontFamily:'Poppins,sans-serif'}}>{selectedNews.time}</span>
                 </div>
                 <span className="ml-auto">
                   <SentimentBadge sentiment={selectedNews.sentiment} />
                 </span>
               </div>
-              <h2 className="font-oswald text-2xl font-black text-black mb-3">
+              <h2 className="text-2xl font-black text-white mb-3" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.08em'}}>
                 {selectedNews.title}
               </h2>
-              <p className="text-gray-700 text-base mb-4 whitespace-pre-line">
+              <p className="text-white/80 text-base mb-4 whitespace-pre-line" style={{fontFamily:'Poppins,sans-serif'}}>
                 {selectedNews.summary}
               </p>
               <div className="flex gap-2 mb-4 flex-wrap">
@@ -816,28 +898,29 @@ export default function Dashboard() {
                 href={selectedNews.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-[#ec4899] to-[#a21caf] text-white font-bold shadow hover:from-[#a21caf] hover:to-[#ec4899] transition-all"
+                className="inline-flex items-center gap-2 px-5 py-2 rounded-xl gradient-button text-white font-bold shadow transition-all"
+                style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.08em'}}
               >
-                Read Full Article
+                READ FULL ARTICLE
               </a>
             </div>
           </div>
         )}
 
         {/* CTA */}
-        <div className="bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl p-6 text-white">
+        <div className="bg-white/5 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-white">
           <div className="flex flex-col md:flex-row md:items-center justify-between">
             <div className="max-w-xl">
-              <h3 className="text-xl font-bold mb-2">
-                Get Started with Advanced Features
+              <h3 className="text-xl font-bold mb-2" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.08em'}}>
+                GET STARTED WITH ADVANCED FEATURES
               </h3>
-              <p className="text-pink-100 text-sm">
+              <p className="text-white/70 text-sm" style={{fontFamily:'Poppins,sans-serif'}}>
                 Unlock premium tools, real-time alerts, and advanced analytics
                 to take your trading to the next level.
               </p>
             </div>
-            <button className="mt-4 md:mt-0 bg-white text-pink-600 hover:bg-gray-100 px-6 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">
-              Upgrade to Pro
+            <button className="mt-4 md:mt-0 gradient-button text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300" style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.08em'}}>
+              UPGRADE TO PRO
             </button>
           </div>
         </div>
