@@ -11,7 +11,7 @@ import {
 import { FaBitcoin, FaEthereum } from "react-icons/fa";
 import { SiRipple } from "react-icons/si";
 
-// Fallback stats data
+
 const fallbackStats = [
   { id: 1, label: "Total Coins", value: "12,345", icon: "📊" },
   { id: 2, label: "Market Cap", value: "$2.1T", change: 1.8, icon: "💎" },
@@ -34,7 +34,7 @@ interface NewsItem {
   summary: string;
   time: string;
   sentiment: string;
-  icon: React.ReactNode;
+  icon: React.ReactNode | null;
   change: number;
   tags: string[];
   source: {
@@ -42,6 +42,8 @@ interface NewsItem {
     domain: string;
     logo: string;
   };
+  url: string;
+  thumbnail?: string | null;
 }
 
 interface CoinItem {
@@ -152,18 +154,23 @@ const getTimeAgo = (publishedAt: string | number) => {
 
 export default function Dashboard() {
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
+
   type TabType = "crypto" | "us";
   const [activeTab, setActiveTab] = useState<TabType>("crypto");
+
   const [cryptoNews, setCryptoNews] = useState<NewsItem[]>([]);
   const [usNews, setUsNews] = useState<NewsItem[]>([]);
   const [isNewsLoading, setIsNewsLoading] = useState(false);
   const [newsError, setNewsError] = useState<string | null>(null);
+
   const [coinData, setCoinData] = useState<CoinItem[]>([]);
   const [isCoinsLoading, setIsCoinsLoading] = useState(false);
   const [coinsError, setCoinsError] = useState<string | null>(null);
+
   const [statsData, setStatsData] = useState<StatItem[]>([]);
   const [isStatsLoading, setIsStatsLoading] = useState(false);
   const [statsError, setStatsError] = useState<string | null>(null);
+
 
   // Fetch stats from CoinGecko API
   const fetchStats = useCallback(async () => {
@@ -173,9 +180,7 @@ export default function Dashboard() {
     try {
       const response = await fetch("https://api.coingecko.com/api/v3/global", {
         method: "GET",
-        headers: {
-          Accept: "application/json",
-        },
+        headers: { Accept: "application/json" },
       });
 
       if (!response.ok) {
@@ -244,180 +249,105 @@ export default function Dashboard() {
   }, []);
 
   // Fetch crypto news from CryptoPanic API
+  const mapRssToCard = useCallback((raw: any, isUS: boolean): NewsItem => {
+    const sentiment =
+      raw.sentiment === "positive"
+        ? "Bullish"
+        : raw.sentiment === "negative"
+        ? "Bearish"
+        : "Neutral";
+
+    const coin = raw.coin || "";
+    const icon = isUS ? getCoinIcon("STOCK") : coin ? getCoinIcon(coin) : null;
+
+    return {
+      id: raw.id,
+      title: raw.title || "Untitled",
+      summary: raw.excerpt || raw.title || "No excerpt available",
+      time: getTimeAgo(raw.publishedAt),
+      sentiment,
+      icon,
+      change: 0, // optional percent if you want to compute something
+      tags: coin ? [coin, "Market"] : ["Market"],
+      source: {
+        name: raw.source?.name || raw.source?.domain || "Source",
+        domain: raw.source?.domain || "",
+        logo:
+          raw.source?.logo ||
+          (raw.source?.domain
+            ? `https://www.google.com/s2/favicons?domain=${raw.source.domain}&sz=64`
+            : "/favicon.ico"),
+      },
+      url: raw.url || (raw.source?.domain ? `https://${raw.source.domain}` : "#"),
+      thumbnail: raw.thumbnail || null,
+    };
+  }, []);
+
+  // Crypto news
   const fetchCryptoNews = useCallback(async () => {
     setIsNewsLoading(true);
     setNewsError(null);
 
     try {
       const params = new URLSearchParams({
-        auth_token: "5b3f2798e12b6877a01ed81b06ea27312ef52f8a",
-        public: "true",
+        category: "crypto",
+        page: "1",
+        pageSize: "120",
       });
 
-      // Route through local Next.js API to avoid CORS/SSR issues
-      const response = await fetch(
-        `/api/news-sentiment?${params.toString()}`,
-        {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-          },
-        }
+      const res = await fetch(`/api/rss-news?${params.toString()}`, {
+        method: "GET",
+        headers: { Accept: "application/json" },
+        cache: "no-store",
+      });
+
+      if (!res.ok) throw new Error(await res.text());
+      const data = await res.json();
+
+      const mapped = (data.results || []).map((it: any) =>
+        mapRssToCard(it, false)
       );
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || `HTTP error! Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      const mappedCryptoNews: NewsItem[] = data.results.map((item: any) => {
-        const urlObj = (() => {
-          try {
-            return new URL(item.url || "");
-          } catch {
-            return null;
-          }
-        })();
-
-        const domain =
-          item.source?.domain || urlObj?.hostname?.replace("www.", "") || "";
-        const safeDomain =
-          domain && domain !== "example.com" ? domain : "cryptopanic.com";
-
-        const coin =
-          item.instruments?.length > 0 ? item.instruments[0].code : "";
-        const sentiment =
-          item.votes?.positive > item.votes?.negative
-            ? "Bullish"
-            : item.votes?.negative > item.votes?.positive
-            ? "Bearish"
-            : "Neutral";
-
-        return {
-          id: item.id.toString(),
-          title: item.title || "Untitled",
-          summary: item.description || item.title || "No excerpt available",
-          time: getTimeAgo(item.published_at),
-          sentiment,
-          icon: coin ? getCoinIcon(coin) : null,
-          change: item.panic_score
-            ? (item.panic_score / 100) * (sentiment === "Bearish" ? -1 : 1)
-            : ((item.votes?.positive - item.votes?.negative) /
-                (item.votes?.positive + item.votes?.negative + 1)) *
-                (sentiment === "Bearish" ? -1 : 1) || 0,
-          tags: coin ? [coin, "Market"] : ["Market"],
-          source: {
-            name: item.source?.title || safeDomain,
-            domain: safeDomain,
-            logo: `https://www.google.com/s2/favicons?domain=${safeDomain}&sz=64`,
-          },
-        };
-      });
-
-      setCryptoNews(mappedCryptoNews);
+      setCryptoNews(mapped);
     } catch (err: any) {
-      setNewsError(
-        err.message || "Failed to fetch crypto news. Please try again later."
-      );
-      console.error("Crypto news fetch error:", err);
       setCryptoNews([]);
+      setNewsError(err?.message || "Failed to fetch crypto news.");
     } finally {
       setIsNewsLoading(false);
     }
-  }, []);
+  }, [mapRssToCard]);
 
-  // Fetch US market news from Market Aux API
+  // US market news
   const fetchUsNews = useCallback(async () => {
     setIsNewsLoading(true);
     setNewsError(null);
 
     try {
-      const marketAuxApiKey = process.env.NEXT_PUBLIC_MARKET_AUX_API_KEY;
-      if (!marketAuxApiKey) {
-        throw new Error(
-          "Market Aux API key is not defined. Please ensure NEXT_PUBLIC_MARKET_AUX_API_KEY is set in your .env.local file and restart the server."
-        );
-      }
+      const params = new URLSearchParams({
+        category: "us",
+        page: "1",
+        pageSize: "120",
+      });
 
-      const usResponse = await fetch(
-        `https://api.marketaux.com/v1/news/all?language=en&api_token=${marketAuxApiKey}&filter_entities=true&exchanges=NYSE,NASDAQ&exclude_domains=cryptopanic.com,coindesk.com,cointelegraph.com`,
-        {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-          },
-        }
+      const res = await fetch(`/api/rss-news?${params.toString()}`, {
+        method: "GET",
+        headers: { Accept: "application/json" },
+        cache: "no-store",
+      });
+
+      if (!res.ok) throw new Error(await res.text());
+      const data = await res.json();
+
+      const mapped = (data.results || []).map((it: any) =>
+        mapRssToCard(it, true)
       );
-
-      if (!usResponse.ok) {
-        const errorText = await usResponse.text();
-        throw new Error(
-          `Market Aux API error: ${
-            errorText || `HTTP error! Status: ${usResponse.status}`
-          }`
-        );
-      }
-
-      const usData = await usResponse.json();
-
-      const mappedUsNews: NewsItem[] = usData.data.map(
-        (item: any, index: number) => {
-          const urlObj = (() => {
-            try {
-              return new URL(item.url || "");
-            } catch {
-              return null;
-            }
-          })();
-
-          const domain =
-            item.source || urlObj?.hostname?.replace("www.", "") || "";
-          const safeDomain =
-            domain && domain !== "example.com" ? domain : "news.com";
-
-          const sentiment = item.sentiment?.score
-            ? item.sentiment.score > 0
-              ? "Bullish"
-              : item.sentiment.score < 0
-              ? "Bearish"
-              : "Neutral"
-            : "Neutral";
-
-          return {
-            id: item.uuid || `us-${index}`,
-            title: item.title || "Untitled",
-            summary: item.description || item.title || "No excerpt available",
-            time: getTimeAgo(item.published_at),
-            sentiment,
-            icon: getCoinIcon("STOCK"),
-            change: item.sentiment?.score
-              ? Number(item.sentiment.score) * 100
-              : 0,
-            tags: item.entities
-              ?.map((entity: any) => entity.symbol || entity.name)
-              ?.slice(0, 2) || ["Stocks", "Market"],
-            source: {
-              name: item.source || safeDomain,
-              domain: safeDomain,
-              logo: `https://www.google.com/s2/favicons?domain=${safeDomain}&sz=64`,
-            },
-          };
-        }
-      );
-
-      setUsNews(mappedUsNews);
+      setUsNews(mapped);
     } catch (err: any) {
-      console.error("Market Aux fetch error:", err.message);
       setUsNews([]);
-      setNewsError(
-        err.message || "Failed to fetch US market news. Please try again later."
-      );
+      setNewsError(err?.message || "Failed to fetch US market news.");
     } finally {
       setIsNewsLoading(false);
     }
-  }, []);
+  }, [mapRssToCard]);
 
   // Fetch trending coins from Solana Tracker API via proxy
   const fetchCoins = useCallback(async () => {
@@ -564,7 +494,6 @@ export default function Dashboard() {
   }, []);
 
   // Fetch data on component mount
-  // Only fetch news once per page load (restart)
   const hasFetchedNews = useRef(false);
   useEffect(() => {
     if (!hasFetchedNews.current) {
@@ -576,7 +505,6 @@ export default function Dashboard() {
     fetchStats();
   }, [fetchCryptoNews, fetchUsNews, fetchCoins, fetchStats]);
 
-  // Refresh all data
   const handleRefresh = () => {
     fetchCryptoNews();
     fetchUsNews();
@@ -660,19 +588,28 @@ export default function Dashboard() {
             </h2>
             <div className="ml-auto flex gap-2">
               <button
-                className={`px-6 py-2 rounded-xl font-bold text-lg transition-all focus:outline-none ${activeTab === 'crypto' ? 'bg-gradient-to-r from-[#ec4899] to-[#a21caf] text-white shadow-lg' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
-                onClick={() => setActiveTab('crypto')}
+                className={`px-6 py-2 rounded-xl font-bold text-lg transition-all focus:outline-none ${
+                  activeTab === "crypto"
+                    ? "bg-gradient-to-r from-[#ec4899] to-[#a21caf] text-white shadow-lg"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+                onClick={() => setActiveTab("crypto")}
               >
                 Crypto News
               </button>
               <button
-                className={`px-6 py-2 rounded-xl font-bold text-lg transition-all focus:outline-none ${activeTab === 'us' ? 'bg-gradient-to-r from-[#a21caf] to-[#ec4899] text-white shadow-lg' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
-                onClick={() => setActiveTab('us')}
+                className={`px-6 py-2 rounded-xl font-bold text-lg transition-all focus:outline-none ${
+                  activeTab === "us"
+                    ? "bg-gradient-to-r from-[#a21caf] to-[#ec4899] text-white shadow-lg"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+                onClick={() => setActiveTab("us")}
               >
                 US News
               </button>
             </div>
           </div>
+
           <div>
             {isNewsLoading ? (
               <div className="text-center py-12 text-lg text-gray-400 font-bold">
@@ -682,51 +619,65 @@ export default function Dashboard() {
               <div className="text-center py-12 text-red-500 font-bold">
                 {newsError}
               </div>
-            ) : (activeTab === 'crypto' ? cryptoNews : usNews).length === 0 ? (
+            ) : (activeTab === "crypto" ? cryptoNews : usNews).length === 0 ? (
               <div className="text-center py-12 text-gray-600 font-semibold">
                 No news found.
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {(activeTab === 'crypto' ? cryptoNews : usNews).slice(0, 12).map((item) => (
-                  <div
-                    key={item.id}
-                    className="relative bg-white rounded-2xl shadow-md border border-gray-100 p-6 flex flex-col gap-3 hover:shadow-xl transition-all cursor-pointer"
-                    onClick={() => setSelectedNews(item)}
-                  >
-                    <div className="flex items-center gap-3 mb-2">
-                      <img
-                        src={item.source.logo}
-                        alt={item.source.name}
-                        className="w-8 h-8 rounded-full border border-gray-200 object-cover bg-gray-50"
-                        onError={e => { e.currentTarget.onerror = null; e.currentTarget.src = '/default-news.png'; }}
-                      />
-                      <div className="flex flex-col">
-                        <span className="text-xs font-semibold text-gray-700">
-                          {item.source.name}
+                {(activeTab === "crypto" ? cryptoNews : usNews)
+                  .slice(0, 12)
+                  .map((item) => (
+                    <div
+                      key={item.id}
+                      className="relative bg-white rounded-2xl shadow-md border border-gray-100 p-6 flex flex-col gap-3 hover:shadow-xl transition-all cursor-pointer"
+                      onClick={() => setSelectedNews(item)}
+                    >
+                      <div className="flex items-center gap-3 mb-2">
+                        <img
+                          src={item.source.logo}
+                          alt={item.source.name}
+                          className="w-8 h-8 rounded-full border border-gray-200 object-cover bg-gray-50"
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = "/default-news.png";
+                          }}
+                        />
+                        <div className="flex flex-col">
+                          <span className="text-xs font-semibold text-gray-700">
+                            {item.source.name}
+                          </span>
+                          <span className="text-xs text-gray-400">
+                            {item.time}
+                          </span>
+                        </div>
+                        <span className="ml-auto">
+                          <SentimentBadge sentiment={item.sentiment} />
                         </span>
-                        <span className="text-xs text-gray-400">{item.time}</span>
                       </div>
-                      <span className="ml-auto"><SentimentBadge sentiment={item.sentiment} /></span>
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-bold text-lg text-black mb-1 line-clamp-2">
-                        {item.title}
-                      </h3>
-                      <p className="text-sm text-gray-600 line-clamp-3">
-                        {item.summary}
-                      </p>
-                    </div>
-                    <div className="flex gap-2 mt-2 flex-wrap">
-                      {item.tags && item.tags.map((tag) => (
-                        <span key={tag} className="bg-gradient-to-r from-pink-100 to-purple-100 text-pink-700 px-3 py-1 rounded-full text-xs font-semibold">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
 
-                  </div>
-                ))}
+                      <div className="flex-1">
+                        <h3 className="font-bold text-lg text-black mb-1 line-clamp-2">
+                          {item.title}
+                        </h3>
+                        <p className="text-sm text-gray-600 line-clamp-3">
+                          {item.summary}
+                        </p>
+                      </div>
+
+                      <div className="flex gap-2 mt-2 flex-wrap">
+                        {item.tags &&
+                          item.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className="bg-gradient-to-r from-pink-100 to-purple-100 text-pink-700 px-3 py-1 rounded-full text-xs font-semibold"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                      </div>
+                    </div>
+                  ))}
               </div>
             )}
           </div>
@@ -829,7 +780,10 @@ export default function Dashboard() {
                   src={selectedNews.source.logo}
                   alt={selectedNews.source.name}
                   className="w-10 h-10 rounded-full border border-gray-200 object-cover bg-gray-50"
-                  onError={e => { e.currentTarget.onerror = null; e.currentTarget.src = '/default-news.png'; }}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = "/default-news.png";
+                  }}
                 />
                 <div className="flex flex-col">
                   <span className="text-sm font-semibold text-gray-700">
@@ -837,7 +791,9 @@ export default function Dashboard() {
                   </span>
                   <span className="text-xs text-gray-400">{selectedNews.time}</span>
                 </div>
-                <span className="ml-auto"><SentimentBadge sentiment={selectedNews.sentiment} /></span>
+                <span className="ml-auto">
+                  <SentimentBadge sentiment={selectedNews.sentiment} />
+                </span>
               </div>
               <h2 className="font-oswald text-2xl font-black text-black mb-3">
                 {selectedNews.title}
@@ -846,14 +802,18 @@ export default function Dashboard() {
                 {selectedNews.summary}
               </p>
               <div className="flex gap-2 mb-4 flex-wrap">
-                {selectedNews.tags && selectedNews.tags.map((tag) => (
-                  <span key={tag} className="bg-gradient-to-r from-pink-100 to-purple-100 text-pink-700 px-3 py-1 rounded-full text-xs font-semibold">
-                    {tag}
-                  </span>
-                ))}
+                {selectedNews.tags &&
+                  selectedNews.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="bg-gradient-to-r from-pink-100 to-purple-100 text-pink-700 px-3 py-1 rounded-full text-xs font-semibold"
+                    >
+                      {tag}
+                    </span>
+                  ))}
               </div>
               <a
-                href={`https://${selectedNews.source.domain}`}
+                href={selectedNews.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-[#ec4899] to-[#a21caf] text-white font-bold shadow hover:from-[#a21caf] hover:to-[#ec4899] transition-all"
@@ -864,6 +824,7 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* CTA */}
         <div className="bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl p-6 text-white">
           <div className="flex flex-col md:flex-row md:items-center justify-between">
             <div className="max-w-xl">
