@@ -3,7 +3,7 @@
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { MessageSquare, Server, TrendingUp, Twitter, Activity, Zap, Shield, BarChart3, Bot, LogOut } from "lucide-react"
+import { MessageSquare, Server, TrendingUp, Twitter, Activity, Zap, Shield, BarChart3, Bot, LogOut, SearchIcon } from "lucide-react"
 import { IoMdCheckmarkCircleOutline } from "react-icons/io"
 import { LuBrain } from "react-icons/lu"
 import { AiOutlineGlobal, AiOutlineAim } from "react-icons/ai"
@@ -16,6 +16,7 @@ const toolRoutes: Record<number, string> = {
   2: "/tools/news-sentiment",
   3: "/tools/eth-tracker",
   4: "/tools/solana-eco",
+  5: "/tools/wallet-lookup",
 };
 
 const tools = [
@@ -48,6 +49,14 @@ const tools = [
     icon: Zap,
     title: "SOLANA ECOSYSTEM",
     description: "Full support for Pump.fun, Raydium, Meteora, and all major Solana platforms.",
+    status: "Live",
+    cta: "Explore",
+  },
+  {
+    id: 5,
+    icon: SearchIcon,
+    title: "WALLET LOOKUP",
+    description: "Search and analyze wallet addresses across multiple blockchains.",
     status: "Live",
     cta: "Explore",
   },
