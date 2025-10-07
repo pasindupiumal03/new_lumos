@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 // If you have custom icons (DollarSign, BarChart3, etc.), import them here or replace with your own.
 
 
-const MORALIS_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IjMzMDU5MWNkLTI4YWYtNDljMS1hZDgyLWM3YWZkZGE1MmMxZiIsIm9yZ0lkIjoiNDcyOTkwIiwidXNlcklkIjoiNDg2NTc4IiwidHlwZUlkIjoiOWYyZTQ4Y2ItZDgzMi00Zjg4LWI2OTYtNWZkNTJlMWE0Mjg5IiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3NTkxNDgwOTksImV4cCI6NDkxNDkwODA5OX0.p3v0cK0insA-Ivgr0IoRPJeE8vPI9OZUN0S8vCkuGgI';
+const MORALIS_API_KEY = process.env.MORALIS_API_KEY;
 const MORALIS_BASE_URL = 'https://deep-index.moralis.io/api/v2.2';
 
 // Format currency
