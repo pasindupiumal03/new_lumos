@@ -527,8 +527,8 @@ export default function Dashboard() {
         <div className="mb-12">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
             <div>
-              <h1 className="font-black text-5xl md:text-7xl tracking-wider text-white leading-tight drop-shadow-xl" style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.05em'}}>
-                MARKET <span className="text-[#66249c]">DASHBOARD</span>
+              <h1 className="font-black text-5xl md:text-7xl text-white leading-tight drop-shadow-xl" style={{fontFamily:'Poppins,sans-serif'}}>
+                MARKET <span className="text-[#ba9ecf]">DASHBOARD</span>
               </h1>
               <p className="text-lg text-white/70 mt-4 max-w-2xl font-medium" style={{fontFamily:'Poppins,sans-serif'}}>
                 Real-time insights and analytics for informed trading decisions.<br/>
@@ -544,12 +544,11 @@ export default function Dashboard() {
                 <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF] via-[#6C38CC] to-[#FF1C8B] opacity-80 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent"></div>
                 <div className="absolute inset-0 border border-white/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <FiRefreshCw className="w-5 h-5 relative z-10" />
                 <span className="relative z-10">REFRESH DATA</span>
               </button>
             </div>
           </div>
-          <div className="h-1 w-20 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full mt-4 mb-6" />
+          {/* <div className="h-1 w-20 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full mt-4 mb-6" /> */}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
@@ -569,9 +568,12 @@ export default function Dashboard() {
             statsData.map((stat) => (
               <div
                 key={stat.id}
-                className="bg-white/5 backdrop-blur-md border-2 border-t-white/30 border-r-white/10 border-b-white/10 border-l-white/10 rounded-3xl shadow-2xl px-9 py-10 flex flex-col items-center justify-center hover:shadow-[0_0_50px_rgba(91,80,225,0.3)] hover:border-t-[#5B50E1]/50 transition-all duration-300"
+                className="group relative bg-white/5 backdrop-blur-xl border-2 border-t-white/30 border-r-white/20 border-b-white/10 border-l-white/20 rounded-3xl shadow-2xl px-9 py-10 flex flex-col items-center justify-center hover:bg-white/15 hover:border-white/40 hover:shadow-[0_32px_64px_rgba(162,89,255,0.3)] hover:scale-[1.02] transition-all duration-300 overflow-hidden"
               >
-                <div className="text-5xl mb-4 drop-shadow-sm">
+                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/5 via-transparent to-[#FF1C8B]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative z-10 flex flex-col items-center justify-center">
+                <div className="text-5xl mb-4 drop-shadow-sm group-hover:scale-110 transition-transform duration-300">
                   {typeof stat.icon === "string" ? (
                     stat.icon === "📊" ? <FaCoins className="w-8 h-8 text-[#5B50E1]" />
                     : stat.icon === "💎" ? <SiCoinmarketcap className="w-8 h-8 text-[#5B50E1]" />
@@ -592,16 +594,19 @@ export default function Dashboard() {
                     {stat.change > 0 ? "+" : ""}{stat.change?.toFixed(2)}%
                   </span>
                 )}
+                </div>
               </div>
             ))
           )}
         </div>
 
         {/* News Section */}
-        <div className="bg-white/5 backdrop-blur-md border-2 border-t-white/30 border-r-white/10 border-b-white/10 border-l-white/10 rounded-3xl shadow-2xl p-10 mb-12">
+        <div className="group relative bg-white/5 backdrop-blur-xl border-2 border-t-white/30 border-r-white/20 border-b-white/10 border-l-white/20 rounded-3xl shadow-2xl p-10 mb-12 hover:border-white/40 hover:shadow-[0_32px_64px_rgba(162,89,255,0.3)] transition-all duration-500 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/5 via-transparent to-[#FF1C8B]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div className="relative z-10">
           <div className="flex items-center gap-4 mb-8">
             <h2 className="text-3xl font-black text-white tracking-wider flex items-center gap-3 mb-0" style={{fontFamily:'Arial Black,sans-serif',letterSpacing:'0.1em'}}>
-              <span className="w-3 h-8 bg-[#66249c] rounded-full inline-block"></span>
               MARKET NEWS
             </h2>
             <div className="ml-auto flex gap-2">
@@ -662,9 +667,11 @@ export default function Dashboard() {
                   .map((item) => (
                     <div
                       key={item.id}
-                      className="relative bg-white/10 backdrop-blur-md rounded-2xl shadow-md border border-white/20 p-6 flex flex-col gap-3 hover:shadow-xl hover:bg-white/15 transition-all cursor-pointer"
+                      className="relative bg-white/5 backdrop-blur-xl rounded-2xl shadow-lg border-2 border-white/20 p-6 flex flex-col gap-3 hover:bg-white/15 hover:border-white/40 hover:shadow-[0_20px_40px_rgba(162,89,255,0.3)] hover:scale-[1.02] transition-all duration-300 cursor-pointer overflow-hidden"
                       onClick={() => setSelectedNews(item)}
                     >
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <div className="relative z-10">
                       <div className="flex items-center gap-3 mb-2">
                         <img
                           src={item.source.logo}
@@ -708,18 +715,23 @@ export default function Dashboard() {
                             </span>
                           ))}
                       </div>
+                      </div>
                     </div>
                   ))}
               </div>
             )}
           </div>
+          </div>
         </div>
 
         {/* Trending Coins Section */}
-        <div className="bg-white/5 backdrop-blur-md border-2 border-t-white/30 border-r-white/10 border-b-white/10 border-l-white/10 rounded-3xl shadow-2xl p-10 mb-12">
+        <div className="group relative bg-white/5 backdrop-blur-xl border-2 border-t-white/30 border-r-white/20 border-b-white/10 border-l-white/20 rounded-3xl shadow-2xl p-10 mb-12 hover:border-white/40 hover:shadow-[0_32px_64px_rgba(162,89,255,0.3)] transition-all duration-500 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/5 via-transparent to-[#FF1C8B]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div className="relative z-10">
           <h2 className="text-3xl font-black text-white mb-8 tracking-wider flex items-center gap-3" style={{fontFamily:'Arial Black,sans-serif',letterSpacing:'0.1em'}}>
-            <span className="w-3 h-8 bg-[#66249c] rounded-full inline-block"></span>
-            TRENDING SOLANA TOKENS <span className="text-[#66249c]">(24H)</span>
+            
+            TRENDING SOLANA TOKENS <span className="text-gray-400">(24H)</span>
           </h2>
           <div className="divide-y border-gray-200/20">
             {isCoinsLoading ? (
@@ -736,8 +748,10 @@ export default function Dashboard() {
                 .map((coin, index) => (
                   <div
                     key={coin.id}
-                    className="group p-4 -mx-4 hover:bg-white/20 rounded-xl transition-colors duration-200 border-2 border-gray-200/20 shadow-lg mb-4"
+                    className="group relative p-4 -mx-4 bg-white/5 backdrop-blur-xl hover:bg-white/15 rounded-xl transition-all duration-300 border-2 border-white/20 hover:border-white/40 shadow-lg hover:shadow-[0_16px_32px_rgba(162,89,255,0.2)] hover:scale-[1.01] mb-4 overflow-hidden"
                   >
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="relative z-10">
                     {/* Desktop view */}
                     <div className="hidden sm:flex items-center mb-2">
                       {/* Token info (image, name, since) */}
@@ -860,18 +874,23 @@ export default function Dashboard() {
                         </a>
                       </div>
                     </div>
+                    </div>
                   </div>
                 ))
             )}
+          </div>
           </div>
         </div>
 
         {/* News Modal Popup */}
         {selectedNews && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md">
-            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-2xl max-w-lg w-full p-8 relative animate-fadeIn">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xl">
+            <div className="group relative bg-white/5 backdrop-blur-xl border-2 border-white/30 rounded-2xl shadow-2xl max-w-lg w-full p-8 animate-fadeIn overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/15 via-white/5 to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/10 via-transparent to-[#FF1C8B]/10"></div>
+              <div className="relative z-10">
               <button
-                className="group absolute top-4 right-4 p-2 rounded-xl overflow-hidden bg-white/5 backdrop-blur-xl border border-white/20 text-white/60 hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/30 hover:shadow-[0_8px_32px_rgba(239,68,68,0.3)] hover:scale-[1.05] transition-all duration-300 focus:outline-none"
+                className="group absolute top right-4 p-2 rounded-xl overflow-hidden bg-white/5 backdrop-blur-xl border border-white/20 text-white/60 hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/30 hover:shadow-[0_8px_32px_rgba(239,68,68,0.3)] hover:scale-[1.05] transition-all duration-300 focus:outline-none"
                 onClick={() => setSelectedNews(null)}
                 aria-label="Close"
               >
@@ -928,6 +947,7 @@ export default function Dashboard() {
                 <span className="relative z-10">READ FULL ARTICLE</span>
                 <FiExternalLink className="w-4 h-4 relative z-10" />
               </a>
+              </div>
             </div>
           </div>
         )}
