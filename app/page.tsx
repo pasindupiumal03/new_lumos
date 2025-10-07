@@ -1,11 +1,14 @@
+"use client";
+
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { MessageSquare, Server, TrendingUp, Twitter, Activity, Zap, Shield, BarChart3, Bot } from "lucide-react"
+import { MessageSquare, Server, TrendingUp, Twitter, Activity, Zap, Shield, BarChart3, Bot, LogOut } from "lucide-react"
 import { IoMdCheckmarkCircleOutline } from "react-icons/io"
 import { LuBrain } from "react-icons/lu"
 import { AiOutlineGlobal, AiOutlineAim } from "react-icons/ai"
 import { RiUserCommunityFill } from "react-icons/ri"
+import { useState, useEffect } from "react"
 import Link from "next/link";
 
 const toolRoutes: Record<number, string> = {
@@ -75,6 +78,65 @@ const tools = [
 ]
 
 export default function Home() {
+  const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const [isConnecting, setIsConnecting] = useState(false);
+
+  // Check if Phantom wallet is already connected on component mount
+  useEffect(() => {
+    checkIfWalletIsConnected();
+  }, []);
+
+  const checkIfWalletIsConnected = async () => {
+    try {
+      const { solana } = window as any;
+      if (solana && solana.isPhantom) {
+        const response = await solana.connect({ onlyIfTrusted: true });
+        if (response.publicKey) {
+          setWalletAddress(response.publicKey.toString());
+        }
+      }
+    } catch (error) {
+      console.log('No wallet found or not connected');
+    }
+  };
+
+  const connectWallet = async () => {
+    const { solana } = window as any;
+    
+    if (!solana || !solana.isPhantom) {
+      alert('Phantom wallet is not installed. Please install it from https://phantom.app/');
+      return;
+    }
+
+    try {
+      setIsConnecting(true);
+      const response = await solana.connect();
+      setWalletAddress(response.publicKey.toString());
+    } catch (error) {
+      console.error('Error connecting to wallet:', error);
+      alert('Failed to connect wallet. Please try again.');
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
+  const disconnectWallet = async () => {
+    const { solana } = window as any;
+    
+    try {
+      if (solana && solana.isPhantom) {
+        await solana.disconnect();
+      }
+      setWalletAddress(null);
+    } catch (error) {
+      console.error('Error disconnecting wallet:', error);
+    }
+  };
+
+  const formatAddress = (address: string) => {
+    return `${address.slice(0, 4)}...${address.slice(-4)}`;
+  };
+
   return (
     <div className="min-h-screen custom-gradient">
       {/* Navigation */}
@@ -106,9 +168,29 @@ export default function Home() {
 
             {/* Connect Wallet Button */}
             <div className="flex-shrink-0">
-              <button className="px-6 py-3 rounded-full bg-gradient-to-r from-[#A259FF] via-[#6C38CC] to-[#FF1C8B] text-white font-semibold text-sm bg-white/10 backdrop-blur-md border border-white/20 hover:shadow-lg hover:scale-105 transition-all duration-200 shadow-md" style={{fontFamily:'Poppins,sans-serif'}}>
-                Connect Phantom
-              </button>
+              {walletAddress ? (
+                <div className="flex items-center gap-3">
+                  <div className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-semibold text-sm" style={{fontFamily:'Poppins,sans-serif'}}>
+                    {formatAddress(walletAddress)}
+                  </div>
+                  <button 
+                    onClick={disconnectWallet}
+                    className="p-2 rounded-full bg-red-500/20 border border-red-500/30 text-red-400 hover:bg-red-500/30 hover:scale-105 transition-all duration-200"
+                    title="Disconnect Wallet"
+                  >
+                    <LogOut className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <button 
+                  onClick={connectWallet}
+                  disabled={isConnecting}
+                  className="px-6 py-3 rounded-full bg-gradient-to-r from-[#A259FF] via-[#6C38CC] to-[#FF1C8B] text-white font-semibold text-sm bg-white/10 backdrop-blur-md border border-white/20 hover:shadow-lg hover:scale-105 transition-all duration-200 shadow-md disabled:opacity-50 disabled:cursor-not-allowed" 
+                  style={{fontFamily:'Poppins,sans-serif'}}
+                >
+                  {isConnecting ? 'Connecting...' : 'Connect Phantom'}
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -128,7 +210,7 @@ export default function Home() {
           </h1>
           {/* Subheading */}
           <p className="text-base sm:text-lg md:text-xl text-white/80 mb-8 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>
-            Navigate the crypto universe with confidence. Alpaco AI combines advanced sentiment analysis, real-time tracking, and community-driven insights to protect and empower your trading decisions.
+            Navigate the crypto universe with confidence. Lumos AI combines advanced sentiment analysis, real-time tracking, and community-driven insights to protect and empower your trading decisions.
           </p>
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 mb-10 w-full justify-center">
@@ -221,7 +303,7 @@ export default function Home() {
                 Built by Community, for Community
               </h2>
               <p className="text-lg text-white/80 leading-relaxed" style={{fontFamily:'Poppins,sans-serif'}}>
-                Alpaco AI is more than just a trading platform—it's your comprehensive shield in the dynamic cryptocurrency world. We combine cutting-edge AI technology with community-driven insights to provide unparalleled protection and empowerment.
+                Lumos AI is more than just a trading platform—it's your comprehensive shield in the dynamic cryptocurrency world. We combine cutting-edge AI technology with community-driven insights to provide unparalleled protection and empowerment.
               </p>
               
               {/* Feature List */}
@@ -362,7 +444,7 @@ export default function Home() {
             <div className="space-y-4">
               <h3 className="font-bold text-white" style={{fontFamily:'Poppins,sans-serif'}}>Ready to Trade with Confidence?</h3>
               <p className="text-white/70 text-sm" style={{fontFamily:'Poppins,sans-serif'}}>
-                Join thousands of traders who trust Alpaco AI to navigate the crypto markets safely and profitably.
+                Join thousands of traders who trust Lumos AI to navigate the crypto markets safely and profitably.
               </p>
               <div className="flex flex-col gap-2">
                 <Link href="/tools/dashboard" className="w-full sm:w-auto">
