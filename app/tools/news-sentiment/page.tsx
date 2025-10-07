@@ -249,25 +249,37 @@ export default function NewsSentiment() {
         <div className="mb-8 flex items-center gap-4">
           <button
             onClick={() => { setCategory("crypto"); setQuickFilter(""); }}
-            className={`px-6 py-2 rounded-xl font-bold text-lg transition-all focus:outline-none ${
+            className={`group relative px-6 py-2 rounded-xl overflow-hidden font-bold text-lg transition-all duration-300 focus:outline-none ${
               category === "crypto"
-                ? "gradient-button text-white shadow-lg"
-                : "bg-white/10 text-white/70 hover:bg-white/20 border border-white/20"
+                ? "bg-white/10 backdrop-blur-xl border border-white/20 text-white hover:bg-white/15 hover:border-white/30 hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] hover:scale-[1.02] shadow-lg"
+                : "bg-white/5 backdrop-blur-xl text-white/70 hover:bg-white/10 border border-white/10 hover:border-white/20"
             }`}
             style={{fontFamily:'Poppins,sans-serif'}}
           >
-            Crypto News
+            {category === "crypto" && (
+              <>
+                <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/20 via-[#6C38CC]/20 to-[#FF1C8B]/20 opacity-80 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+              </>
+            )}
+            <span className="relative z-10">Crypto News</span>
           </button>
           <button
             onClick={() => { setCategory("us"); setQuickFilter(""); }}
-            className={`px-6 py-2 rounded-xl font-bold text-lg transition-all focus:outline-none ${
+            className={`group relative px-6 py-2 rounded-xl overflow-hidden font-bold text-lg transition-all duration-300 focus:outline-none ${
               category === "us"
-                ? "gradient-button text-white shadow-lg"
-                : "bg-white/10 text-white/70 hover:bg-white/20 border border-white/20"
+                ? "bg-white/10 backdrop-blur-xl border border-white/20 text-white hover:bg-white/15 hover:border-white/30 hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] hover:scale-[1.02] shadow-lg"
+                : "bg-white/5 backdrop-blur-xl text-white/70 hover:bg-white/10 border border-white/10 hover:border-white/20"
             }`}
             style={{fontFamily:'Poppins,sans-serif'}}
           >
-            US Markets
+            {category === "us" && (
+              <>
+                <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/20 via-[#6C38CC]/20 to-[#FF1C8B]/20 opacity-80 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+              </>
+            )}
+            <span className="relative z-10">US Markets</span>
           </button>
 
           {/* Quick chips for the active tab */}
@@ -289,45 +301,54 @@ export default function NewsSentiment() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <div className="bg-white/5 backdrop-blur-md border-2 border-t-white/30 border-r-white/10 border-b-white/10 border-l-white/10 rounded-3xl shadow-2xl px-9 py-10 flex flex-col items-center justify-center hover:shadow-[0_0_50px_rgba(91,80,225,0.3)] hover:border-t-[#5B50E1]/50 transition-all duration-300">
-            <div className="text-5xl mb-4 drop-shadow-sm">
+          <div className="group relative bg-white/10 backdrop-blur-xl border border-white/20 hover:border-white/30 rounded-3xl shadow-2xl px-9 py-10 flex flex-col items-center justify-center hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] hover:scale-[1.02] transition-all duration-300 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/10 via-transparent to-[#6C38CC]/10 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
+            <div className="relative z-10 text-5xl mb-4 drop-shadow-sm">
               <FcPositiveDynamic className="w-12 h-12" />
             </div>
-            <div className="text-3xl font-black text-white mb-2 tracking-tight" style={{fontFamily:'Poppins,sans-serif'}}>
+            <div className="relative z-10 text-3xl font-black text-white mb-2 tracking-tight" style={{fontFamily:'Poppins,sans-serif'}}>
               {filteredNews.filter((n) => n.sentiment === "positive").length}
             </div>
-            <div className="text-xs font-bold text-white/60 uppercase tracking-widest text-center" style={{fontFamily:'Poppins,sans-serif'}}>
+            <div className="relative z-10 text-xs font-bold text-white/60 uppercase tracking-widest text-center" style={{fontFamily:'Poppins,sans-serif'}}>
               Positive Sentiment
             </div>
           </div>
 
-          <div className="bg-white/5 backdrop-blur-md border-2 border-t-white/30 border-r-white/10 border-b-white/10 border-l-white/10 rounded-3xl shadow-2xl px-9 py-10 flex flex-col items-center justify-center hover:shadow-[0_0_50px_rgba(91,80,225,0.3)] hover:border-t-[#5B50E1]/50 transition-all duration-300">
-            <div className="text-5xl mb-4 drop-shadow-sm">
+          <div className="group relative bg-white/10 backdrop-blur-xl border border-white/20 hover:border-white/30 rounded-3xl shadow-2xl px-9 py-10 flex flex-col items-center justify-center hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] hover:scale-[1.02] transition-all duration-300 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-[#FF1C8B]/10 via-transparent to-[#A259FF]/10 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
+            <div className="relative z-10 text-5xl mb-4 drop-shadow-sm">
               <FcNegativeDynamic className="w-12 h-12" />
             </div>
-            <div className="text-3xl font-black text-white mb-2 tracking-tight" style={{fontFamily:'Poppins,sans-serif'}}>
+            <div className="relative z-10 text-3xl font-black text-white mb-2 tracking-tight" style={{fontFamily:'Poppins,sans-serif'}}>
               {filteredNews.filter((n) => n.sentiment === "negative").length}
             </div>
-            <div className="text-xs font-bold text-white/60 uppercase tracking-widest text-center" style={{fontFamily:'Poppins,sans-serif'}}>
+            <div className="relative z-10 text-xs font-bold text-white/60 uppercase tracking-widest text-center" style={{fontFamily:'Poppins,sans-serif'}}>
               Negative Sentiment
             </div>
           </div>
 
-          <div className="bg-white/5 backdrop-blur-md border-2 border-t-white/30 border-r-white/10 border-b-white/10 border-l-white/10 rounded-3xl shadow-2xl px-9 py-10 flex flex-col items-center justify-center hover:shadow-[0_0_50px_rgba(91,80,225,0.3)] hover:border-t-[#5B50E1]/50 transition-all duration-300">
-            <div className="text-5xl mb-4 drop-shadow-sm">
+          <div className="group relative bg-white/10 backdrop-blur-xl border border-white/20 hover:border-white/30 rounded-3xl shadow-2xl px-9 py-10 flex flex-col items-center justify-center hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] hover:scale-[1.02] transition-all duration-300 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-[#6C38CC]/10 via-transparent to-[#FF1C8B]/10 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
+            <div className="relative z-10 text-5xl mb-4 drop-shadow-sm">
               <GiNewspaper className="w-12 h-12 text-blue-400" />
             </div>
-            <div className="text-3xl font-black text-white mb-2 tracking-tight" style={{fontFamily:'Poppins,sans-serif'}}>
+            <div className="relative z-10 text-3xl font-black text-white mb-2 tracking-tight" style={{fontFamily:'Poppins,sans-serif'}}>
               {filteredNews.length}
             </div>
-            <div className="text-xs font-bold text-white/60 uppercase tracking-widest text-center" style={{fontFamily:'Poppins,sans-serif'}}>
+            <div className="relative z-10 text-xs font-bold text-white/60 uppercase tracking-widest text-center" style={{fontFamily:'Poppins,sans-serif'}}>
               Total Articles
             </div>
           </div>
         </div>
 
         {/* News Feed */}
-        <div className="bg-white/5 backdrop-blur-md border-2 border-t-white/30 border-r-white/10 border-b-white/10 border-l-white/10 rounded-3xl shadow-2xl p-10 mb-12">
+        <div className="group relative bg-white/10 backdrop-blur-xl border border-white/20 hover:border-white/30 rounded-3xl shadow-2xl p-10 mb-12 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/5 via-transparent to-[#6C38CC]/5 opacity-60"></div>
+          <div className="relative z-10">
           <div className="flex items-center gap-4 mb-8">
             <h2 className="text-3xl font-black text-white tracking-wider flex items-center gap-3 mb-0" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.12em'}}>
               <span className="w-3 h-8 bg-[#3b0766] rounded-full inline-block"></span>
@@ -455,10 +476,13 @@ export default function NewsSentiment() {
             <button
               onClick={handlePrevPage}
               disabled={currentPage === 1 || isLoading}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 text-white/70 hover:bg-white/20 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all font-semibold"
+              className="group relative flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 text-white/70 hover:bg-white/15 hover:text-white hover:border-white/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-semibold overflow-hidden"
               style={{fontFamily:'Poppins,sans-serif'}}
             >
-              <FiChevronLeft className="h-4 w-4" /> Previous
+              <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/10 to-[#6C38CC]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <span className="relative z-10 flex items-center gap-2">
+                <FiChevronLeft className="h-4 w-4" /> Previous
+              </span>
             </button>
             <span className="text-sm text-white/60 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>
               Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, filteredNews.length)} of {filteredNews.length} results
@@ -466,19 +490,25 @@ export default function NewsSentiment() {
             <button
               onClick={handleNextPage}
               disabled={currentPage >= totalPages || isLoading}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 text-white/70 hover:bg-white/20 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all font-semibold"
+              className="group relative flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 text-white/70 hover:bg-white/15 hover:text-white hover:border-white/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-semibold overflow-hidden"
               style={{fontFamily:'Poppins,sans-serif'}}
             >
-              Next <FiChevronRight className="h-4 w-4" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#6C38CC]/10 to-[#A259FF]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <span className="relative z-10 flex items-center gap-2">
+                Next <FiChevronRight className="h-4 w-4" />
+              </span>
             </button>
+          </div>
           </div>
         </div>
 
         {/* News Detail Modal */}
         {selectedNews && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md">
-            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[95vh] overflow-y-auto mx-4 relative animate-fadeIn">
-              <div className="p-8">
+            <div className="group relative bg-white/15 backdrop-blur-xl border border-white/30 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[95vh] overflow-y-auto mx-4 animate-fadeIn overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-80"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/10 via-transparent to-[#6C38CC]/10 opacity-60"></div>
+              <div className="relative z-10 p-8">
                 {/* Close button */}
                 <button
                   onClick={() => setSelectedNews(null)}
