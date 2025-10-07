@@ -591,8 +591,8 @@ export default function NewsSentiment() {
                 </div>
 
                 {/* Footer */}
-                <div className="flex items-center justify-between pt-6 border-t border-white/20">
-                  <div className="flex items-center gap-2 text-sm text-white/60" style={{fontFamily:'Poppins,sans-serif'}}>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-4 sm:pt-6 border-t border-white/20">
+                  <div className="flex items-center gap-2 text-xs sm:text-sm text-white/60" style={{fontFamily:'Poppins,sans-serif'}}>
                     <span>Published: {new Date(selectedNews.publishedAt).toLocaleDateString('en-US', { 
                       year: 'numeric', 
                       month: 'long', 
@@ -601,10 +601,12 @@ export default function NewsSentiment() {
                   </div>
                   <button
                     onClick={() => window.open(selectedNews.url, "_blank")}
-                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#5B50E1] hover:bg-[#5B50E1]/80 text-white font-semibold transition-all shadow-lg"
+                    className="flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-xl bg-[#5B50E1] hover:bg-[#5B50E1]/80 text-white font-semibold transition-all shadow-lg text-sm sm:text-base w-full sm:w-auto justify-center"
                     style={{fontFamily:'Poppins,sans-serif'}}
                   >
-                    Read Full Article <FiExternalLink className="h-4 w-4" />
+                    <span className="hidden sm:inline">Read Full Article</span>
+                    <span className="sm:hidden">Read Full</span>
+                    <FiExternalLink className="h-4 w-4" />
                   </button>
                 </div>
               </div>
