@@ -127,29 +127,43 @@ export default function AIChatPage() {
 
   return (
     <div className="flex min-h-screen custom-gradient font-[Poppins,sans-serif]">
-      <Sidebar selected="AI Chat" />
+      {/* Sidebar - Hidden on mobile, visible on desktop */}
+      <div className="hidden lg:block">
+        <Sidebar selected="AI Chat" />
+      </div>
+      
+      {/* Main Content */}
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Header */}
-        <div className="border-b border-white/10 bg-black/20 backdrop-blur-md p-8 shadow-xl">
+        <div className="border-b border-white/10 bg-black/20 backdrop-blur-md p-4 sm:p-6 lg:p-8 shadow-xl">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="font-black text-4xl md:text-6xl tracking-wider text-white leading-tight drop-shadow-xl" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.15em'}}>
-                AI <span className="text-[#3b0766]">TRADING</span>
+            <div className="flex-1 min-w-0">
+               <h1 className="font-black text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-4xl text-white leading-tight drop-shadow-xl" style={{fontFamily:'Poppins,sans-serif'}}>
+                AI <span className="text-[#ba9ecf]">TRADING</span>
               </h1>
-              <p className="text-lg text-white/70 mt-2 max-w-xl font-medium" style={{fontFamily:'Poppins,sans-serif'}}>
+              <p className="text-sm sm:text-base lg:text-lg text-white/70 mt-2 max-w-xl font-medium" style={{fontFamily:'Poppins,sans-serif'}}>
                 Advanced AI assistant for crypto analysis and trading insights.
               </p>
             </div>
-            <div className="flex items-center space-x-2">
-              <button className="p-3 rounded-2xl bg-white/5 backdrop-blur-md border-2 border-white/10 shadow-xl hover:bg-white/10 hover:border-[#5B50E1]/50 transition-all">
-                <FiRefreshCw className="h-5 w-5 text-white/80" />
+            <div className="flex items-center space-x-2 ml-4">
+              <button className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-white/5 backdrop-blur-md border-2 border-white/10 shadow-xl hover:bg-white/10 hover:border-[#5B50E1]/50 transition-all">
+                <FiRefreshCw className="h-4 w-4 sm:h-5 sm:w-5 text-white/80" />
               </button>
             </div>
           </div>
         </div>
 
         {/* Chat Container */}
-        <div className="flex-1 overflow-y-auto px-8 py-12 space-y-8">
+        <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12 space-y-4 sm:space-y-6 lg:space-y-8 scrollbar-hide">
+          <style jsx>{`
+            .scrollbar-hide {
+              -ms-overflow-style: none;  /* Internet Explorer 10+ */
+              scrollbar-width: none;  /* Firefox */
+            }
+            .scrollbar-hide::-webkit-scrollbar {
+              display: none;  /* Safari and Chrome */
+            }
+          `}</style>
           {messages.map((message) => (
             <div
               key={message.id}
@@ -158,24 +172,24 @@ export default function AIChatPage() {
               }`}
             >
               <div
-                className={`max-w-2xl rounded-3xl px-6 py-4 shadow-2xl transition-all duration-200 backdrop-blur-md ${
+                className={`max-w-xs sm:max-w-sm md:max-w-lg lg:max-w-2xl rounded-2xl sm:rounded-3xl px-4 sm:px-6 py-3 sm:py-4 shadow-2xl transition-all duration-200 backdrop-blur-md ${
                   message.isUser
                     ? "bg-gradient-to-r from-[#5B50E1] to-[#7C3AED] text-white rounded-br-lg border-2 border-[#5B50E1]/30"
                     : "bg-white/5 border-2 border-white/10 rounded-bl-lg text-white"
                 }`}
               >
-                <div className="flex items-start gap-4">
+                <div className="flex items-start gap-2 sm:gap-3 lg:gap-4">
                   {!message.isUser && (
                     <div className="mt-1 flex-shrink-0">
-                      <div className="h-10 w-10 rounded-full bg-gradient-to-r from-[#5B50E1] to-[#7C3AED] flex items-center justify-center text-white shadow-xl border-2 border-white/10">
-                        <RiChatSmileAiLine className="h-5 w-5" />
+                      <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-gradient-to-r from-[#5B50E1] to-[#7C3AED] flex items-center justify-center text-white shadow-xl border-2 border-white/10">
+                        <RiChatSmileAiLine className="h-4 w-4 sm:h-5 sm:w-5" />
                       </div>
                     </div>
                   )}
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <span
-                        className={`text-xs font-bold tracking-wide uppercase ${
+                        className={`text-xs sm:text-sm font-bold tracking-wide uppercase ${
                           message.isUser ? "text-white/70" : "text-[#5B50E1]"
                         }`}
                         style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.1em'}}
@@ -189,7 +203,7 @@ export default function AIChatPage() {
                         })}
                       </span>
                     </div>
-                    <div className="mt-2 text-base leading-relaxed" style={{fontFamily:'Poppins,sans-serif'}}>
+                    <div className="mt-2 text-sm sm:text-base leading-relaxed" style={{fontFamily:'Poppins,sans-serif'}}>
                       {message.isUser ? (
                         <p>{message.content}</p>
                       ) : (
@@ -202,19 +216,19 @@ export default function AIChatPage() {
                     </div>
 
                     {!message.isUser && (
-                      <div className="mt-3 flex items-center justify-end space-x-3">
+                      <div className="mt-2 sm:mt-3 flex items-center justify-end space-x-1 sm:space-x-2 lg:space-x-3">
                         <button
                           onClick={() => copyToClipboard(message.content)}
-                          className="text-white/60 hover:text-[#5B50E1] p-2 rounded-full border border-white/10 hover:border-[#5B50E1] bg-white/5 hover:bg-white/10 shadow-xl transition-all backdrop-blur-sm"
+                          className="text-white/60 hover:text-[#5B50E1] p-1.5 sm:p-2 rounded-full border border-white/10 hover:border-[#5B50E1] bg-white/5 hover:bg-white/10 shadow-xl transition-all backdrop-blur-sm"
                           title="Copy to clipboard"
                         >
-                          <FiCopy className="h-4 w-4" />
+                          <FiCopy className="h-3 w-3 sm:h-4 sm:w-4" />
                         </button>
-                        <button className="text-white/60 hover:text-green-400 p-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-green-400/30 shadow-xl transition-all backdrop-blur-sm">
-                          <FiThumbsUp className="h-4 w-4" />
+                        <button className="text-white/60 hover:text-green-400 p-1.5 sm:p-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-green-400/30 shadow-xl transition-all backdrop-blur-sm">
+                          <FiThumbsUp className="h-3 w-3 sm:h-4 sm:w-4" />
                         </button>
-                        <button className="text-white/60 hover:text-red-400 p-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-red-400/30 shadow-xl transition-all backdrop-blur-sm">
-                          <FiThumbsDown className="h-4 w-4" />
+                        <button className="text-white/60 hover:text-red-400 p-1.5 sm:p-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-red-400/30 shadow-xl transition-all backdrop-blur-sm">
+                          <FiThumbsDown className="h-3 w-3 sm:h-4 sm:w-4" />
                         </button>
                       </div>
                     )}
@@ -226,18 +240,18 @@ export default function AIChatPage() {
 
           {isLoading && (
             <div className="flex justify-start">
-              <div className="max-w-2xl rounded-3xl bg-white/5 backdrop-blur-md border-2 border-white/10 px-6 py-4 rounded-bl-lg shadow-2xl">
-                <div className="flex space-x-3">
+              <div className="max-w-xs sm:max-w-sm md:max-w-lg lg:max-w-2xl rounded-2xl sm:rounded-3xl bg-white/5 backdrop-blur-md border-2 border-white/10 px-4 sm:px-6 py-3 sm:py-4 rounded-bl-lg shadow-2xl">
+                <div className="flex space-x-2 sm:space-x-3">
                   <div
-                    className="w-3 h-3 rounded-full bg-[#5B50E1] animate-bounce"
+                    className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-[#5B50E1] animate-bounce"
                     style={{ animationDelay: "0ms" }}
                   ></div>
                   <div
-                    className="w-3 h-3 rounded-full bg-[#7C3AED] animate-bounce"
+                    className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-[#7C3AED] animate-bounce"
                     style={{ animationDelay: "150ms" }}
                   ></div>
                   <div
-                    className="w-3 h-3 rounded-full bg-[#8B5CF6] animate-bounce"
+                    className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-[#8B5CF6] animate-bounce"
                     style={{ animationDelay: "300ms" }}
                   ></div>
                 </div>
@@ -250,13 +264,13 @@ export default function AIChatPage() {
 
         {/* Suggested Questions */}
         {messages.length <= 1 && (
-          <div className="px-8 pb-12">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          <div className="px-4 sm:px-6 lg:px-8 pb-6 sm:pb-8 lg:pb-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-6 max-w-4xl mx-auto">
               {suggestedQuestions.map((question) => (
                 <button
                   key={question.id}
                   onClick={() => handleSuggestedQuestion(question.text)}
-                  className="text-left p-6 bg-white/5 backdrop-blur-md border-2 border-white/10 rounded-2xl hover:border-[#5B50E1]/50 hover:shadow-2xl hover:bg-white/10 transition-all text-base text-white font-semibold tracking-tight shadow-xl"
+                  className="text-left p-4 sm:p-5 lg:p-6 bg-white/5 backdrop-blur-md border-2 border-white/10 rounded-xl sm:rounded-2xl hover:border-[#5B50E1]/50 hover:shadow-2xl hover:bg-white/10 transition-all text-sm sm:text-base text-white font-semibold tracking-tight shadow-xl"
                   style={{fontFamily:'Poppins,sans-serif'}}
                 >
                   {question.text}
@@ -267,32 +281,32 @@ export default function AIChatPage() {
         )}
 
         {/* Input Area */}
-        <div className="border-t border-white/10 bg-black/20 backdrop-blur-md p-8 shadow-2xl">
+        <div className="border-t border-white/10 bg-black/20 backdrop-blur-md p-4 sm:p-6 lg:p-8 shadow-2xl">
           <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto">
             <div className="relative">
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Enter token address, name, symbol, or ask about crypto..."
-                className="w-full pr-16 pl-6 py-5 border-2 border-white/10 rounded-2xl bg-white/5 backdrop-blur-md focus:ring-2 focus:ring-[#5B50E1] focus:border-[#5B50E1] outline-none text-lg font-medium text-white placeholder-white/50 shadow-2xl transition-all"
+                placeholder="Ask about crypto..."
+                className="w-full pr-12 sm:pr-16 pl-4 sm:pl-6 py-3 sm:py-4 lg:py-5 border-2 border-white/10 rounded-xl sm:rounded-2xl bg-white/5 backdrop-blur-md focus:ring-2 focus:ring-[#5B50E1] focus:border-[#5B50E1] outline-none text-sm sm:text-base lg:text-lg font-medium text-white placeholder-white/50 shadow-2xl transition-all"
                 disabled={isLoading}
                 style={{ fontFamily: "Poppins,sans-serif" }}
               />
               <button
                 type="submit"
                 disabled={!input.trim() || isLoading}
-                className={`absolute right-3 top-1/2 -translate-y-1/2 p-3 rounded-xl shadow-xl transition-all duration-200 ${
+                className={`absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 p-2 sm:p-3 rounded-lg sm:rounded-xl shadow-xl transition-all duration-200 ${
                   input.trim() && !isLoading
                     ? "bg-gradient-to-r from-[#5B50E1] to-[#7C3AED] text-white hover:opacity-90 hover:shadow-2xl"
                     : "bg-white/10 text-white/40 cursor-not-allowed border border-white/10"
                 }`}
                 style={{ fontFamily: "Poppins,sans-serif" }}
               >
-                <FiSend className="h-5 w-5" />
+                <FiSend className="h-4 w-4 sm:h-5 sm:w-5" />
               </button>
             </div>
-            <p className="text-xs text-center text-white/60 mt-4 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>
+            <p className="text-xs text-center text-white/60 mt-3 sm:mt-4 font-medium px-4" style={{fontFamily:'Poppins,sans-serif'}}>
               Lumos AI may produce inaccurate information. Always verify important information.
             </p>
           </form>
