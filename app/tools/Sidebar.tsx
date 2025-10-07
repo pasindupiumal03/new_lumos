@@ -13,8 +13,9 @@ import {
   FiX,
   FiChevronRight
 } from "react-icons/fi";
-import { FaEthereum } from 'react-icons/fa';
+import { FaEthereum, FaSearchDollar } from 'react-icons/fa';
 import { SiSolana } from 'react-icons/si';
+import { LogOut, Lock } from 'lucide-react';
 
 const tools = [
   { id: "Dashboard", label: "Dashboard", href: "/tools/dashboard", icon: <FiHome className="w-5 h-5" /> },
@@ -22,11 +23,14 @@ const tools = [
   { id: "News Sentiment", label: "News Sentiment", href: "/tools/news-sentiment", icon: <FiTrendingUp className="w-5 h-5" /> },
   { id: "ETH Tracker", label: "ETH Tracker", href: "/tools/eth-tracker", icon: <FaEthereum className="w-5 h-5" /> },
   { id: "Solana Eco", label: "Solana Eco", href: "/tools/solana-eco", icon: <SiSolana className="w-5 h-5" /> },
+  { id: "Wallet Lookup", label: "Wallet Lookup", href: "/tools/wallet-lookup", icon: <FaSearchDollar className="w-5 h-5" /> },
 ];
 
 export default function Sidebar({ selected }: { selected: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const [isConnecting, setIsConnecting] = useState(false);
 
   // Check if mobile on mount and window resize
   useEffect(() => {
@@ -41,6 +45,8 @@ export default function Sidebar({ selected }: { selected: string }) {
 
     // Initial check
     checkIfMobile();
+    // Check wallet connection
+    checkIfWalletIsConnected();
 
     // Add event listener
     window.addEventListener('resize', checkIfMobile);
@@ -48,6 +54,57 @@ export default function Sidebar({ selected }: { selected: string }) {
     // Clean up
     return () => window.removeEventListener('resize', checkIfMobile);
   }, []);
+
+  const checkIfWalletIsConnected = async () => {
+    try {
+      const { solana } = window as any;
+      if (solana && solana.isPhantom) {
+        const response = await solana.connect({ onlyIfTrusted: true });
+        if (response.publicKey) {
+          setWalletAddress(response.publicKey.toString());
+        }
+      }
+    } catch (error) {
+      console.log('No wallet found or not connected');
+    }
+  };
+
+  const connectWallet = async () => {
+    const { solana } = window as any;
+    
+    if (!solana || !solana.isPhantom) {
+      alert('Phantom wallet is not installed. Please install it from https://phantom.app/');
+      return;
+    }
+
+    try {
+      setIsConnecting(true);
+      const response = await solana.connect();
+      setWalletAddress(response.publicKey.toString());
+    } catch (error) {
+      console.error('Error connecting to wallet:', error);
+      alert('Failed to connect wallet. Please try again.');
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
+  const disconnectWallet = async () => {
+    const { solana } = window as any;
+    
+    try {
+      if (solana && solana.isPhantom) {
+        await solana.disconnect();
+      }
+      setWalletAddress(null);
+    } catch (error) {
+      console.error('Error disconnecting wallet:', error);
+    }
+  };
+
+  const formatAddress = (address: string) => {
+    return `${address.slice(0, 4)}...${address.slice(-4)}`;
+  };
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -109,11 +166,11 @@ export default function Sidebar({ selected }: { selected: string }) {
           onClick={handleLinkClick}
         >
           <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center text-white shadow-lg">
-            <span className="font-bold">U</span>
+            <Lock className="w-5 h-5" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-medium text-white truncate" style={{fontFamily: 'Poppins, sans-serif'}}>Welcome Back</p>
-            <p className="text-xs text-white/60 truncate" style={{fontFamily: 'Poppins, sans-serif'}}>Premium Member</p>
+            <p className="font-medium text-white truncate" style={{fontFamily: 'Poppins, sans-serif'}}>Free Plan</p>
+            <p className="text-xs text-white/60 truncate" style={{fontFamily: 'Poppins, sans-serif'}}>Early Access Member</p>
           </div>
           <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-sm"></div>
         </div>
@@ -150,14 +207,38 @@ export default function Sidebar({ selected }: { selected: string }) {
         {/* Footer */}
         <div className="mt-auto pt-6 border-t border-white/10">
           <div className="bg-white/5 backdrop-blur-md border border-white/20 rounded-lg p-4 shadow-lg">
-            <button 
-              className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white py-3 px-4 rounded-lg text-sm font-medium transition-all duration-300 flex items-center justify-center gap-2 hover:shadow-lg hover:from-pink-600 hover:to-purple-700"
-              onClick={handleLinkClick}
-              style={{fontFamily: 'Poppins, sans-serif'}}
-            >
-              <FiZap className="w-4 h-4" />
-              Upgrade to Pro
-            </button>
+            {walletAddress ? (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+                    <span className="text-white text-xs font-medium" style={{fontFamily: 'Poppins, sans-serif'}}>Connected</span>
+                  </div>
+                  <button 
+                    onClick={disconnectWallet}
+                    className="p-1.5 rounded-md bg-red-500/20 border border-red-500/30 text-red-400 hover:bg-red-500/30 hover:scale-105 transition-all duration-200"
+                    title="Disconnect Wallet"
+                  >
+                    <LogOut className="w-3 h-3" />
+                  </button>
+                </div>
+                <div className="px-3 py-2 rounded-md bg-white/10 backdrop-blur-sm border border-white/20 text-center">
+                  <span className="text-white text-sm font-medium" style={{fontFamily: 'Poppins, sans-serif'}}>
+                    {formatAddress(walletAddress)}
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <button 
+                onClick={connectWallet}
+                disabled={isConnecting}
+                className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white py-3 px-4 rounded-lg text-sm font-medium transition-all duration-300 flex items-center justify-center gap-2 hover:shadow-lg hover:from-pink-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{fontFamily: 'Poppins, sans-serif'}}
+              >
+                <FiZap className="w-4 h-4" />
+                {isConnecting ? 'Connecting...' : 'Connect Phantom'}
+              </button>
+            )}
           </div>
         </div>
       </aside>
