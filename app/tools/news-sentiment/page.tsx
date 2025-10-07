@@ -200,7 +200,7 @@ export default function NewsSentiment() {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 lg:gap-8">
             <div>
               <h1 className="font-black text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl tracking-wider text-white leading-tight drop-shadow-xl" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.15em'}}>
-                NEWS <span className="text-[#3b0766]">SENTIMENT</span>
+                NEWS <span className="text-[#ba9ecf]">SENTIMENT</span>
               </h1>
               <p className="text-sm sm:text-base lg:text-lg text-white/70 mt-3 lg:mt-4 max-w-2xl font-medium" style={{fontFamily:'Poppins,sans-serif'}}>
                 Track market sentiment across crypto & US market news sources.<br className="hidden sm:block"/>
@@ -352,8 +352,7 @@ export default function NewsSentiment() {
           <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/5 via-transparent to-[#6C38CC]/5 opacity-60"></div>
           <div className="relative z-10">
           <div className="flex items-center gap-4 mb-8">
-            <h2 className="text-3xl font-black text-white tracking-wider flex items-center gap-3 mb-0" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.12em'}}>
-              <span className="w-3 h-8 bg-[#3b0766] rounded-full inline-block"></span>
+            <h2 className="text-3xl font-black text-white tracking-wider flex items-center gap-3 mb-8" style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.1em'}}>
               LATEST {category === "crypto" ? "CRYPTO" : "US MARKET"} NEWS
             </h2>
             <div className="ml-auto flex items-center gap-3">
@@ -432,7 +431,7 @@ export default function NewsSentiment() {
                           </div>
                         </div>
 
-                        <h3 className="font-bold text-base sm:text-lg text-white mb-2 group-hover:text-[#5B50E1] transition-colors line-clamp-2 cursor-pointer" style={{fontFamily:'Poppins,sans-serif'}}>
+                        <h3 className="font-bold text-base sm:text-lg text-white mb-2 group-hover:text-white transition-colors line-clamp-2 cursor-pointer" style={{fontFamily:'Poppins,sans-serif'}}>
                           {item.title}
                         </h3>
 
@@ -508,7 +507,7 @@ export default function NewsSentiment() {
         {/* News Detail Modal */}
         {selectedNews && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md">
-            <div className="group relative bg-white/15 backdrop-blur-xl border border-white/30 rounded-xl sm:rounded-2xl shadow-2xl max-w-4xl w-full max-h-[95vh] overflow-y-auto mx-2 sm:mx-4 animate-fadeIn overflow-hidden">
+            <div className="group relative bg-white/15 backdrop-blur-xl border border-white/30 rounded-xl sm:rounded-2xl shadow-2xl max-w-4xl w-full max-h-[95vh] overflow-y-auto mx-2 sm:mx-4 animate-fadeIn overflow-hidden scrollbar-hide">
               <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-80"></div>
               <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/10 via-transparent to-[#6C38CC]/10 opacity-60"></div>
               <div className="relative z-10 p-4 sm:p-6 lg:p-8">
@@ -522,32 +521,34 @@ export default function NewsSentiment() {
                   </svg>
                 </button>
                 {/* Header with source info */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6 pb-4 border-b border-white/20">
-                  <div className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center overflow-hidden border border-white/20 shadow-xl">
-                    <img
-                      src={selectedNews.source?.logo}
-                      alt={selectedNews.source?.name || "Source logo"}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = `data:image/svg+xml,${encodeURIComponent(
-                          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#5B50E1"><circle cx="12" cy="12" r="10"/></svg>'
-                        )}`;
-                        target.onerror = null;
-                      }}
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg sm:text-xl font-bold text-white" style={{fontFamily:'Poppins,sans-serif'}}>
-                      {selectedNews.source?.name || "Unknown Source"}
-                    </h3>
-                    <div className="flex items-center gap-2 text-xs sm:text-sm text-white/70 flex-wrap" style={{fontFamily:'Poppins,sans-serif'}}>
-                      <span>{selectedNews.time}</span>
-                      <span className="hidden sm:inline">•</span>
-                      <span>{new Date(selectedNews.publishedAt).toLocaleDateString()}</span>
+                <div className="flex flex-col gap-3 sm:gap-4 mb-4 sm:mb-6 pb-4 border-b border-white/20">
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center overflow-hidden border border-white/20 shadow-xl">
+                      <img
+                        src={selectedNews.source?.logo}
+                        alt={selectedNews.source?.name || "Source logo"}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = `data:image/svg+xml,${encodeURIComponent(
+                            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#5B50E1"><circle cx="12" cy="12" r="10"/></svg>'
+                          )}`;
+                          target.onerror = null;
+                        }}
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg sm:text-xl font-bold text-white" style={{fontFamily:'Poppins,sans-serif'}}>
+                        {selectedNews.source?.name || "Unknown Source"}
+                      </h3>
+                      <div className="flex items-center gap-2 text-xs sm:text-sm text-white/70 flex-wrap" style={{fontFamily:'Poppins,sans-serif'}}>
+                        <span>{selectedNews.time}</span>
+                        <span className="hidden sm:inline">•</span>
+                        <span>{new Date(selectedNews.publishedAt).toLocaleDateString()}</span>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                  <div className="flex items-center gap-2 sm:gap-3">
                     {getCoinIcon(selectedNews.coin)}
                     <span
                       className={`text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2 rounded-full font-medium ${

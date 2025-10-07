@@ -522,12 +522,12 @@ export default function Dashboard() {
   return (
     <div className="flex min-h-screen custom-gradient">
       <Sidebar selected="Dashboard" />
-      <main className="flex-1 px-8 py-12 overflow-auto" style={{fontFamily:'Poppins,sans-serif'}}>
+      <main className="flex-1 px-8 py-12 overflow-auto scrollbar-hide" style={{fontFamily:'Poppins,sans-serif'}}>
         {/* All dashboard content goes here */}
         <div className="mb-12">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
             <div>
-              <h1 className="font-black text-5xl md:text-7xl text-white leading-tight drop-shadow-xl" style={{fontFamily:'Poppins,sans-serif'}}>
+              <h1 className="font-black text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl tracking-wider text-white leading-tight drop-shadow-xl" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.15em'}}>
                 MARKET <span className="text-[#ba9ecf]">DASHBOARD</span>
               </h1>
               <p className="text-lg text-white/70 mt-4 max-w-2xl font-medium" style={{fontFamily:'Poppins,sans-serif'}}>
