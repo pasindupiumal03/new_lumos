@@ -180,54 +180,69 @@ export default function EthTrackerPage() {
     <div className="flex min-h-screen custom-gradient">
       <Sidebar selected="ETH Tracker" />
 
-      <main className="flex-1 px-8 py-12 overflow-auto" style={{fontFamily:'Poppins,sans-serif'}}>
+      <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12 overflow-auto scrollbar-hide" style={{fontFamily:'Poppins,sans-serif'}}>
         {/* Header Section */}
-        <div className="mb-12">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
-            <div>
-              <h1 className="font-black text-5xl md:text-7xl tracking-wider text-white leading-tight drop-shadow-xl" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.15em'}}>
+        <div className="mb-8 sm:mb-10 lg:mb-12">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 sm:gap-8">
+            <div className="text-center md:text-left">
+              <h1 className="font-black text-3xl sm:text-4xl md:text-5xl lg:text-7xl tracking-wider text-white leading-tight drop-shadow-xl" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.15em'}}>
                 ETHEREUM <span className="text-[#3b0766]">TRACKER</span>
               </h1>
-              <p className="text-lg text-white/70 mt-4 max-w-2xl font-medium" style={{fontFamily:'Poppins,sans-serif'}}>
-                Real-time Ethereum token analytics and market insights.<br/>
-                Track any ERC-20 token with comprehensive data.
+              <p className="text-sm sm:text-base lg:text-lg text-white/70 mt-3 sm:mt-4 max-w-2xl font-medium mx-auto md:mx-0" style={{fontFamily:'Poppins,sans-serif'}}>
+                Real-time Ethereum token analytics and market insights.<br className="hidden sm:block"/>
+                <span className="sm:hidden"> </span>Track any ERC-20 token with comprehensive data.
               </p>
             </div>
           </div>
-          <div className="h-1 w-20 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full mt-4 mb-6" />
         </div>
         {/* Search Bar */}
-        <div className="max-w-4xl mx-auto mb-12">
-          <div className="group relative bg-white/10 backdrop-blur-xl border border-white/20 hover:border-white/30 rounded-3xl shadow-2xl p-8 overflow-hidden hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] hover:scale-[1.01] transition-all duration-300">
+        <div className="max-w-4xl mx-auto mb-8 sm:mb-10 lg:mb-12 px-4 sm:px-0">
+          <div className="group relative bg-white/10 backdrop-blur-xl border border-white/20 hover:border-white/30 rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 lg:p-8 overflow-hidden hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] hover:scale-[1.01] transition-all duration-300">
             <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
             <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/10 via-transparent to-[#6C38CC]/10 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
             <div className="relative z-10">
-            <h2 className="text-2xl font-black text-white tracking-wider flex items-center gap-3 mb-6" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.12em'}}>
-              <span className="w-3 h-6 bg-[#A259FF] rounded-full inline-block shadow-lg"></span>
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-black text-white tracking-wider flex items-center justify-center sm:justify-start gap-2 sm:gap-3 mb-4 sm:mb-6" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.12em'}}>
+              <span className="w-2 sm:w-3 h-4 sm:h-6 bg-[#A259FF] rounded-full inline-block shadow-lg"></span>
               TOKEN SEARCH
             </h2>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <FiSearch className="h-6 w-6 text-white/50" />
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-0">
+              <div className="relative flex-1">
+                <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
+                  <FiSearch className="h-5 w-5 sm:h-6 sm:w-6 text-white/50" />
+                </div>
+                <input
+                  type="text"
+                  className="w-full pl-10 sm:pl-12 pr-4 sm:pr-24 lg:pr-28 py-3 sm:py-4 border-2 border-white/20 rounded-2xl sm:rounded-r-none bg-white/10 backdrop-blur-xl focus:ring-2 focus:ring-[#A259FF]/50 focus:border-[#A259FF]/50 focus:bg-white/15 outline-none text-white placeholder-white/50 shadow-xl transition-all duration-300 hover:border-white/30 hover:bg-white/12 text-base sm:text-lg font-medium"
+                  placeholder="Enter Ethereum token address (0x...)" 
+                  value={tokenAddress}
+                  onChange={(e) => setTokenAddress(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && tokenAddress.trim() && fetchData(tokenAddress)}
+                  disabled={tokenLoading}
+                  style={{fontFamily:'Poppins,sans-serif'}}
+                />
+                <button
+                  onClick={() => tokenAddress.trim() && fetchData(tokenAddress)}
+                  disabled={!tokenAddress.trim() || tokenLoading}
+                  className="hidden sm:flex absolute inset-y-0 right-0 px-6 lg:px-8 items-center bg-gradient-to-r from-[#A259FF]/80 to-[#6C38CC]/80 backdrop-blur-xl border border-[#A259FF]/30 text-white font-bold rounded-r-2xl text-sm lg:text-base shadow-xl hover:shadow-[0_8px_32px_rgba(162,89,255,0.6)] hover:from-[#A259FF] hover:to-[#6C38CC] hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 overflow-hidden group"
+                  style={{fontFamily:'Poppins,sans-serif'}}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#FF1C8B]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <span className="relative z-10 whitespace-nowrap">
+                    {tokenLoading ? 'Searching...' : 'Search'}
+                  </span>
+                </button>
               </div>
-              <input
-                type="text"
-                className="w-full pl-12 pr-32 py-4 border-2 border-white/20 rounded-2xl bg-white/10 backdrop-blur-xl focus:ring-2 focus:ring-[#A259FF]/50 focus:border-[#A259FF]/50 focus:bg-white/15 outline-none text-white placeholder-white/50 shadow-xl transition-all duration-300 hover:border-white/30 hover:bg-white/12 text-lg font-medium"
-                placeholder="Enter Ethereum token address (0x...)" 
-                value={tokenAddress}
-                onChange={(e) => setTokenAddress(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && tokenAddress.trim() && fetchData(tokenAddress)}
-                disabled={tokenLoading}
-                style={{fontFamily:'Poppins,sans-serif'}}
-              />
               <button
                 onClick={() => tokenAddress.trim() && fetchData(tokenAddress)}
                 disabled={!tokenAddress.trim() || tokenLoading}
-                className="absolute inset-y-0 right-0 px-8 flex items-center bg-white/15 backdrop-blur-xl border border-white/30 text-white font-bold rounded-r-2xl text-lg shadow-xl hover:shadow-[0_8px_32px_rgba(162,89,255,0.4)] hover:bg-white/20 hover:border-white/40 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 lumos-animated-outline overflow-hidden group"
+                className="sm:hidden relative w-full py-4 px-6 bg-gradient-to-r from-[#A259FF] to-[#6C38CC] backdrop-blur-xl border border-[#A259FF]/50 text-white font-bold rounded-2xl text-base shadow-xl hover:shadow-[0_8px_32px_rgba(162,89,255,0.6)] hover:from-[#A259FF]/90 hover:to-[#6C38CC]/90 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 overflow-hidden group"
                 style={{fontFamily:'Poppins,sans-serif'}}
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/20 via-[#6C38CC]/20 to-[#FF1C8B]/20 opacity-80 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <span className="relative z-10">{tokenLoading ? 'Searching...' : 'Search Token'}</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-[#FF1C8B]/30 via-transparent to-[#FF1C8B]/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <span className="relative z-10 flex items-center justify-center gap-3">
+                  <FiSearch className="h-5 w-5" />
+                  {tokenLoading ? 'Searching...' : 'Search Token'}
+                </span>
               </button>
             </div>
             </div>
@@ -275,16 +290,16 @@ export default function EthTrackerPage() {
                 </div>
 
                 {/* Price and Changes */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                  <div className="group relative bg-white/15 backdrop-blur-xl border border-white/30 hover:border-white/40 rounded-2xl p-6 shadow-xl hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] hover:scale-[1.02] transition-all duration-300 overflow-hidden">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                  <div className="group relative bg-white/15 backdrop-blur-xl border border-white/30 hover:border-white/40 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-xl hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] hover:scale-[1.02] transition-all duration-300 overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/10 to-[#6C38CC]/10 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
                     <div className="relative z-10">
-                    <div className="flex items-center gap-2 mb-3">
-                      <FiClock className="w-5 h-5 bg-[#A259FF] rounded-full shadow-lg" />
-                      <span className="text-sm text-white/70 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>Current Price</span>
+                    <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                      <span className="w-2 h-2 bg-[#A259FF] rounded-full shadow-lg"></span>
+                      <span className="text-xs sm:text-sm text-white/70 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>Current Price</span>
                     </div>
-                    <p className="text-3xl font-black text-white" style={{fontFamily:'Poppins,sans-serif'}}>
+                    <p className="text-xl sm:text-2xl lg:text-3xl font-black text-white break-all" style={{fontFamily:'Poppins,sans-serif'}}>
                       {ethData.tokenData.price ? `$${Number(ethData.tokenData.price).toFixed(6)}` : 'N/A'}
                     </p>
                     </div>
@@ -328,14 +343,14 @@ export default function EthTrackerPage() {
                 </div>
 
                 {/* Market Stats */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                  <div className="group relative bg-white/15 backdrop-blur-xl border border-white/30 hover:border-white/40 rounded-2xl p-6 shadow-xl hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] hover:scale-[1.02] transition-all duration-300 overflow-hidden">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                  <div className="group relative bg-white/15 backdrop-blur-xl border border-white/30 hover:border-white/40 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-xl hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] hover:scale-[1.02] transition-all duration-300 overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/10 to-[#6C38CC]/10 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
                     <div className="relative z-10">
-                    <div className="flex items-center gap-2 mb-3">
-                      <FiArrowUp className="h-5 w-5 text-[#A259FF]" />
-                      <span className="text-sm text-white/70 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>Volume (24h)</span>
+                    <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                      <FiArrowUp className="h-4 w-4 sm:h-5 sm:w-5 text-[#A259FF]" />
+                      <span className="text-xs sm:text-sm text-white/70 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>Volume (24h)</span>
                     </div>
                     <p className="text-2xl font-black text-white" style={{fontFamily:'Poppins,sans-serif'}}>
                       {ethData.tokenData.volume24h ? formatCurrency(ethData.tokenData.volume24h) : 'N/A'}
@@ -399,24 +414,24 @@ export default function EthTrackerPage() {
 
             {/* Trending Tokens */}
             {ethData.trendingTokens && ethData.trendingTokens.length > 0 && (
-              <div className="group relative bg-white/10 backdrop-blur-xl border border-white/20 hover:border-white/30 rounded-3xl shadow-2xl p-10 overflow-hidden hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] transition-all duration-300">
+              <div className="group relative bg-white/10 backdrop-blur-xl border border-white/20 hover:border-white/30 rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 lg:p-10 overflow-hidden hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] transition-all duration-300">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/5 via-transparent to-[#6C38CC]/5 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
                 <div className="relative z-10">
-                <h2 className="text-3xl font-black text-white tracking-wider flex items-center gap-3 mb-8" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.12em'}}>
-                  <span className="w-3 h-8 bg-[#A259FF] rounded-full inline-block shadow-lg"></span>
-                  TRENDING ETH TOKENS (24H)
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-wider flex items-center justify-center sm:justify-start gap-2 sm:gap-3 mb-6 sm:mb-8" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.12em'}}>
+                  <span className="w-2 sm:w-3 h-6 sm:h-8 bg-[#A259FF] rounded-full inline-block shadow-lg"></span>
+                  <span className="text-center sm:text-left">TRENDING ETH TOKENS (24H)</span>
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                   {ethData.trendingTokens.map((token: any) => (
-                    <div key={token.tokenAddress} className="group relative bg-white/15 backdrop-blur-xl border border-white/30 hover:border-white/40 rounded-2xl p-6 shadow-xl hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] hover:scale-[1.05] transition-all duration-300 cursor-pointer lumos-animated-outline overflow-hidden">
+                    <div key={token.tokenAddress} className="group relative bg-white/15 backdrop-blur-xl border border-white/30 hover:border-white/40 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-xl hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] hover:scale-[1.02] sm:hover:scale-[1.05] transition-all duration-300 cursor-pointer lumos-animated-outline overflow-hidden">
                       <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
                       <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/10 via-transparent to-[#6C38CC]/10 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
                       <div className="relative z-10 flex flex-col items-center text-center">
-                        <img src={token.logo} alt={token.name} className="w-16 h-16 rounded-full mb-4 border-2 border-white/30 group-hover:border-[#A259FF]/60 transition-all shadow-lg" />
-                        <h3 className="text-lg font-bold text-white mb-2" style={{fontFamily:'Poppins,sans-serif'}}>{token.name}</h3>
-                        <span className="text-xs font-bold text-white/70 bg-white/15 backdrop-blur-xl px-3 py-1 rounded-full mb-3 uppercase tracking-wide border border-white/20" style={{fontFamily:'Poppins,sans-serif'}}>{token.symbol}</span>
-                        <p className="text-xl font-black text-[#A259FF] mb-2" style={{fontFamily:'Poppins,sans-serif'}}>${Number(token.usdPrice).toFixed(6)}</p>
+                        <img src={token.logo} alt={token.name} className="w-12 h-12 sm:w-16 sm:h-16 rounded-full mb-3 sm:mb-4 border-2 border-white/30 group-hover:border-[#A259FF]/60 transition-all shadow-lg" />
+                        <h3 className="text-sm sm:text-base lg:text-lg font-bold text-white mb-1 sm:mb-2 truncate w-full" style={{fontFamily:'Poppins,sans-serif'}} title={token.name}>{token.name}</h3>
+                        <span className="text-xs font-bold text-white/70 bg-white/15 backdrop-blur-xl px-2 sm:px-3 py-1 rounded-full mb-2 sm:mb-3 uppercase tracking-wide border border-white/20" style={{fontFamily:'Poppins,sans-serif'}}>{token.symbol}</span>
+                        <p className="text-lg sm:text-xl font-black text-[#A259FF] mb-1 sm:mb-2 break-all" style={{fontFamily:'Poppins,sans-serif'}}>${Number(token.usdPrice).toFixed(6)}</p>
                         <span className={`text-sm font-bold px-3 py-1 rounded-full backdrop-blur-xl border ${
                           token.pricePercentChange['24h'] > 0 ? 'bg-green-500/20 text-green-300 border-green-500/30' : 
                           token.pricePercentChange['24h'] < 0 ? 'bg-red-500/20 text-red-300 border-red-500/30' : 
@@ -436,17 +451,17 @@ export default function EthTrackerPage() {
             )}
           </div>
         ) : (
-          <div className="group relative bg-white/10 backdrop-blur-xl border border-white/20 hover:border-white/30 rounded-3xl shadow-2xl p-16 text-center overflow-hidden hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] transition-all duration-300">
+          <div className="group relative bg-white/10 backdrop-blur-xl border border-white/20 hover:border-white/30 rounded-2xl sm:rounded-3xl shadow-2xl p-8 sm:p-12 lg:p-16 text-center overflow-hidden hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] transition-all duration-300 mx-4 sm:mx-0">
             <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
             <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/5 via-transparent to-[#6C38CC]/5 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
             <div className="relative z-10">
-            <div className="mx-auto h-24 w-24 flex items-center justify-center rounded-full bg-white/15 backdrop-blur-xl border border-white/30 text-[#A259FF] mb-8 shadow-xl">
-              <svg className="h-12 w-12" fill="currentColor" viewBox="0 0 24 24">
+            <div className="mx-auto h-16 w-16 sm:h-20 sm:w-20 lg:h-24 lg:w-24 flex items-center justify-center rounded-full bg-white/15 backdrop-blur-xl border border-white/30 text-[#A259FF] mb-6 sm:mb-8 shadow-xl">
+              <svg className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z" />
               </svg>
             </div>
-            <h3 className="text-3xl font-bold text-white mb-4" style={{fontFamily:'Poppins,sans-serif'}}>Ready to Track Tokens</h3>
-            <p className="text-white/70 text-lg max-w-md mx-auto" style={{fontFamily:'Poppins,sans-serif'}}>
+            <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4" style={{fontFamily:'Poppins,sans-serif'}}>Ready to Track Tokens</h3>
+            <p className="text-white/70 text-sm sm:text-base lg:text-lg max-w-md mx-auto px-4 sm:px-0" style={{fontFamily:'Poppins,sans-serif'}}>
               Enter an Ethereum token address above to view detailed analytics, market data, and trading insights.
             </p>
             </div>
