@@ -385,6 +385,19 @@
   animation: fadeIn 0.3s ease-out forwards;
 }
 
+/* Hide scrollbar utility class */
+.scrollbar-hide {
+  /* IE and Edge */
+  -ms-overflow-style: none;
+  /* Firefox */
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  /* Chrome, Safari and Opera */
+  display: none;
+}
+
 /* === Animated gradient outline (shows only the stroke) === */
 @keyframes lumos-border-scroll {
   from { background-position: 0% 0; }
