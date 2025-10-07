@@ -384,3 +384,48 @@
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out forwards;
 }
+
+/* === Animated gradient outline (shows only the stroke) === */
+@keyframes lumos-border-scroll {
+  from { background-position: 0% 0; }
+  to   { background-position: 200% 0; }
+}
+
+/* apply to any element (we'll add this class to the Card) */
+.lumos-animated-outline {
+  position: relative;
+  border-radius: 1.5rem; /* matches your rounded-3xl */
+}
+
+/* the animated gradient stroke lives on ::before and is revealed on hover */
+.lumos-animated-outline::before {
+  content: "";
+  position: absolute;
+  inset: 0;                 /* full element */
+  padding: 1.5px;           /* stroke thickness */
+  border-radius: inherit;
+  pointer-events: none;
+
+  /* gradient that scrolls horizontally */
+  background: linear-gradient(90deg, #8B5CF6, #06B6D4, #8B5CF6);
+  background-size: 200% 100%;
+  animation: lumos-border-scroll 2.2s linear infinite;
+  opacity: 0;               /* only on hover */
+  transition: opacity .25s ease;
+
+  /* show only the outline (mask the fill) */
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+/* reveal on hover/focus-within (keyboard users) */
+.lumos-animated-outline:hover::before,
+.lumos-animated-outline:focus-within::before {
+  opacity: 1;
+}
