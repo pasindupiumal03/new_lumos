@@ -527,8 +527,8 @@ export default function Dashboard() {
         <div className="mb-12">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
             <div>
-              <h1 className="font-black text-5xl md:text-7xl tracking-wider text-white leading-tight drop-shadow-xl" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.15em'}}>
-                MARKET <span className="text-[#3b0766]">DASHBOARD</span>
+              <h1 className="font-black text-5xl md:text-7xl tracking-wider text-white leading-tight drop-shadow-xl" style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.05em'}}>
+                MARKET <span className="text-[#66249c]">DASHBOARD</span>
               </h1>
               <p className="text-lg text-white/70 mt-4 max-w-2xl font-medium" style={{fontFamily:'Poppins,sans-serif'}}>
                 Real-time insights and analytics for informed trading decisions.<br/>
@@ -597,8 +597,8 @@ export default function Dashboard() {
         {/* News Section */}
         <div className="bg-white/5 backdrop-blur-md border-2 border-t-white/30 border-r-white/10 border-b-white/10 border-l-white/10 rounded-3xl shadow-2xl p-10 mb-12">
           <div className="flex items-center gap-4 mb-8">
-            <h2 className="text-3xl font-black text-white tracking-wider flex items-center gap-3 mb-0" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.12em'}}>
-              <span className="w-3 h-8 bg-[#3b0766] rounded-full inline-block"></span>
+            <h2 className="text-3xl font-black text-white tracking-wider flex items-center gap-3 mb-0" style={{fontFamily:'Arial Black,sans-serif',letterSpacing:'0.1em'}}>
+              <span className="w-3 h-8 bg-[#66249c] rounded-full inline-block"></span>
               MARKET NEWS
             </h2>
             <div className="ml-auto flex gap-2">
@@ -702,9 +702,9 @@ export default function Dashboard() {
 
         {/* Trending Coins Section */}
         <div className="bg-white/5 backdrop-blur-md border-2 border-t-white/30 border-r-white/10 border-b-white/10 border-l-white/10 rounded-3xl shadow-2xl p-10 mb-12">
-          <h2 className="text-3xl font-black text-white mb-8 tracking-wider flex items-center gap-3" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.12em'}}>
-            <span className="w-3 h-8 bg-[#3b0766] rounded-full inline-block"></span>
-            TRENDING SOLANA TOKENS <span className="text-[#3b0766]">(24H)</span>
+          <h2 className="text-3xl font-black text-white mb-8 tracking-wider flex items-center gap-3" style={{fontFamily:'Arial Black,sans-serif',letterSpacing:'0.1em'}}>
+            <span className="w-3 h-8 bg-[#66249c] rounded-full inline-block"></span>
+            TRENDING SOLANA TOKENS <span className="text-[#66249c]">(24H)</span>
           </h2>
           <div className="divide-y border-gray-200/20">
             {isCoinsLoading ? (
@@ -877,7 +877,7 @@ export default function Dashboard() {
                   <SentimentBadge sentiment={selectedNews.sentiment} />
                 </span>
               </div>
-              <h2 className="text-2xl font-black text-white mb-3" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.08em'}}>
+              <h2 className="text-2xl font-black text-white mb-3" style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.02em'}}>
                 {selectedNews.title}
               </h2>
               <p className="text-white/80 text-base mb-4 whitespace-pre-line" style={{fontFamily:'Poppins,sans-serif'}}>

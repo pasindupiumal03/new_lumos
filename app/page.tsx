@@ -179,25 +179,29 @@ export default function Home() {
             <div className="flex-shrink-0">
               {walletAddress ? (
                 <div className="flex items-center gap-3">
-                  <div className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-semibold text-sm" style={{fontFamily:'Poppins,sans-serif'}}>
-                    {formatAddress(walletAddress)}
+                  <div className="relative px-4 py-2 rounded-2xl overflow-hidden bg-white/5 backdrop-blur-xl border border-white/20 text-white font-semibold text-sm shadow-lg" style={{fontFamily:'Poppins,sans-serif'}}>
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+                    <span className="relative z-10">{formatAddress(walletAddress)}</span>
                   </div>
                   <button 
                     onClick={disconnectWallet}
-                    className="p-2 rounded-full bg-red-500/20 border border-red-500/30 text-red-400 hover:bg-red-500/30 hover:scale-105 transition-all duration-200"
+                    className="group relative p-2 rounded-2xl overflow-hidden bg-white/5 backdrop-blur-xl border border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500/50 hover:shadow-[0_8px_32px_rgba(239,68,68,0.3)] hover:scale-[1.02] transition-all duration-300 shadow-lg"
                     title="Disconnect Wallet"
                   >
-                    <LogOut className="w-4 h-4" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <LogOut className="w-4 h-4 relative z-10" />
                   </button>
                 </div>
               ) : (
                 <button 
                   onClick={connectWallet}
                   disabled={isConnecting}
-                  className="px-6 py-3 rounded-full bg-gradient-to-r from-[#A259FF] via-[#6C38CC] to-[#FF1C8B] text-white font-semibold text-sm bg-white/10 backdrop-blur-md border border-white/20 hover:shadow-lg hover:scale-105 transition-all duration-200 shadow-md disabled:opacity-50 disabled:cursor-not-allowed" 
+                  className="group relative px-6 py-3 rounded-2xl overflow-hidden bg-white/5 backdrop-blur-xl border border-white/20 text-white font-semibold text-sm hover:bg-white/10 hover:border-white/30 hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] hover:scale-[1.02] transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed" 
                   style={{fontFamily:'Poppins,sans-serif'}}
                 >
-                  {isConnecting ? 'Connecting...' : 'Connect Phantom'}
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/20 via-[#6C38CC]/20 to-[#FF1C8B]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+                  <span className="relative z-10">{isConnecting ? 'Connecting...' : 'Connect Phantom'}</span>
                 </button>
               )}
             </div>
@@ -209,12 +213,13 @@ export default function Home() {
         <div className="max-w-3xl w-full flex flex-col items-center text-center">
           {/* Badge */}
           <div className="mb-6">
-            <span className="inline-block px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#8418c2] font-extrabold text-sm tracking-wide shadow-md" style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.04em'}}>
-              🚀 Phase 2 Now Live - Advanced AI Features Available
+            <span className="relative inline-block px-5 py-2 rounded-2xl overflow-hidden bg-white/5 backdrop-blur-xl border border-white/20 text-[#8418c2] font-extrabold text-sm tracking-wide shadow-lg" style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.04em'}}>
+              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+              <span className="relative z-10">🚀 Phase 2 Now Live - Advanced AI Features Available</span>
             </span>
           </div>
           {/* Main Heading */}
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-white leading-tight" style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.04em'}}>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-white leading-tight" style={{fontFamily:'Poppins,sans-serif'}}>
             Your Ultimate <span className="text-[#a51fff]">Web3 Trading Shield</span>
           </h1>
           {/* Subheading */}
@@ -224,13 +229,18 @@ export default function Home() {
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 mb-10 w-full justify-center">
             <Link href="/tools/dashboard" className="w-full sm:w-auto">
-              <button className="w-full sm:w-auto px-7 py-3 rounded-xl font-bold text-base bg-gradient-to-r from-[#A259FF] via-[#6C38CC] to-[#FF1C8B] text-white bg-white/10 backdrop-blur-md border border-white/20 hover:shadow-lg hover:scale-105 transition-all duration-200 shadow-md" style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.04em'}}>
-                Start Trading Smarter
+              <button className="group relative w-full sm:w-auto px-8 py-4 rounded-2xl overflow-hidden bg-white/5 backdrop-blur-xl border border-white/20 text-white font-bold text-base hover:bg-white/10 hover:border-white/30 hover:shadow-[0_16px_64px_rgba(162,89,255,0.4)] hover:scale-[1.02] transition-all duration-300 shadow-xl" style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.04em'}}>
+                <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF] via-[#6C38CC] to-[#FF1C8B] opacity-80 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent"></div>
+                <div className="absolute inset-0 border border-white/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <span className="relative z-10">Start Trading Smarter</span>
               </button>
             </Link>
             <a href="https://pump.fun" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
-              <button className="w-full sm:w-auto px-7 py-3 rounded-xl font-bold text-base bg-white/10 text-white border-2 border-white/20 hover:bg-white/20 hover:text-[#801fff] transition-all duration-200 backdrop-blur-md shadow-lg" style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.04em'}}>
-                Explore on pump.fun
+              <button className="group relative w-full sm:w-auto px-8 py-4 rounded-2xl overflow-hidden bg-white/5 backdrop-blur-xl border-2 border-white/20 text-white font-bold text-base hover:bg-white/10 hover:border-white/30 hover:text-[#A259FF] hover:shadow-[0_16px_64px_rgba(255,255,255,0.1)] hover:scale-[1.02] transition-all duration-300 shadow-xl" style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.04em'}}>
+                <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent"></div>
+                <div className="absolute inset-0 border border-white/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <span className="relative z-10">Explore on pump.fun</span>
               </button>
             </a>
           </div>
@@ -260,8 +270,8 @@ export default function Home() {
       {/* Hero Section */}
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-20 md:py-32">
         <div className="text-center max-w-5xl mx-auto">
-          <h1 className="font-bold text-white text-[2.8rem] md:text-[5rem] leading-none uppercase tracking-wider drop-shadow-xl" style={{fontFamily:'Poppins,sans-serif'}}>
-            COMPREHENSIVE<br />TRADING PROTECTION
+          <h1 className="font-bold text-white text-[2.8rem] md:text-[5rem] leading-none drop-shadow-xl" style={{fontFamily:'Poppins,sans-serif'}}>
+            Comprehensive<br />Trading Protection
           </h1>
           <p className="mt-6 text-xl md:text-2xl font-semibold text-white/70" style={{fontFamily:'Montserrat,sans-serif'}}>Everything you need to trade safely and profitably in the Web3 ecosystem</p>
         </div>
@@ -276,25 +286,37 @@ export default function Home() {
             const toolHref = "/tools/dashboard";
             return (
               <Link href={toolHref} key={tool.id} className="block">
-                <Card className={`group rounded-3xl bg-white/5 backdrop-blur-md border-2 border-t-white/60 border-r-white/10 border-b-white/10 border-l-white/10 shadow-2xl hover:shadow-[0_0_50px_rgba(91,80,225,0.3)] hover:border-t-[#5B50E1]/50 transition-all duration-300 cursor-pointer relative overflow-hidden`}>
-                  <CardHeader className="pb-3">
+                <Card className={`group rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl hover:shadow-[0_20px_80px_rgba(162,89,255,0.4)] transition-all duration-500 cursor-pointer relative overflow-hidden hover:scale-[1.02] hover:bg-white/10 lumos-animated-outline`}>
+                  {/* Glassmorphism layers */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-white/5 to-transparent opacity-60"></div>
+                  <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-purple-500/5 to-pink-500/5"></div>
+                  <CardHeader className="pb-3 relative z-10">
                     <div className="flex items-start justify-between mb-3">
-                      <div className="rounded-xl bg-white/10 backdrop-blur-sm p-3 shadow-md mb-2 border border-white/20">
-                        <IconComponent className="w-7 h-7 text-white/80 group-hover:text-[#5B50E1] transition-colors" strokeWidth={2} />
+                      <div className="rounded-2xl bg-white/10 backdrop-blur-xl p-3 shadow-xl mb-2 border border-white/20 group-hover:bg-white/20 group-hover:border-white/30 transition-all duration-300">
+                        <IconComponent className="w-7 h-7 text-white/80 group-hover:text-[#A259FF] transition-colors duration-300" strokeWidth={2} />
                       </div>
-                      <Badge className={`uppercase font-bold px-4 py-1 rounded-full text-xs tracking-wider ${isLive ? 'bg-[#5B50E1]/20 text-[#5B50E1] border border-[#5B50E1]/30' : 'bg-white/10 text-white/60 border border-white/20'}`}>{tool.status}</Badge>
+                      <Badge className={`uppercase font-bold px-4 py-1 rounded-full text-xs tracking-wider backdrop-blur-xl ${isLive ? 'bg-[#5B50E1]/20 text-[#5B50E1] border border-[#5B50E1]/30 group-hover:bg-[#5B50E1]/30 group-hover:border-[#5B50E1]/50' : 'bg-white/10 text-white/60 border border-white/20'} transition-all duration-300`}>{tool.status}</Badge>
                     </div>
-                    <CardTitle className="text-lg md:text-xl font-extrabold uppercase mb-2 text-white/75 tracking-wide" style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.08em'}}>{tool.title}</CardTitle>
+                    <CardTitle className="text-lg md:text-xl font-extrabold uppercase mb-2 text-white/75 tracking-wide group-hover:text-white transition-colors duration-300" style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.08em'}}>{tool.title}</CardTitle>
                   </CardHeader>
-                  <CardContent className="pb-5">
-                    <CardDescription className="text-base text-white/70" style={{fontFamily:'Poppins,sans-serif'}}>{tool.description}</CardDescription>
+                  <CardContent className="pb-5 relative z-10">
+                    <CardDescription className="text-base text-white/70 group-hover:text-white/90 transition-colors duration-300" style={{fontFamily:'Poppins,sans-serif' , letterSpacing:'0.05em'}}>{tool.description}</CardDescription>
                   </CardContent>
-                  <CardFooter>
-                    <Button className={`rounded-xl font-bold px-8 py-3 text-base tracking-wider transition-all duration-150 ${isLive ? 'gradient-button text-white' : 'bg-white/10 text-white/40 opacity-60 cursor-not-allowed border border-white/20'}`} disabled={!isLive} style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.08em'}}>
-                      {tool.cta}
+                  <CardFooter className="relative z-10">
+                    <Button className={`group/btn relative rounded-2xl overflow-hidden font-bold px-8 py-3 text-base tracking-wider transition-all duration-300 shadow-lg ${isLive ? 'bg-white/10 backdrop-blur-xl border border-white/20 text-white hover:bg-white/20 hover:border-white/30 hover:shadow-[0_8px_32px_rgba(162,89,255,0.5)] hover:scale-[1.02]' : 'bg-white/5 backdrop-blur-xl border border-white/10 text-white/40 opacity-60 cursor-not-allowed'}`} disabled={!isLive} style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.08em'}}>
+                      {isLive && (
+                        <>
+                          <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/20 via-[#6C38CC]/20 to-[#FF1C8B]/20 opacity-0 group/btn-hover:opacity-100 transition-opacity duration-300"></div>
+                          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+                          <div className="absolute inset-0 border border-white/20 rounded-2xl opacity-0 group/btn-hover:opacity-100 transition-opacity duration-300"></div>
+                        </>
+                      )}
+                      <span className="relative z-10">{tool.cta}</span>
                     </Button>
                   </CardFooter>
-                  <div className="absolute inset-0 pointer-events-none group-hover:scale-105 transition-transform duration-200 rounded-3xl border-2 border-transparent group-hover:border-[#5B50E1]/50"></div>
+                  
+                  {/* Inner glow effect */}
+                  <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
                 </Card>
               </Link>
             );
@@ -343,8 +365,11 @@ export default function Home() {
               {/* Join Community Button */}
               <div className="mt-8">
                 <Link href="/tools/dashboard" className="w-full sm:w-auto">
-                  <button className="px-8 py-4 rounded-xl bg-gradient-to-r from-[#A259FF] via-[#6C38CC] to-[#FF1C8B] text-white font-bold bg-white/10 backdrop-blur-md border border-white/20 hover:shadow-lg hover:scale-105 transition-all duration-200 shadow-md" style={{fontFamily:'Poppins,sans-serif'}}>
-                    Join the Community
+                  <button className="group relative px-8 py-4 rounded-2xl overflow-hidden bg-white/5 backdrop-blur-xl border border-white/20 text-white font-bold hover:bg-white/10 hover:border-white/30 hover:shadow-[0_16px_64px_rgba(162,89,255,0.4)] hover:scale-[1.02] transition-all duration-300 shadow-xl" style={{fontFamily:'Poppins,sans-serif'}}>
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF] via-[#6C38CC] to-[#FF1C8B] opacity-80 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent"></div>
+                    <div className="absolute inset-0 border border-white/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <span className="relative z-10">Join the Community</span>
                   </button>
                 </Link>
               </div>
@@ -400,8 +425,17 @@ export default function Home() {
             Join thousands of traders who trust our tools for safer, more profitable trading
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center mt-10">
-            <Button className="gradient-button text-white font-bold uppercase tracking-wider px-8 py-4 text-sm rounded-xl transition-all duration-300" style={{fontFamily:'Montserrat,sans-serif',letterSpacing:'0.1em'}}>GET STARTED FREE</Button>
-            <Button className="bg-white/10 border-2 border-white/30 text-white hover:border-[#5B50E1] hover:text-[#5B50E1] hover:bg-white/5 font-bold uppercase tracking-wider px-8 py-4 text-sm rounded-xl transition-all duration-300 backdrop-blur-sm" style={{fontFamily:'Montserrat,sans-serif',letterSpacing:'0.1em'}}>VIEW PRICING</Button>
+            <Button className="group relative px-8 py-4 rounded-2xl overflow-hidden bg-white/5 backdrop-blur-xl border border-white/20 text-white font-bold uppercase tracking-wider text-sm hover:bg-white/10 hover:border-white/30 hover:shadow-[0_16px_64px_rgba(162,89,255,0.4)] hover:scale-[1.02] transition-all duration-300 shadow-xl" style={{fontFamily:'Montserrat,sans-serif',letterSpacing:'0.1em'}}>
+              <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF] via-[#6C38CC] to-[#FF1C8B] opacity-80 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent"></div>
+              <div className="absolute inset-0 border border-white/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <span className="relative z-10">GET STARTED FREE</span>
+            </Button>
+            {/* <Button className="group relative px-8 py-4 rounded-2xl overflow-hidden bg-white/5 backdrop-blur-xl border-2 border-white/20 text-white hover:bg-white/10 hover:border-white/30 hover:text-[#A259FF] hover:shadow-[0_16px_64px_rgba(255,255,255,0.1)] hover:scale-[1.02] font-bold uppercase tracking-wider text-sm transition-all duration-300 shadow-xl" style={{fontFamily:'Montserrat,sans-serif',letterSpacing:'0.1em'}}>
+              <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent"></div>
+              <div className="absolute inset-0 border border-white/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <span className="relative z-10">VIEW PRICING</span>
+            </Button> */}
           </div>
         </div>
       </div>
@@ -417,13 +451,15 @@ export default function Home() {
                 Your ultimate Web3 trading shield. Navigate the crypto universe with confidence through advanced AI-powered analytics and community-driven insights.
               </p>
               <div className="flex gap-3">
-                <a href="#" className="text-white/60 hover:text-[#1fffc3] transition-colors">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <a href="#" className="group relative p-2 rounded-2xl overflow-hidden bg-white/5 backdrop-blur-xl border border-white/20 text-white/60 hover:text-[#1fffc3] hover:bg-white/10 hover:border-white/30 hover:shadow-[0_8px_32px_rgba(31,255,195,0.2)] hover:scale-[1.02] transition-all duration-300 shadow-lg">
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <svg className="w-5 h-5 relative z-10" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
                   </svg>
                 </a>
-                <a href="#" className="text-white/60 hover:text-[#1fffc3] transition-colors">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <a href="#" className="group relative p-2 rounded-2xl overflow-hidden bg-white/5 backdrop-blur-xl border border-white/20 text-white/60 hover:text-[#1fffc3] hover:bg-white/10 hover:border-white/30 hover:shadow-[0_8px_32px_rgba(31,255,195,0.2)] hover:scale-[1.02] transition-all duration-300 shadow-lg">
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <svg className="w-5 h-5 relative z-10" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.120.098.246.196.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
                   </svg>
                 </a>
@@ -456,13 +492,9 @@ export default function Home() {
                 Join thousands of traders who trust Lumos AI to navigate the crypto markets safely and profitably.
               </p>
               <div className="flex flex-col gap-2">
-                <Link href="/tools/dashboard" className="w-full sm:w-auto">
-                  <button className="px-4 py-2 bg-gradient-to-r from-[#6d1fff] to-[#6d00d4] text-black rounded-lg font-semibold text-sm hover:scale-105 transition-all duration-200" style={{fontFamily:'Poppins,sans-serif'}}>
-                    Get Started Now
-                  </button>
-                </Link>
-                <a href="https://pump.fun" target="_blank" rel="noopener noreferrer" className="text-[#6d1fff] text-sm hover:underline" style={{fontFamily:'Poppins,sans-serif'}}>
-                  Trade on pump.fun ↗
+
+                <a href="https://pump.fun" target="_blank" rel="noopener noreferrer" className="text-[#6d1fff] text-sm " style={{fontFamily:'Poppins,sans-serif'}}>
+                  Trade on pump.fun
                 </a>
               </div>
             </div>
