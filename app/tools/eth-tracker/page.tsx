@@ -198,9 +198,12 @@ export default function EthTrackerPage() {
         </div>
         {/* Search Bar */}
         <div className="max-w-4xl mx-auto mb-12">
-          <div className="bg-white/5 backdrop-blur-md border-2 border-t-white/30 border-r-white/10 border-b-white/10 border-l-white/10 rounded-3xl shadow-2xl p-8">
+          <div className="group relative bg-white/10 backdrop-blur-xl border border-white/20 hover:border-white/30 rounded-3xl shadow-2xl p-8 overflow-hidden hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] hover:scale-[1.01] transition-all duration-300">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/10 via-transparent to-[#6C38CC]/10 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
+            <div className="relative z-10">
             <h2 className="text-2xl font-black text-white tracking-wider flex items-center gap-3 mb-6" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.12em'}}>
-              <span className="w-3 h-6 bg-[#3b0766] rounded-full inline-block"></span>
+              <span className="w-3 h-6 bg-[#A259FF] rounded-full inline-block shadow-lg"></span>
               TOKEN SEARCH
             </h2>
             <div className="relative">
@@ -209,7 +212,7 @@ export default function EthTrackerPage() {
               </div>
               <input
                 type="text"
-                className="w-full pl-12 pr-32 py-4 border-2 border-white/10 rounded-2xl bg-white/5 backdrop-blur-md focus:ring-2 focus:ring-[#5B50E1] focus:border-[#5B50E1] outline-none text-white placeholder-white/50 shadow-xl transition-all text-lg font-medium"
+                className="w-full pl-12 pr-32 py-4 border-2 border-white/20 rounded-2xl bg-white/10 backdrop-blur-xl focus:ring-2 focus:ring-[#A259FF]/50 focus:border-[#A259FF]/50 focus:bg-white/15 outline-none text-white placeholder-white/50 shadow-xl transition-all duration-300 hover:border-white/30 hover:bg-white/12 text-lg font-medium"
                 placeholder="Enter Ethereum token address (0x...)" 
                 value={tokenAddress}
                 onChange={(e) => setTokenAddress(e.target.value)}
@@ -220,11 +223,13 @@ export default function EthTrackerPage() {
               <button
                 onClick={() => tokenAddress.trim() && fetchData(tokenAddress)}
                 disabled={!tokenAddress.trim() || tokenLoading}
-                className="absolute inset-y-0 right-0 px-8 flex items-center gradient-button text-white font-bold rounded-r-2xl text-lg shadow-xl hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="absolute inset-y-0 right-0 px-8 flex items-center bg-white/15 backdrop-blur-xl border border-white/30 text-white font-bold rounded-r-2xl text-lg shadow-xl hover:shadow-[0_8px_32px_rgba(162,89,255,0.4)] hover:bg-white/20 hover:border-white/40 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 lumos-animated-outline overflow-hidden group"
                 style={{fontFamily:'Poppins,sans-serif'}}
               >
-                {tokenLoading ? 'Searching...' : 'Search Token'}
+                <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/20 via-[#6C38CC]/20 to-[#FF1C8B]/20 opacity-80 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <span className="relative z-10">{tokenLoading ? 'Searching...' : 'Search Token'}</span>
               </button>
+            </div>
             </div>
           </div>
         </div>
@@ -237,7 +242,10 @@ export default function EthTrackerPage() {
           <div className="max-w-7xl mx-auto space-y-8">
             {/* Token Details */}
             {ethData.tokenData && !ethData.tokenData.error && (
-              <div className="bg-white/5 backdrop-blur-md border-2 border-t-white/30 border-r-white/10 border-b-white/10 border-l-white/10 rounded-3xl shadow-2xl p-10">
+              <div className="group relative bg-white/10 backdrop-blur-xl border border-white/20 hover:border-white/30 rounded-3xl shadow-2xl p-10 overflow-hidden hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] transition-all duration-300">
+                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/5 via-transparent to-[#6C38CC]/5 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
+                <div className="relative z-10">
                 <div className="flex items-center gap-6 mb-8 pb-6 border-b border-white/20">
                   <div className="relative">
                     {ethData.tokenData.logo ? (
@@ -268,16 +276,23 @@ export default function EthTrackerPage() {
 
                 {/* Price and Changes */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                  <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all">
+                  <div className="group relative bg-white/15 backdrop-blur-xl border border-white/30 hover:border-white/40 rounded-2xl p-6 shadow-xl hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] hover:scale-[1.02] transition-all duration-300 overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/10 to-[#6C38CC]/10 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
+                    <div className="relative z-10">
                     <div className="flex items-center gap-2 mb-3">
-                      <FiClock className="h-5 w-5 text-[#5B50E1]" />
+                      <FiClock className="w-5 h-5 bg-[#A259FF] rounded-full shadow-lg" />
                       <span className="text-sm text-white/70 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>Current Price</span>
                     </div>
                     <p className="text-3xl font-black text-white" style={{fontFamily:'Poppins,sans-serif'}}>
                       {ethData.tokenData.price ? `$${Number(ethData.tokenData.price).toFixed(6)}` : 'N/A'}
                     </p>
+                    </div>
                   </div>
-                  <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all">
+                  <div className="group relative bg-white/15 backdrop-blur-xl border border-white/30 hover:border-white/40 rounded-2xl p-6 shadow-xl hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] hover:scale-[1.02] transition-all duration-300 overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#FF1C8B]/10 to-[#A259FF]/10 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
+                    <div className="relative z-10">
                     <div className="flex items-center gap-2 mb-3">
                       {typeof ethData.tokenData.change24h === 'number' && ethData.tokenData.change24h > 0 ? (
                         <FiArrowUp className="h-5 w-5 text-green-400" />
@@ -295,37 +310,50 @@ export default function EthTrackerPage() {
                         ? `${ethData.tokenData.change24h > 0 ? '+' : ''}${ethData.tokenData.change24h.toFixed(2)}%`
                         : 'N/A'}
                     </p>
+                    </div>
                   </div>
-                  <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all">
+                  <div className="group relative bg-white/15 backdrop-blur-xl border border-white/30 hover:border-white/40 rounded-2xl p-6 shadow-xl hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] hover:scale-[1.02] transition-all duration-300 overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#6C38CC]/10 to-[#FF1C8B]/10 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
+                    <div className="relative z-10">
                     <div className="flex items-center gap-2 mb-3">
-                      <FiExternalLink className="h-5 w-5 text-[#5B50E1]" />
+                      <FiExternalLink className="h-5 w-5 text-[#A259FF]" />
                       <span className="text-sm text-white/70 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>Market Cap</span>
                     </div>
                     <p className="text-3xl font-black text-white" style={{fontFamily:'Poppins,sans-serif'}}>
                       {ethData.tokenData.marketCap ? formatCurrency(ethData.tokenData.marketCap) : 'N/A'}
                     </p>
+                    </div>
                   </div>
                 </div>
 
                 {/* Market Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                  <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all">
+                  <div className="group relative bg-white/15 backdrop-blur-xl border border-white/30 hover:border-white/40 rounded-2xl p-6 shadow-xl hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] hover:scale-[1.02] transition-all duration-300 overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/10 to-[#6C38CC]/10 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
+                    <div className="relative z-10">
                     <div className="flex items-center gap-2 mb-3">
-                      <FiArrowUp className="h-5 w-5 text-[#5B50E1]" />
+                      <FiArrowUp className="h-5 w-5 text-[#A259FF]" />
                       <span className="text-sm text-white/70 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>Volume (24h)</span>
                     </div>
                     <p className="text-2xl font-black text-white" style={{fontFamily:'Poppins,sans-serif'}}>
                       {ethData.tokenData.volume24h ? formatCurrency(ethData.tokenData.volume24h) : 'N/A'}
                     </p>
+                    </div>
                   </div>
-                  <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all">
+                  <div className="group relative bg-white/15 backdrop-blur-xl border border-white/30 hover:border-white/40 rounded-2xl p-6 shadow-xl hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] hover:scale-[1.02] transition-all duration-300 overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#FF1C8B]/10 to-[#A259FF]/10 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
+                    <div className="relative z-10">
                     <div className="flex items-center gap-2 mb-3">
-                      <FiCopy className="h-5 w-5 text-[#5B50E1]" />
+                      <FiCopy className="h-5 w-5 text-[#A259FF]" />
                       <span className="text-sm text-white/70 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>Holders</span>
                     </div>
                     <p className="text-2xl font-black text-white" style={{fontFamily:'Poppins,sans-serif'}}>
                       {ethData.tokenData.holders ? formatNumber(ethData.tokenData.holders) : 'N/A'}
                     </p>
+                    </div>
                   </div>
                 </div>
 
@@ -348,41 +376,51 @@ export default function EthTrackerPage() {
                     Copy Address
                   </button>
                 </div>
+                </div>
               </div>
             )}
 
             {/* Token Error */}
             {ethData.tokenData && ethData.tokenData.error && (
-              <div className="bg-white/5 backdrop-blur-md border-2 border-red-500/30 rounded-3xl shadow-2xl p-10 text-center">
-                <div className="mx-auto h-16 w-16 flex items-center justify-center rounded-full bg-red-500/20 text-red-400 mb-6">
+              <div className="group relative bg-white/10 backdrop-blur-xl border border-red-500/30 hover:border-red-500/40 rounded-3xl shadow-2xl p-10 text-center overflow-hidden hover:shadow-[0_8px_32px_rgba(239,68,68,0.3)] transition-all duration-300">
+                <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 via-transparent to-red-500/5 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
+                <div className="relative z-10">
+                <div className="mx-auto h-16 w-16 flex items-center justify-center rounded-full bg-red-500/20 backdrop-blur-xl text-red-400 mb-6 border border-red-500/30 shadow-xl">
                   <svg className="h-8 w-8" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                   </svg>
                 </div>
                 <h3 className="text-2xl font-bold text-red-400 mb-4" style={{fontFamily:'Poppins,sans-serif'}}>Token Not Found</h3>
                 <p className="text-white/70" style={{fontFamily:'Poppins,sans-serif'}}>{ethData.tokenData.error}</p>
+                </div>
               </div>
             )}
 
             {/* Trending Tokens */}
             {ethData.trendingTokens && ethData.trendingTokens.length > 0 && (
-              <div className="bg-white/5 backdrop-blur-md border-2 border-t-white/30 border-r-white/10 border-b-white/10 border-l-white/10 rounded-3xl shadow-2xl p-10">
+              <div className="group relative bg-white/10 backdrop-blur-xl border border-white/20 hover:border-white/30 rounded-3xl shadow-2xl p-10 overflow-hidden hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] transition-all duration-300">
+                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/5 via-transparent to-[#6C38CC]/5 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
+                <div className="relative z-10">
                 <h2 className="text-3xl font-black text-white tracking-wider flex items-center gap-3 mb-8" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.12em'}}>
-                  <span className="w-3 h-8 bg-[#3b0766] rounded-full inline-block"></span>
+                  <span className="w-3 h-8 bg-[#A259FF] rounded-full inline-block shadow-lg"></span>
                   TRENDING ETH TOKENS (24H)
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                   {ethData.trendingTokens.map((token: any) => (
-                    <div key={token.tokenAddress} className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-xl hover:shadow-2xl hover:bg-white/15 transition-all group cursor-pointer">
-                      <div className="flex flex-col items-center text-center">
-                        <img src={token.logo} alt={token.name} className="w-16 h-16 rounded-full mb-4 border-2 border-white/20 group-hover:border-[#5B50E1] transition-all shadow-lg" />
+                    <div key={token.tokenAddress} className="group relative bg-white/15 backdrop-blur-xl border border-white/30 hover:border-white/40 rounded-2xl p-6 shadow-xl hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] hover:scale-[1.05] transition-all duration-300 cursor-pointer lumos-animated-outline overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/10 via-transparent to-[#6C38CC]/10 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
+                      <div className="relative z-10 flex flex-col items-center text-center">
+                        <img src={token.logo} alt={token.name} className="w-16 h-16 rounded-full mb-4 border-2 border-white/30 group-hover:border-[#A259FF]/60 transition-all shadow-lg" />
                         <h3 className="text-lg font-bold text-white mb-2" style={{fontFamily:'Poppins,sans-serif'}}>{token.name}</h3>
-                        <span className="text-xs font-bold text-white/70 bg-white/10 px-3 py-1 rounded-full mb-3 uppercase tracking-wide" style={{fontFamily:'Poppins,sans-serif'}}>{token.symbol}</span>
-                        <p className="text-xl font-black text-[#5B50E1] mb-2" style={{fontFamily:'Poppins,sans-serif'}}>${Number(token.usdPrice).toFixed(6)}</p>
-                        <span className={`text-sm font-bold px-3 py-1 rounded-full ${
-                          token.pricePercentChange['24h'] > 0 ? 'bg-green-100 text-green-800' : 
-                          token.pricePercentChange['24h'] < 0 ? 'bg-red-100 text-red-800' : 
-                          'bg-blue-100 text-blue-800'
+                        <span className="text-xs font-bold text-white/70 bg-white/15 backdrop-blur-xl px-3 py-1 rounded-full mb-3 uppercase tracking-wide border border-white/20" style={{fontFamily:'Poppins,sans-serif'}}>{token.symbol}</span>
+                        <p className="text-xl font-black text-[#A259FF] mb-2" style={{fontFamily:'Poppins,sans-serif'}}>${Number(token.usdPrice).toFixed(6)}</p>
+                        <span className={`text-sm font-bold px-3 py-1 rounded-full backdrop-blur-xl border ${
+                          token.pricePercentChange['24h'] > 0 ? 'bg-green-500/20 text-green-300 border-green-500/30' : 
+                          token.pricePercentChange['24h'] < 0 ? 'bg-red-500/20 text-red-300 border-red-500/30' : 
+                          'bg-blue-500/20 text-blue-300 border-blue-500/30'
                         }`} style={{fontFamily:'Poppins,sans-serif'}}>
                           {token.pricePercentChange['24h'] > 0 ? '+' : ''}{token.pricePercentChange['24h']?.toFixed(2)}%
                         </span>
@@ -393,12 +431,16 @@ export default function EthTrackerPage() {
                     </div>
                   ))}
                 </div>
+                </div>
               </div>
             )}
           </div>
         ) : (
-          <div className="bg-white/5 backdrop-blur-md border-2 border-t-white/30 border-r-white/10 border-b-white/10 border-l-white/10 rounded-3xl shadow-2xl p-16 text-center">
-            <div className="mx-auto h-24 w-24 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-sm border-2 border-white/20 text-[#5B50E1] mb-8 shadow-xl">
+          <div className="group relative bg-white/10 backdrop-blur-xl border border-white/20 hover:border-white/30 rounded-3xl shadow-2xl p-16 text-center overflow-hidden hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] transition-all duration-300">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/5 via-transparent to-[#6C38CC]/5 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
+            <div className="relative z-10">
+            <div className="mx-auto h-24 w-24 flex items-center justify-center rounded-full bg-white/15 backdrop-blur-xl border border-white/30 text-[#A259FF] mb-8 shadow-xl">
               <svg className="h-12 w-12" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z" />
               </svg>
@@ -407,11 +449,12 @@ export default function EthTrackerPage() {
             <p className="text-white/70 text-lg max-w-md mx-auto" style={{fontFamily:'Poppins,sans-serif'}}>
               Enter an Ethereum token address above to view detailed analytics, market data, and trading insights.
             </p>
+            </div>
           </div>
         )}
         
         {/* Etherscan Banner */}
-        <div className="mt-12 max-w-6xl mx-auto">
+        {/* <div className="mt-12 max-w-6xl mx-auto">
           <div className="bg-white/5 backdrop-blur-md border-2 border-t-white/30 border-r-white/10 border-b-white/10 border-l-white/10 rounded-3xl shadow-2xl overflow-hidden group hover:shadow-[0_0_50px_rgba(91,80,225,0.3)] transition-all duration-300">
             <div className="relative">
               <Image 
@@ -430,7 +473,7 @@ export default function EthTrackerPage() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </main>
     </div>
   );
