@@ -537,12 +537,15 @@ export default function Dashboard() {
             </div>
             <div className="flex md:block justify-center">
               <button
-                className="gradient-button text-white px-8 py-4 rounded-2xl font-bold shadow-xl hover:shadow-2xl transition-all text-lg flex items-center gap-3"
+                className="group relative px-8 py-4 rounded-2xl overflow-hidden bg-white/5 backdrop-blur-xl border border-white/20 text-white font-bold shadow-xl hover:bg-white/10 hover:border-white/30 hover:shadow-[0_16px_64px_rgba(162,89,255,0.4)] hover:scale-[1.02] transition-all duration-300 text-lg flex items-center gap-3"
                 onClick={handleRefresh}
                 style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.08em'}}
               >
-                <FiRefreshCw className="w-5 h-5" />
-                REFRESH DATA
+                <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF] via-[#6C38CC] to-[#FF1C8B] opacity-80 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent"></div>
+                <div className="absolute inset-0 border border-white/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <FiRefreshCw className="w-5 h-5 relative z-10" />
+                <span className="relative z-10">REFRESH DATA</span>
               </button>
             </div>
           </div>
@@ -603,26 +606,38 @@ export default function Dashboard() {
             </h2>
             <div className="ml-auto flex gap-2">
               <button
-                className={`px-6 py-2 rounded-xl font-bold text-lg transition-all focus:outline-none ${
+                className={`group relative px-6 py-2 rounded-xl overflow-hidden font-bold text-lg transition-all duration-300 focus:outline-none ${
                   activeTab === "crypto"
-                    ? "gradient-button text-white shadow-lg"
-                    : "bg-white/10 text-white/70 hover:bg-white/20 border border-white/20"
+                    ? "bg-white/10 backdrop-blur-xl border border-white/20 text-white hover:bg-white/15 hover:border-white/30 hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] hover:scale-[1.02] shadow-lg"
+                    : "bg-white/5 backdrop-blur-xl text-white/70 hover:bg-white/10 border border-white/10 hover:border-white/20"
                 }`}
                 onClick={() => setActiveTab("crypto")}
                 style={{fontFamily:'Poppins,sans-serif'}}
               >
-                Crypto News
+                {activeTab === "crypto" && (
+                  <>
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/20 via-[#6C38CC]/20 to-[#FF1C8B]/20 opacity-80 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+                  </>
+                )}
+                <span className="relative z-10">Crypto News</span>
               </button>
               <button
-                className={`px-6 py-2 rounded-xl font-bold text-lg transition-all focus:outline-none ${
+                className={`group relative px-6 py-2 rounded-xl overflow-hidden font-bold text-lg transition-all duration-300 focus:outline-none ${
                   activeTab === "us"
-                    ? "gradient-button text-white shadow-lg"
-                    : "bg-white/10 text-white/70 hover:bg-white/20 border border-white/20"
+                    ? "bg-white/10 backdrop-blur-xl border border-white/20 text-white hover:bg-white/15 hover:border-white/30 hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] hover:scale-[1.02] shadow-lg"
+                    : "bg-white/5 backdrop-blur-xl text-white/70 hover:bg-white/10 border border-white/10 hover:border-white/20"
                 }`}
                 onClick={() => setActiveTab("us")}
                 style={{fontFamily:'Poppins,sans-serif'}}
               >
-                US News
+                {activeTab === "us" && (
+                  <>
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/20 via-[#6C38CC]/20 to-[#FF1C8B]/20 opacity-80 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+                  </>
+                )}
+                <span className="relative z-10">US News</span>
               </button>
             </div>
           </div>
@@ -777,13 +792,14 @@ export default function Dashboard() {
                           <span>{coin.shortAddress || "0x...unknown"}</span>
                           {coin.address && coin.address !== "Unknown" && (
                             <button
-                              className="text-white/60 hover:text-[#5B50E1] focus:outline-none"
+                              className="group relative p-1 rounded-lg overflow-hidden bg-white/5 backdrop-blur-xl border border-white/20 text-white/60 hover:text-[#5B50E1] hover:bg-white/10 hover:border-white/30 hover:shadow-[0_4px_16px_rgba(162,89,255,0.3)] hover:scale-[1.05] transition-all duration-300 focus:outline-none"
                               title="Copy address"
                               onClick={() => {
                                 navigator.clipboard.writeText(coin.address);
                               }}
                             >
-                              <FiCopy className="w-4 h-4" />
+                              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                              <FiCopy className="w-4 h-4 relative z-10" />
                             </button>
                           )}
                         </div>
@@ -792,9 +808,11 @@ export default function Dashboard() {
                         href={coin.address && coin.address !== "Unknown" ? `https://pump.fun/coin/${coin.address}` : undefined}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-xs text-[#5B50E1] hover:text-white flex items-center gap-1 transition-colors"
+                        className="group relative px-4 py-2 rounded-xl overflow-hidden bg-white/5 backdrop-blur-xl border border-white/20 text-[#5B50E1] hover:text-white hover:bg-white/10 hover:border-white/30 hover:shadow-[0_4px_16px_rgba(162,89,255,0.3)] hover:scale-[1.02] transition-all duration-300 text-xs font-bold"
                         style={{fontFamily:'Poppins,sans-serif'}}>
-                        Trade
+                        <div className="absolute inset-0 bg-gradient-to-r from-[#5B50E1]/10 to-[#A259FF]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <span className="relative z-10">Trade</span>
                       </a>
                     </div>
                     {/* Mobile view */}
@@ -834,9 +852,11 @@ export default function Dashboard() {
                           href={coin.address && coin.address !== "Unknown" ? `https://pump.fun/coin/${coin.address}` : undefined}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs text-[#5B50E1] hover:text-white flex items-center gap-1 transition-colors"
+                          className="group relative px-3 py-1 rounded-lg overflow-hidden bg-white/5 backdrop-blur-xl border border-white/20 text-[#5B50E1] hover:text-white hover:bg-white/10 hover:border-white/30 hover:shadow-[0_4px_16px_rgba(162,89,255,0.3)] hover:scale-[1.02] transition-all duration-300 text-xs font-bold"
                           style={{fontFamily:'Poppins,sans-serif'}}>
-                          Trade
+                          <div className="absolute inset-0 bg-gradient-to-r from-[#5B50E1]/10 to-[#A259FF]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                          <span className="relative z-10">Trade</span>
                         </a>
                       </div>
                     </div>
@@ -851,11 +871,12 @@ export default function Dashboard() {
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md">
             <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-2xl max-w-lg w-full p-8 relative animate-fadeIn">
               <button
-                className="absolute top-4 right-4 text-white/60 hover:text-[#5B50E1] text-2xl font-bold focus:outline-none"
+                className="group absolute top-4 right-4 p-2 rounded-xl overflow-hidden bg-white/5 backdrop-blur-xl border border-white/20 text-white/60 hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/30 hover:shadow-[0_8px_32px_rgba(239,68,68,0.3)] hover:scale-[1.05] transition-all duration-300 focus:outline-none"
                 onClick={() => setSelectedNews(null)}
                 aria-label="Close"
               >
-                &times;
+                <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <span className="relative z-10 text-xl font-bold">&times;</span>
               </button>
               <div className="flex items-center gap-3 mb-4">
                 <img
@@ -873,7 +894,7 @@ export default function Dashboard() {
                   </span>
                   <span className="text-xs text-white/60" style={{fontFamily:'Poppins,sans-serif'}}>{selectedNews.time}</span>
                 </div>
-                <span className="ml-auto">
+                <span className="mr-2">
                   <SentimentBadge sentiment={selectedNews.sentiment} />
                 </span>
               </div>
@@ -898,17 +919,21 @@ export default function Dashboard() {
                 href={selectedNews.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-2 rounded-xl gradient-button text-white font-bold shadow transition-all"
+                className="group relative inline-flex items-center gap-2 px-6 py-3 rounded-2xl overflow-hidden bg-white/5 backdrop-blur-xl border border-white/20 text-white font-bold hover:bg-white/10 hover:border-white/30 hover:shadow-[0_16px_64px_rgba(162,89,255,0.4)] hover:scale-[1.02] transition-all duration-300 shadow-xl"
                 style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.08em'}}
               >
-                READ FULL ARTICLE
+                <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF] via-[#6C38CC] to-[#FF1C8B] opacity-80 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent"></div>
+                <div className="absolute inset-0 border border-white/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <span className="relative z-10">READ FULL ARTICLE</span>
+                <FiExternalLink className="w-4 h-4 relative z-10" />
               </a>
             </div>
           </div>
         )}
 
         {/* CTA */}
-        <div className="bg-white/5 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-white">
+        {/* <div className="bg-white/5 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-white">
           <div className="flex flex-col md:flex-row md:items-center justify-between">
             <div className="max-w-xl">
               <h3 className="text-xl font-bold mb-2" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.08em'}}>
@@ -919,11 +944,14 @@ export default function Dashboard() {
                 to take your trading to the next level.
               </p>
             </div>
-            <button className="mt-4 md:mt-0 gradient-button text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300" style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.08em'}}>
-              UPGRADE TO PRO
+            <button className="group relative mt-4 md:mt-0 px-6 py-3 rounded-2xl overflow-hidden bg-white/5 backdrop-blur-xl border border-white/20 text-white font-bold hover:bg-white/10 hover:border-white/30 hover:shadow-[0_16px_64px_rgba(162,89,255,0.4)] hover:scale-[1.02] transition-all duration-300 shadow-xl" style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.08em'}}>
+              <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF] via-[#6C38CC] to-[#FF1C8B] opacity-80 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent"></div>
+              <div className="absolute inset-0 border border-white/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <span className="relative z-10">UPGRADE TO PRO</span>
             </button>
           </div>
-        </div>
+        </div> */}
       </main>
     </div>
   );
