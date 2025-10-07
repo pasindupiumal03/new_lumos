@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 // If you have custom icons (DollarSign, BarChart3, etc.), import them here or replace with your own.
 
 
-const MORALIS_API_KEY = process.env.MORALIS_API_KEY;
+const MORALIS_API_KEY = process.env.NEXT_PUBLIC_MORALIS_API_KEY || '';
 const MORALIS_BASE_URL = 'https://deep-index.moralis.io/api/v2.2';
 
 // Format currency
@@ -99,6 +99,11 @@ export default function EthTrackerPage() {
   // Fixing the params issue in fetchTrendingTokens
   const fetchTrendingTokens = async () => {
     try {
+      if (!MORALIS_API_KEY) {
+        console.warn('Moralis API key not found');
+        return [];
+      }
+
       const url = new URL(`${MORALIS_BASE_URL}/market-data/erc20s/top-tokens`);
       url.searchParams.append('chain', 'eth');
       url.searchParams.append('limit', '20');
@@ -107,7 +112,7 @@ export default function EthTrackerPage() {
         headers: {
           'X-API-Key': MORALIS_API_KEY,
           'accept': 'application/json',
-        },
+        } as HeadersInit,
       });
       const data = await response.json();
       return data;
@@ -120,24 +125,29 @@ export default function EthTrackerPage() {
   // Fixing the type for tokenAddress in fetchTokenDetails
   const fetchTokenDetails = async (tokenAddress: string) => {
     try {
+      if (!MORALIS_API_KEY) {
+        console.warn('Moralis API key not found');
+        return null;
+      }
+
       const [metadataRes, priceRes, statsRes] = await Promise.all([
         fetch(`${MORALIS_BASE_URL}/erc20/metadata?chain=eth&addresses=${tokenAddress}`, {
           headers: {
             'X-API-Key': MORALIS_API_KEY,
             'accept': 'application/json',
-          },
+          } as HeadersInit,
         }),
         fetch(`${MORALIS_BASE_URL}/erc20/${tokenAddress}/price?chain=eth`, {
           headers: {
             'X-API-Key': MORALIS_API_KEY,
             'accept': 'application/json',
-          },
+          } as HeadersInit,
         }),
         fetch(`${MORALIS_BASE_URL}/erc20/${tokenAddress}/stats?chain=eth`, {
           headers: {
             'X-API-Key': MORALIS_API_KEY,
             'accept': 'application/json',
-          },
+          } as HeadersInit,
         }),
       ]);
 
