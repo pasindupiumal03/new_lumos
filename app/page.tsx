@@ -213,7 +213,7 @@ export default function Home() {
         <div className="max-w-3xl w-full flex flex-col items-center text-center">
           {/* Badge */}
           <div className="mb-6">
-            <span className="relative inline-block px-5 py-2 rounded-2xl overflow-hidden bg-white/5 backdrop-blur-xl border border-white/20 text-[#8418c2] font-extrabold text-sm tracking-wide shadow-lg" style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.04em'}}>
+            <span className="relative inline-block px-5 py-2 rounded-2xl overflow-hidden bg-white/5 backdrop-blur-xl border border-white/20 text-[#be65f1] font-extrabold text-sm tracking-wide shadow-lg" style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.04em'}}>
               <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
               <span className="relative z-10">🚀 Phase 2 Now Live - Advanced AI Features Available</span>
             </span>
@@ -247,19 +247,19 @@ export default function Home() {
           {/* Stats Row */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 w-full mt-2">
             <div className="flex flex-col items-center">
-              <span className="text-2xl md:text-3xl font-extrabold text-[#6b139e]" style={{fontFamily:'Poppins,sans-serif'}}>10K+</span>
+              <span className="text-2xl md:text-3xl font-extrabold text-[#be65f1]" style={{fontFamily:'Poppins,sans-serif'}}>10K+</span>
               <span className="text-xs md:text-sm text-white/70 mt-1 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>Active Traders</span>
             </div>
             <div className="flex flex-col items-center">
-              <span className="text-2xl md:text-3xl font-extrabold text-[#6b139e]" style={{fontFamily:'Poppins,sans-serif'}}>99.9%</span>
+              <span className="text-2xl md:text-3xl font-extrabold text-[#be65f1]" style={{fontFamily:'Poppins,sans-serif'}}>99.9%</span>
               <span className="text-xs md:text-sm text-white/70 mt-1 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>Uptime</span>
             </div>
             <div className="flex flex-col items-center">
-              <span className="text-2xl md:text-3xl font-extrabold text-[#6b139e]" style={{fontFamily:'Poppins,sans-serif'}}>24/7</span>
+              <span className="text-2xl md:text-3xl font-extrabold text-[#be65f1]" style={{fontFamily:'Poppins,sans-serif'}}>24/7</span>
               <span className="text-xs md:text-sm text-white/70 mt-1 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>Monitoring</span>
             </div>
             <div className="flex flex-col items-center">
-              <span className="text-2xl md:text-3xl font-extrabold text-[#6b139e]" style={{fontFamily:'Poppins,sans-serif'}}>$50M+</span>
+              <span className="text-2xl md:text-3xl font-extrabold text-[#be65f1]" style={{fontFamily:'Poppins,sans-serif'}}>$50M+</span>
               <span className="text-xs md:text-sm text-white/70 mt-1 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>Protected</span>
             </div>
           </div>
