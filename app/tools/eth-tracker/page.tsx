@@ -183,7 +183,6 @@ export default function EthTrackerPage() {
   return (
     <div className="flex min-h-screen custom-gradient">
       <Sidebar selected="ETH Tracker" />
-
       <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12 overflow-auto scrollbar-hide" style={{fontFamily:'Poppins,sans-serif'}}>
         {/* Header Section */}
         <div className="mb-8 sm:mb-10 lg:mb-12">
