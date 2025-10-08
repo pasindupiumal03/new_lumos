@@ -3,6 +3,10 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { FiSearch, FiExternalLink, FiClock, FiArrowUp, FiArrowDown, FiCopy } from 'react-icons/fi';
+import { FaCoins, FaHandHoldingUsd } from "react-icons/fa";
+import { SiCoinmarketcap } from "react-icons/si";
+import { Ri24HoursLine } from "react-icons/ri";
+import { IoMdTrendingUp, IoMdTrendingDown } from "react-icons/io";
 import { motion, AnimatePresence } from 'framer-motion';
 import Sidebar from '../Sidebar';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
@@ -295,7 +299,7 @@ export default function EthTrackerPage() {
                     <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/10 to-[#6C38CC]/10 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
                     <div className="relative z-10">
                     <div className="flex items-center gap-2 mb-2 sm:mb-3">
-                      <span className="w-2 h-2 bg-[#A259FF] rounded-full shadow-lg"></span>
+                      <FaCoins className="w-5 h-5 text-green-400" />
                       <span className="text-xs sm:text-sm text-white/70 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>Current Price</span>
                     </div>
                     <p className="text-xl sm:text-2xl lg:text-3xl font-black text-white break-all" style={{fontFamily:'Poppins,sans-serif'}}>
@@ -309,9 +313,9 @@ export default function EthTrackerPage() {
                     <div className="relative z-10">
                     <div className="flex items-center gap-2 mb-3">
                       {typeof ethData.tokenData.change24h === 'number' && ethData.tokenData.change24h > 0 ? (
-                        <FiArrowUp className="h-5 w-5 text-green-400" />
+                        <IoMdTrendingUp className="h-5 w-5 text-green-400" />
                       ) : (
-                        <FiArrowDown className="h-5 w-5 text-red-400" />
+                        <IoMdTrendingDown className="h-5 w-5 text-red-400" />
                       )}
                       <span className="text-sm text-white/70 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>24h Change</span>
                     </div>
@@ -331,7 +335,7 @@ export default function EthTrackerPage() {
                     <div className="absolute inset-0 bg-gradient-to-r from-[#6C38CC]/10 to-[#FF1C8B]/10 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
                     <div className="relative z-10">
                     <div className="flex items-center gap-2 mb-3">
-                      <FiExternalLink className="h-5 w-5 text-[#A259FF]" />
+                      <SiCoinmarketcap className="h-5 w-5 text-[#000000]" />
                       <span className="text-sm text-white/70 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>Market Cap</span>
                     </div>
                     <p className="text-3xl font-black text-white" style={{fontFamily:'Poppins,sans-serif'}}>
@@ -348,7 +352,7 @@ export default function EthTrackerPage() {
                     <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/10 to-[#6C38CC]/10 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
                     <div className="relative z-10">
                     <div className="flex items-center gap-2 mb-2 sm:mb-3">
-                      <FiArrowUp className="h-4 w-4 sm:h-5 sm:w-5 text-[#A259FF]" />
+                      <Ri24HoursLine className="h-4 w-4 sm:h-5 sm:w-5 text-[#59ffb2]" />
                       <span className="text-xs sm:text-sm text-white/70 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>Volume (24h)</span>
                     </div>
                     <p className="text-2xl font-black text-white" style={{fontFamily:'Poppins,sans-serif'}}>
@@ -361,7 +365,7 @@ export default function EthTrackerPage() {
                     <div className="absolute inset-0 bg-gradient-to-r from-[#FF1C8B]/10 to-[#A259FF]/10 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
                     <div className="relative z-10">
                     <div className="flex items-center gap-2 mb-3">
-                      <FiCopy className="h-5 w-5 text-[#A259FF]" />
+                      <FaHandHoldingUsd className="h-5 w-5 text-[#ff9b59]" />
                       <span className="text-sm text-white/70 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>Holders</span>
                     </div>
                     <p className="text-2xl font-black text-white" style={{fontFamily:'Poppins,sans-serif'}}>
@@ -414,7 +418,7 @@ export default function EthTrackerPage() {
             {/* Trending Tokens */}
             {ethData.trendingTokens && ethData.trendingTokens.length > 0 && (
               <div className="group relative bg-white/10 backdrop-blur-xl border border-white/20 hover:border-white/30 rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 lg:p-10 overflow-hidden hover:shadow-[0_8px_32px_rgba(162,89,255,0.3)] transition-all duration-300">
-                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-70 transition-opacity duration-300"></div>
                 <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/5 via-transparent to-[#6C38CC]/5 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
                 <div className="relative z-10">
                 <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-wider flex items-center justify-center sm:justify-start gap-2 sm:gap-3 mb-6 sm:mb-8" style={{fontFamily:'Arial Black,sans-serif',letterSpacing:'0.1em'}}>
@@ -429,10 +433,10 @@ export default function EthTrackerPage() {
                         <img src={token.logo} alt={token.name} className="w-12 h-12 sm:w-16 sm:h-16 rounded-full mb-3 sm:mb-4 border-2 border-white/30 group-hover:border-[#A259FF]/60 transition-all shadow-lg" />
                         <h3 className="text-sm sm:text-base lg:text-lg font-bold text-white mb-1 sm:mb-2 truncate w-full" style={{fontFamily:'Poppins,sans-serif'}} title={token.name}>{token.name}</h3>
                         <span className="text-xs font-bold text-white/70 bg-white/15 backdrop-blur-xl px-2 sm:px-3 py-1 rounded-full mb-2 sm:mb-3 uppercase tracking-wide border border-white/20" style={{fontFamily:'Poppins,sans-serif'}}>{token.symbol}</span>
-                        <p className="text-lg sm:text-xl font-black text-[#A259FF] mb-1 sm:mb-2 break-all" style={{fontFamily:'Poppins,sans-serif'}}>${Number(token.usdPrice).toFixed(6)}</p>
+                        <p className="text-lg sm:text-xl font-black text-[#e936da] mb-1 sm:mb-2 break-all" style={{fontFamily:'Poppins,sans-serif'}}>${Number(token.usdPrice).toFixed(6)}</p>
                         <span className={`text-sm font-bold px-3 py-1 rounded-full backdrop-blur-xl border ${
-                          token.pricePercentChange['24h'] > 0 ? 'bg-green-500/20 text-green-300 border-green-500/30' : 
-                          token.pricePercentChange['24h'] < 0 ? 'bg-red-500/20 text-red-300 border-red-500/30' : 
+                          token.pricePercentChange['24h'] > 0 ? 'bg-green-500/20 text-green-400 border-green-500/30' : 
+                          token.pricePercentChange['24h'] < 0 ? 'bg-red-500/20 text-red-400 border-red-500/30' : 
                           'bg-blue-500/20 text-blue-300 border-blue-500/30'
                         }`} style={{fontFamily:'Poppins,sans-serif'}}>
                           {token.pricePercentChange['24h'] > 0 ? '+' : ''}{token.pricePercentChange['24h']?.toFixed(2)}%
