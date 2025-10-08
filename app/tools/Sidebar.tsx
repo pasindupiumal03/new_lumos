@@ -139,7 +139,7 @@ export default function Sidebar({ selected }: { selected: string }) {
 
       {/* Sidebar */}
       <aside 
-        className={`fixed lg:sticky top-0 left-0 h-screen w-72 bg-black/20 backdrop-blur-md border-r border-white/10 flex flex-col p-6 transition-all duration-300 z-40 overflow-y-auto shadow-2xl ${
+        className={`fixed lg:sticky top-0 left-0 h-screen w-72 bg-black/20 backdrop-blur-md border-r border-white/10 flex flex-col p-6 transition-all duration-300 z-40 overflow-y-auto scrollbar-hide shadow-2xl ${
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >

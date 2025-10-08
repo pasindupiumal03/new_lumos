@@ -185,8 +185,8 @@ export default function EthTrackerPage() {
         <div className="mb-8 sm:mb-10 lg:mb-12">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 sm:gap-8">
             <div className="text-center md:text-left">
-              <h1 className="font-black text-3xl sm:text-4xl md:text-5xl lg:text-7xl tracking-wider text-white leading-tight drop-shadow-xl" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.15em'}}>
-                ETHEREUM <span className="text-[#3b0766]">TRACKER</span>
+              <h1 className="font-black text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl tracking-wider text-white leading-tight drop-shadow-xl" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.15em'}}>
+                ETHEREUM <span className="text-[#ba9ecf]">TRACKER</span>
               </h1>
               <p className="text-sm sm:text-base lg:text-lg text-white/70 mt-3 sm:mt-4 max-w-2xl font-medium mx-auto md:mx-0" style={{fontFamily:'Poppins,sans-serif'}}>
                 Real-time Ethereum token analytics and market insights.<br className="hidden sm:block"/>
@@ -201,8 +201,7 @@ export default function EthTrackerPage() {
             <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
             <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/10 via-transparent to-[#6C38CC]/10 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
             <div className="relative z-10">
-            <h2 className="text-lg sm:text-xl lg:text-2xl font-black text-white tracking-wider flex items-center justify-center sm:justify-start gap-2 sm:gap-3 mb-4 sm:mb-6" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.12em'}}>
-              <span className="w-2 sm:w-3 h-4 sm:h-6 bg-[#A259FF] rounded-full inline-block shadow-lg"></span>
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-black text-white tracking-wider flex items-center justify-center sm:justify-start gap-2 sm:gap-3 mb-4 sm:mb-6" style={{fontFamily:'Arial Black,sans-serif',letterSpacing:'0.1em'}}>
               TOKEN SEARCH
             </h2>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-0">
@@ -418,8 +417,7 @@ export default function EthTrackerPage() {
                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF]/5 via-transparent to-[#6C38CC]/5 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
                 <div className="relative z-10">
-                <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-wider flex items-center justify-center sm:justify-start gap-2 sm:gap-3 mb-6 sm:mb-8" style={{fontFamily:'Impact,Arial Black,sans-serif',letterSpacing:'0.12em'}}>
-                  <span className="w-2 sm:w-3 h-6 sm:h-8 bg-[#A259FF] rounded-full inline-block shadow-lg"></span>
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-wider flex items-center justify-center sm:justify-start gap-2 sm:gap-3 mb-6 sm:mb-8" style={{fontFamily:'Arial Black,sans-serif',letterSpacing:'0.1em'}}>
                   <span className="text-center sm:text-left">TRENDING ETH TOKENS (24H)</span>
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
