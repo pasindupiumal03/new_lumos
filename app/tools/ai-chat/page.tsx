@@ -29,7 +29,7 @@ export default function AIChatPage() {
     { id: 1, text: "What is the current price of Bitcoin?" },
     { id: 2, text: "Show me the top gainers in the last 24 hours" },
     { id: 3, text: "What are the latest market trends?" },
-    { id: 4, text: "Explain the concept of staking" },
+    { id: 4, text: "What are the top cryptocurrencies by market cap?" },
   ];
 
   const handleSendMessage = async (e: React.FormEvent) => {
