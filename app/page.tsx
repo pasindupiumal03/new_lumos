@@ -212,22 +212,22 @@ export default function Home() {
       <section className="w-full flex flex-col items-center justify-center pt-12 pb-16 px-4 md:px-0">
         <div className="max-w-3xl w-full flex flex-col items-center text-center">
           {/* Badge */}
-          <div className="mb-6">
+          <div className="mb-10">
             <span className="relative inline-block px-5 py-2 rounded-2xl overflow-hidden bg-white/5 backdrop-blur-xl border border-white/20 text-[#be65f1] font-extrabold text-sm tracking-wide shadow-lg" style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.04em'}}>
               <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
               <span className="relative z-10">🚀 Phase 2 Now Live - Advanced AI Features Available</span>
             </span>
           </div>
           {/* Main Heading */}
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-white leading-tight" style={{fontFamily:'Poppins,sans-serif'}}>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-10 text-white leading-tight" style={{fontFamily:'Poppins,sans-serif'}}>
             Your Ultimate <span className="text-[#a51fff]">Web3 Trading Shield</span>
           </h1>
           {/* Subheading */}
-          <p className="text-base sm:text-lg md:text-xl text-white/80 mb-8 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>
+          <p className="text-base sm:text-lg md:text-xl text-white/80 mb-10 font-medium" style={{fontFamily:'Poppins,sans-serif'}}>
             Navigate the crypto universe with confidence. Lumos AI combines advanced sentiment analysis, real-time tracking, and community-driven insights to protect and empower your trading decisions.
           </p>
           {/* Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-10 w-full justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 mb-12 w-full justify-center">
             <Link href="/tools/dashboard" className="w-full sm:w-auto">
               <button className="group relative w-full sm:w-auto px-8 py-4 rounded-2xl overflow-hidden bg-white/5 backdrop-blur-xl border border-white/20 text-white font-bold text-base hover:bg-white/10 hover:border-white/30 hover:shadow-[0_16px_64px_rgba(162,89,255,0.4)] hover:scale-[1.02] transition-all duration-300 shadow-xl" style={{fontFamily:'Poppins,sans-serif',letterSpacing:'0.04em'}}>
                 <div className="absolute inset-0 bg-gradient-to-r from-[#A259FF] via-[#6C38CC] to-[#FF1C8B] opacity-80 group-hover:opacity-100 transition-opacity duration-300"></div>
