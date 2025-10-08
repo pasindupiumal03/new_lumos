@@ -112,7 +112,7 @@ export default function AIChatPage() {
                 className="font-black text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-white leading-tight drop-shadow-xl tracking-tight"
                 style={{ fontFamily: "Impact,Arial Black,sans-serif", letterSpacing: "0.02em" }}
               >
-                AI <span className="text-[#A259FF]">TRADING</span>
+                AI <span className="text-[#ba9ecf]">TRADING</span>
               </h1>
               <p
                 className="text-sm sm:text-base lg:text-lg xl:text-xl text-white/70 mt-2 max-w-2xl font-medium leading-relaxed"
@@ -120,7 +120,6 @@ export default function AIChatPage() {
               >
                 Advanced AI assistant for crypto analysis and trading insights.
               </p>
-              <div className="h-1 w-12 sm:w-16 lg:w-20 bg-gradient-to-r from-[#A259FF] to-[#6C38CC] rounded-full mt-3" />
             </div>
 
             <div className="flex items-center gap-3">
@@ -128,15 +127,6 @@ export default function AIChatPage() {
                 <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
                 <span className="text-xs sm:text-sm text-white/80 font-medium">AI Online</span>
               </div>
-
-              <button
-                type="button"
-                onClick={() => window.location.reload()}
-                className="p-3 rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl hover:bg-white/15 hover:border-[#A259FF]/50 hover:scale-105 transition-all duration-300 group"
-                aria-label="Reset conversation"
-              >
-                <FiRefreshCw className="h-5 w-5 text-white/80 group-hover:text-[#A259FF] group-hover:rotate-180 transition-all duration-500" />
-              </button>
             </div>
           </div>
         </header>

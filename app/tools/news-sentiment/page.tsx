@@ -242,7 +242,6 @@ export default function NewsSentiment() {
               </div>
             </div>
           </div>
-          <div className="h-1 w-20 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full mt-4 mb-6" />
         </div>
 
         {/* Tabs */}
